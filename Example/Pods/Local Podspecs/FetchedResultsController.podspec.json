@@ -1,0 +1,22 @@
+{
+  "name": "FetchedResultsController",
+  "version": "0.1.0",
+  "summary": "A short description of FetchedResultsController.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/cgossain/FetchedResultsController",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "cgossain": "cgossain@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/cgossain/FetchedResultsController.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "FetchedResultsController/Classes/**/*"
+}
