@@ -1,22 +1,34 @@
 {
   "name": "FetchedResultsController",
-  "version": "0.1.0",
-  "summary": "A short description of FetchedResultsController.",
-  "description": "TODO: Add long description of the pod here.",
+  "version": "1.0.0",
+  "summary": "An generic NSFetchedResultsController replacement for iOS, written in Swift.",
+  "description": "The FetchedResultsController is an NSFetchedResultsController replacement that allows you to\nmonitor (fetch, filter, sort, section, and diff) data stored in any modern database.\n\nYour database must support attaching observers to your queries (i.e. insert, update, delete, refresh)",
   "homepage": "https://github.com/cgossain/FetchedResultsController",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "cgossain": "cgossain@gmail.com"
+    "Christian Gossain": "cgossain@gmail.com"
   },
   "source": {
     "git": "https://github.com/cgossain/FetchedResultsController.git",
-    "tag": "0.1.0"
+    "tag": "1.0.0"
   },
+  "swift_versions": [
+    "5.0"
+  ],
   "platforms": {
-    "ios": "8.0"
+    "ios": "11.4"
   },
-  "source_files": "FetchedResultsController/Classes/**/*"
+  "source_files": "FetchedResultsController/Classes/**/*",
+  "dependencies": {
+    "Debounce": [
+
+    ],
+    "Dwifft": [
+      "~> 0.9"
+    ]
+  },
+  "swift_version": "5.0"
 }

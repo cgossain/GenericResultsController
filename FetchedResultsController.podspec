@@ -1,42 +1,20 @@
-#
-# Be sure to run `pod lib lint FetchedResultsController.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
   s.name             = 'FetchedResultsController'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of FetchedResultsController.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
+  s.version          = '1.0.0'
+  s.summary          = 'An generic NSFetchedResultsController replacement for iOS, written in Swift.'
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+                        The FetchedResultsController is an NSFetchedResultsController replacement that allows you to
+                        monitor (fetch, filter, sort, section, and diff) data stored in any modern database.
+                        
+                        Your database must support attaching observers to your queries (i.e. insert, update, delete, refresh)
                        DESC
-
   s.homepage         = 'https://github.com/cgossain/FetchedResultsController'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'cgossain' => 'cgossain@gmail.com' }
+  s.author           = { 'Christian Gossain' => 'cgossain@gmail.com' }
   s.source           = { :git => 'https://github.com/cgossain/FetchedResultsController.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-
-  s.ios.deployment_target = '8.0'
-
+  s.swift_versions   = ['5.0']
+  s.ios.deployment_target = '11.4'
   s.source_files = 'FetchedResultsController/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'FetchedResultsController' => ['FetchedResultsController/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'Debounce'
+  s.dependency 'Dwifft', '~> 0.9'
 end
