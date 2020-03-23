@@ -1,5 +1,5 @@
 //
-//  DataStore.swift
+//  PersistentStoreRequest.swift
 //
 //  Copyright (c) 2017-2020 Christian Gossain
 //
@@ -24,43 +24,17 @@
 
 import Foundation
 
-/// DataStore is an abstract superclass defining API to enable communication with a data store.
-open class DataStore<FetchRequestType: FetchRequest, ResultType: FetchRequestResult> {
-//    // MARK: - Public
-//    public private(set) var currentFetchRequest: FetchRequest?
+/// PersistentStoreRequest is an abstract superclass for define a query that
+/// your store understands in order to run a query against your store.
+open class PersistentStoreRequest {
+    /// A predicate used by the results controller to filter the query results.
+    open var predicate: NSPredicate?
     
+    /// An array of sort descriptors used by the results controller to sorts the fetched snapshots in each section.
+    open var sortDescriptors: [NSSortDescriptor]?
     
-    /// A value that associates a call to `performFetch` with the data returned for that fetch.
-    private(set) var currentFetchHandle = 0
-    
-    
-    // MARK: - Private Properties
-//    private let batchController = BatchController()
-    
-    
-    
-    
-    // MARK: - Lifecycle
+    /// Initializes a new fetch request.
     public init() {
         
     }
-    
-    /// Executes the given fetch request.
-    open func execute(_ request: FetchRequestType, completion: ([ResultType]) -> Void) {
-        currentFetchHandle += 1
-    }
-    
-    
-    // operations
-    // 1. value added
-    // 2. value changed/moved
-    // 3. value removed
-    // 4. fetch request refreshed
-    
-//    // invalidate any old observers
-//    func invalidate(_ request: Request) {
-//
-//    }
-//
-
 }

@@ -24,15 +24,14 @@
 
 import Foundation
 
-//private extension FetchedResults {
-//    static let nilSectionName = "" // the name of the `nil` section
-//}
-
 let nilSectionName = "" // the name of the `nil` section
 
 class FetchedResults<ResultType: FetchRequestResult> {
-    /// The FirebaseFetchRequest instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
-    let fetchRequest: FetchRequest
+    /// The predicate to use to filter fetched results.
+    let predicate: NSPredicate?
+    
+    /// The array of sort descriptors to use to sort fetched results in each section.
+    let sortDescriptors: [NSSortDescriptor]?
     
     /// The keyPath on the fetched objects used to determine the section they belong to.
     let sectionNameKeyPath: String?
@@ -71,29 +70,31 @@ class FetchedResults<ResultType: FetchRequestResult> {
     private var fetchSortDescriptors: [NSSortDescriptor] {
         var descriptors = [NSSortDescriptor]()
         
-        // sort by the sections first
+        // first sort by sections
         if let sectionNameKeyPath = sectionNameKeyPath {
             descriptors.append(NSSortDescriptor(key: sectionNameKeyPath, ascending: true))
         }
         
-        // then add the custom sort descriptors
-        if let sortDescriptors = fetchRequest.sortDescriptors {
+        // then by custom sort descriptors
+        if let sortDescriptors = sortDescriptors {
             descriptors.append(contentsOf: sortDescriptors)
         }
+        
         return descriptors
     }
     
     
     // MARK: - Lifecycle
-    /// Initializes a new fetched results objects with the given `fetchRequest` and `sectionNameKeyPath`. These
-    /// are used to filter and order results as objects are inserted and removed.
+    /// Initializes a new fetched results objects with the given arguments.
     ///
     /// - parameters:
-    ///   - fetchRequest: The fetch request used to retrieve the results.
+    ///   - predicate: The predicate specified on a persistent store request.
+    ///   - sortDescriptors: The sort descriptors specified on a persistent store request.
     ///   - sectionNameKeyPath: The key path on result objects that represents the section name.
     ///   - fetchedResults: The fetch result whose contents should be added to the receiver.
-    init(fetchRequest: FetchRequest, sectionNameKeyPath: String?, fetchedResults: FetchedResults? = nil) {
-        self.fetchRequest = fetchRequest
+    init(predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, sectionNameKeyPath: String?, fetchedResults: FetchedResults? = nil) {
+        self.predicate = predicate?.copy() as? NSPredicate
+        self.sortDescriptors = sortDescriptors?.compactMap({ $0.copy() as? NSSortDescriptor })
         self.sectionNameKeyPath = sectionNameKeyPath
         
         // configure the initial state with the contents of a previous fetch result if provided
@@ -117,26 +118,43 @@ class FetchedResults<ResultType: FetchRequestResult> {
         }
     }
     
-    /// Creates a new FetchedResults object, initialized with the contents of an existing FetchedResults object.
+    /// Initializes a new fetched results objects using the contents of an existing fetched results objects.
     convenience init(fetchedResults: FetchedResults) {
-        self.init(fetchRequest: fetchedResults.fetchRequest, sectionNameKeyPath: fetchedResults.sectionNameKeyPath, fetchedResults: fetchedResults)
+        self.init(
+            predicate: fetchedResults.predicate,
+            sortDescriptors: fetchedResults.sortDescriptors,
+            sectionNameKeyPath: fetchedResults.sectionNameKeyPath,
+            fetchedResults: fetchedResults)
+    }
+}
+
+extension FetchedResults {
+    /// Returns the indexPath of the given object; otherwise returns `nil` if not found.
+    public func indexPath(for obj: ResultType) -> IndexPath? {
+        for (sectionIdx, section) in sections.enumerated() {
+            guard let rowIdx = section.index(of: obj) else {
+                continue
+            }
+            return IndexPath(row: rowIdx, section: sectionIdx)
+        }
+        return nil
     }
 }
 
 extension FetchedResults {
     /// Applies the given changes to the current results.
-    func apply(inserted: [ResultType], updated: [ResultType], deleted: [ResultType]) {
-        // apply insertions
+    func apply(inserted: [ResultType], changed: [ResultType], deleted: [ResultType]) {
+        // apply inserted
         for obj in inserted {
             insert(obj: obj)
         }
         
-        // apply updates
-        for obj in updated {
+        // apply changed
+        for obj in changed {
             update(obj: obj)
         }
         
-        // apply deletiona
+        // apply deleted
         for obj in deleted {
             delete(obj: obj)
         }
@@ -150,7 +168,6 @@ extension FetchedResults {
     /// Returns the section index the given object belongs to.
     func sectionIndex(for obj: ResultType) -> Int? {
         let sectionKeyValue = self.sectionKeyValue(for: obj)
-//        let sectionKeyValue = obj.sectionKeyValue(forSectionNameKeyPath: sectionNameKeyPath)
         
         // return the already computed index if available
         if let idx = sectionIndicesBySectionKeyValue[sectionKeyValue] {
@@ -172,7 +189,6 @@ extension FetchedResults {
     /// Returns the index within the overall results array where the given objects section begins.
     func sectionOffset(for obj: ResultType) -> Int? {
         let sectionKeyValue = self.sectionKeyValue(for: obj)
-//        let sectionKeyValue = snapshot.sectionKeyValue(forSectionNameKeyPath: sectionNameKeyPath)
         
         // return the already computed index if available
         if let idx = sectionOffsetsBySectionKeyValue[sectionKeyValue] {
@@ -185,9 +201,6 @@ extension FetchedResults {
         guard let idx = results.firstIndex(where: { self.sectionKeyValue(for: $0) == sectionKeyValue }) else {
             return nil
         }
-//        guard let idx = results.firstIndex(where: { $0.sectionKeyValue(forSectionNameKeyPath: sectionNameKeyPath) == sectionKeyValue }) else {
-//            return nil
-//        }
         
         // store the index for the section key before returning
         sectionOffsetsBySectionKeyValue[sectionKeyValue] = idx
@@ -211,9 +224,8 @@ extension FetchedResults {
         results.insert(obj, at: idx)
         
         // create or update the section
-//        let sectionKeyValue = obj.sectionKeyValue(forSectionNameKeyPath: sectionNameKeyPath)
         let sectionKeyValue = self.sectionKeyValue(for: obj)
-        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, sortDescriptors: fetchRequest.sortDescriptors)
+        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, sortDescriptors: sortDescriptors)
         section.insert(obj: obj)
         sectionsBySectionKeyValue[sectionKeyValue] = section
     }
@@ -249,7 +261,6 @@ extension FetchedResults {
         results.remove(at: idx)
         
         // update or remove the section
-//        let sectionKeyValue = obj.sectionKeyValue(forSectionNameKeyPath: sectionNameKeyPath)
         let sectionKeyValue = self.sectionKeyValue(for: obj)
         
         // the force unwrap is intentional here; we've validated that this object exists in
@@ -272,7 +283,7 @@ extension FetchedResults {
 extension FetchedResults {
     /// Indicates if the given object should be included in the data set.
     private func canInclude(obj: ResultType) -> Bool {
-        guard let predicate = fetchRequest.predicate else {
+        guard let predicate = predicate else {
             return true // no filter
         }
         
@@ -282,11 +293,12 @@ extension FetchedResults {
     
     /// Returns the section key value for the given object.
     private func sectionKeyValue(for obj: ResultType) -> String {
-        guard let sectionNameKeyPath = sectionNameKeyPath, let value = obj.sectionKeyValue(forSectionNameKeyPath: sectionNameKeyPath) else {
+        guard let sectionNameKeyPath = sectionNameKeyPath,
+            let value = obj.value(forKeyPath: sectionNameKeyPath) else {
             return nilSectionName
         }
         
-        return value
+        return String(describing: value)
     }
 }
 

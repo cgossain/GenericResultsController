@@ -9,24 +9,25 @@
 import Foundation
 import FetchedResultsController
 
-class ExampleModel: FetchRequestResult {
-    let objectID: String = UUID().uuidString
+//extension ExampleModel: IdentifiableFetchRequestResult {
+//    var objectID: String { return key }
+//}
+
+extension ExampleModel: IdentifiableFetchRequestResult {
+    var objectID: String {
+        return key
+    }
+}
+
+class ExampleModel: NSObject {
+    let key: String = UUID().uuidString
     
-    let name: String
+    @objc let name: String
     
-    init(name: String) {
+    @objc let category: Int
+    
+    init(name: String, categoryType: ExampleCategoryType) {
         self.name = name
-    }
-    
-    func sectionKeyValue(forSectionNameKeyPath sectionNameKeyPath: String) -> String? {
-        return nil
-    }
-    
-    static func == (lhs: ExampleModel, rhs: ExampleModel) -> Bool {
-        return lhs.objectID == rhs.objectID
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(objectID)
+        self.category = categoryType.rawValue
     }
 }

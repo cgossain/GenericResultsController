@@ -18,8 +18,6 @@ class Batch<ResultType: FetchRequestResult> {
     /// A unique identifier for this batch.
     let identifier = UUID().uuidString
     
-    
-    // MARK: - Private Properties
     private var rawInserted: [String: ResultType] = [:]
     private var rawChanged: [String: ResultType] = [:]
     private var rawRemoved: [String: ResultType] = [:]
@@ -27,26 +25,30 @@ class Batch<ResultType: FetchRequestResult> {
 
 extension Batch {
     func insert(_ obj: ResultType) {
+        // note that if the object already exists it will
+        // simply be replaced with its newer version
         rawInserted[obj.objectID] = obj
     }
     
     func update(_ obj: ResultType) {
+        // note that if the object already exists it will
+        // simply be replaced with its newer version
         rawChanged[obj.objectID] = obj
     }
     
     func remove(_ obj: ResultType) {
+        // note that if the object already exists it will
+        // simply be replaced with its newer version
         rawRemoved[obj.objectID] = obj
     }
 }
 
 extension Batch {
     func flush() -> Batch.Result {
-        // create copies of the raw data
+        // deduplicate
         var inserted = rawInserted
         var changed = rawChanged
         var removed = rawRemoved
-        
-        // cleanup redundancies
         for (key, snapshot) in rawInserted {
             if rawChanged[key] != nil {
                 // replace the existing `inserted` version with the `changed` version
@@ -63,6 +65,7 @@ extension Batch {
             }
         }
         
+        // return the deduplicated batch
         return Result(inserted: inserted, changed: changed, removed: removed)
     }
 }

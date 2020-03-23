@@ -9,56 +9,50 @@
 import UIKit
 import FetchedResultsController
 
-class ViewController: UIViewController {
-    let fetchedResultsController = FetchedResultsController(dataStore: ExampleDataStore(), fetchRequest: ExampleFetchRequest(), sectionNameKeyPath: nil)
-    
-//    init() {
-//        super.init(nibName: nil, bundle: nil)
-//    }
-    
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
+class ViewController: UITableViewController {
+    lazy var fetchedResultsController: FetchedResultsController<ExampleDBFetchRequest, ExampleModel> = {
+        let fetchRequest = ExampleDBFetchRequest()
+        let persistentStoreConnector = ExampleDBConnector()
+        let fetchedResultsController = FetchedResultsController(fetchRequest: fetchRequest, persistentStoreConnector: persistentStoreConnector, sectionNameKeyPath: "category")
+        return fetchedResultsController
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
         fetchedResultsController.delegate.controllerWillChangeContent = { (controller) in
             print("Will change content.")
         }
-        
-        fetchedResultsController.delegate.controllerDidChangeContent = { (controller) in
-            print(controller.sections)
+
+        fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
+            print(controller.description)
+            self.tableView.reloadData()
         }
-        
-        
-        
+
         fetchedResultsController.performFetch()
     }
     
+    
+    // MARK: - UITableViewDataSource
+    let cellIdentifier = "cellIdentifier"
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return fetchedResultsController.sections.count
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return fetchedResultsController.sections[section].numberOfObjects
+    }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+        cell.textLabel?.text = fetchedResultsController.sections[indexPath.section].objects[indexPath.row].name
+        return cell
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return fetchedResultsController.sections[section].name
+    }
 }
-
-//extension ViewController: FetchedResultsControllerDelegate {
-//    func controllerWillChangeContent<F, R>(_ controller: FetchedResultsController<F, R>) where F : FetchRequest, R : FetchRequestResult {
-//
-//    }
-//
-//    func controllerDidChangeContent<F, R>(_ controller: FetchedResultsController<F, R>) where F : FetchRequest, R : FetchRequestResult {
-//
-//    }
-//
-//
-//}
-
-
-//extension ViewController: FetchedResultsControllerDelegate {
-////    func controllerWillChangeContent<FetchRequestType, ResultType>(_ controller: FetchedResultsController<FetchRequestType, ResultType>) where FetchRequestType : FetchRequest, ResultType : FetchRequestResult {
-////        print("Will change content.")
-////    }
-////
-////    func controllerDidChangeContent<FetchRequestType, ResultType>(_ controller: FetchedResultsController<FetchRequestType, ResultType>) where FetchRequestType : FetchRequest, ResultType : FetchRequestResult {
-////        print(controller.sections)
-////    }
-//}
-

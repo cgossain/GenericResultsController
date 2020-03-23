@@ -96,6 +96,6 @@ extension FetchedResultsSection: Equatable, Hashable {
 
 extension FetchedResultsSection: CustomStringConvertible {
     public var description: String {
-        return "<| Section: \(name), Count: \(numberOfObjects) |>"
+        return "| Section: \(name), Count: \(numberOfObjects) |"
     }
 }

@@ -25,12 +25,18 @@
 import Foundation
 import Debounce
 
-protocol BatchControllerDelegate: class {
-    /// Called when the controller is about to begin tracking a new batch of changes.
-    func controllerWillBeginBatchingChanges<ResultType: FetchRequestResult>(_ controller: BatchController<ResultType>)
+enum BatchOperation {
+    case insert
+    case update
+    case remove
+}
+
+final class BatchControllerDelegate<ResultType: FetchRequestResult> {
+    /// Called when the controller is about to begin collecting a new batch.
+    var controllerWillBeginBatchingChanges: ((_ controller: BatchController<ResultType>) -> Void)?
     
-    /// Called when the controller has finished batching changes, passing the sets of inserts, changes, and removed snapshots.
-    func controller<ResultType: FetchRequestResult>(_ controller: BatchController<ResultType>, finishedBatchingWithInserted inserted: Set<ResultType>, changed: Set<ResultType>, removed: Set<ResultType>)
+    /// Called when the controller has finished processing a batch.
+    var controllerDidFinishBatchingChanges: ((_ controller: BatchController<ResultType>, _ inserted: Set<ResultType>, _ changed: Set<ResultType>, _ removed: Set<ResultType>) -> Void)?
 }
 
 /// A controller object used to group incoming changes into a single batch of changes.
@@ -39,17 +45,11 @@ protocol BatchControllerDelegate: class {
 /// may want to process a batch immediatly, in this case you can call the `processBatch()` method. If the controller should always process changes
 /// immediatly, simply set the `processesChangesImmediately` property to `true`.
 final class BatchController<ResultType: FetchRequestResult> {
-    enum BatchOperation {
-        case insert
-        case update
-        case remove
-    }
-    
     /// A unique identifier for the batch controller.
     public var identifier: String { return throttler.identifier }
     
     /// The object that will receive batching updates.
-    weak var delegate: BatchControllerDelegate?
+    var delegate = BatchControllerDelegate<ResultType>()
     
     /// Set to true if changes should no be batched, but rather processed as soon as they are received.
     var processesChangesImmediately = false
@@ -59,14 +59,6 @@ final class BatchController<ResultType: FetchRequestResult> {
     
     
     // MARK: - Private Properties
-    /// The internal throttler.
-    private let throttler = Throttler(throttlingInterval: 0.3)
-    
-    /// The backing ivar for the current batch.
-    private var _batch: Batch<ResultType>?
-}
-
-extension BatchController {
     /// Returns the current batch being managed by the receiver.
     private var batch: Batch<ResultType> {
         // return the existing batch
@@ -79,6 +71,12 @@ extension BatchController {
         _batch = newBatch
         return newBatch
     }
+    
+    /// The backing ivar for the current batch.
+    private var _batch: Batch<ResultType>?
+    
+    /// The internal throttler.
+    private let throttler = Throttler(throttlingInterval: 0.3)
 }
 
 extension BatchController {
@@ -129,7 +127,7 @@ extension BatchController {
             
             // notify the delegate
             DispatchQueue.main.async {
-                self.delegate?.controllerWillBeginBatchingChanges(self)
+                self.delegate.controllerWillBeginBatchingChanges?(self)
             }
         }
     }
@@ -148,21 +146,13 @@ extension BatchController {
             
             // notify the delegate
             DispatchQueue.main.async {
-                self.delegate?.controller(
-                    self,
-                    finishedBatchingWithInserted: Set(results.inserted.values),
-                    changed: Set(results.changed.values),
-                    removed: Set(results.removed.values))
+                self.delegate.controllerDidFinishBatchingChanges?(self, Set(results.inserted.values), Set(results.changed.values), Set(results.removed.values))
             }
         }
         else {
             // notify the delegate
             DispatchQueue.main.async {
-                self.delegate?.controller(
-                    self,
-                    finishedBatchingWithInserted: [],
-                    changed: [],
-                    removed: [])
+                self.delegate.controllerDidFinishBatchingChanges?(self, [], [], [])
             }
         }
     }

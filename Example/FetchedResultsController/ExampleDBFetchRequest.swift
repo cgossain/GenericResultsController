@@ -1,5 +1,5 @@
 //
-//  ExampleFetchRequest.swift
+//  ExampleDBFetchRequest.swift
 //  FetchedResultsController_Example
 //
 //  Created by Christian Gossain on 2020-03-21.
@@ -9,6 +9,6 @@
 import Foundation
 import FetchedResultsController
 
-final class ExampleFetchRequest: FetchRequest {
-    
+final class ExampleDBFetchRequest: PersistentStoreRequest {
+    // some custom definition of a query
 }
