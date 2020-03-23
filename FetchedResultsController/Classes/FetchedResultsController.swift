@@ -29,7 +29,7 @@ public enum FetchedResultsControllerError: Error {
 }
 
 /// Use FetchedResultsController to manage the results of a query performed against your database and to display the results to the user.
-public class FetchedResultsController<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
+open class FetchedResultsController<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
     public let fetchRequest: RequestType
     
