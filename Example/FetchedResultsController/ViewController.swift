@@ -22,14 +22,46 @@ class ViewController: UITableViewController {
         // Do any additional setup after loading the view, typically from a nib.
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
-        fetchedResultsController.delegate.controllerWillChangeContent = { (controller) in
-            print("Will change content.")
-        }
+        // implement table view row diffing
+        fetchedResultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in
+            self.tableView.performBatchUpdates({
+                // apply section changes
+                difference.enumerateSectionChanges { (section, sectionIndex, type) in
+                    switch type {
+                    case .insert:
+                        self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+                    case .delete:
+                        self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+                    default:
+                        break
+                    }
+                }
 
-        fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
-            print(controller.description)
-            self.tableView.reloadData()
+                // apply row changes
+                difference.enumerateRowChanges { (anObject, indexPath, type, newIndexPath) in
+                    switch type {
+                    case .insert:
+                        self.tableView.insertRows(at: [newIndexPath!], with: .fade)
+                    case .delete:
+                        self.tableView.deleteRows(at: [indexPath!], with: .fade)
+                    case .update:
+                        let cell = self.tableView.cellForRow(at: indexPath!)!
+                        self.configureCell(cell, with: anObject)
+                    case .move:
+                        self.tableView.moveRow(at: indexPath!, to: newIndexPath!)
+                    }
+                }
+            })
         }
+        
+//        fetchedResultsController.delegate.controllerWillChangeContent = { (controller) in
+//            print("Will change content.")
+//        }
+//
+//        fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
+//            print("Did change content.")
+//            self.tableView.reloadData()
+//        }
 
         fetchedResultsController.performFetch()
     }
@@ -48,11 +80,17 @@ class ViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-        cell.textLabel?.text = fetchedResultsController.sections[indexPath.section].objects[indexPath.row].name
+        configureCell(cell, with: fetchedResultsController.sections[indexPath.section].objects[indexPath.row])
         return cell
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return fetchedResultsController.sections[section].name
+    }
+}
+
+extension ViewController {
+    func configureCell(_ cell: UITableViewCell, with obj: ExampleModel) {
+        cell.textLabel?.text = obj.name
     }
 }

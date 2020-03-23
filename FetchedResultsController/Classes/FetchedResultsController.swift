@@ -28,14 +28,7 @@ public enum FetchedResultsControllerError: Error {
     case invalidIndexPath(row: Int, section: Int)
 }
 
-public class FetchedResultsControllerDelegate<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
-    /// Called when the results controller begins receiving changes.
-    public var controllerWillChangeContent: ((FetchedResultsController<RequestType, ResultType>) -> Void)?
-    
-    /// Called when the controller has completed processing the all changes.
-    public var controllerDidChangeContent: ((FetchedResultsController<RequestType, ResultType>) -> Void)?
-}
-
+/// Use FetchedResultsController to manage the results of a query performed against your database and to display the results to the user.
 public class FetchedResultsController<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
     public let fetchRequest: RequestType
@@ -54,6 +47,9 @@ public class FetchedResultsController<RequestType: PersistentStoreRequest, Resul
     
     /// The delegate handling all the results controller delegate callbacks.
     public var delegate = FetchedResultsControllerDelegate<RequestType, ResultType>()
+    
+    /// The delegate handling all the results controller delegate callbacks.
+    public var changeTracker = FetchedResultsControllerChangeTracking<RequestType, ResultType>()
     
     
     // MARK: - Private Properties
@@ -96,15 +92,23 @@ public class FetchedResultsController<RequestType: PersistentStoreRequest, Resul
         }
         
         persistentStoreConnector.batchController.delegate.controllerDidFinishBatchingChanges = { [unowned self] (controller, inserted, changed, deleted) in
-            // create a copy of the current fetch results
-            let pendingFetchedResult = FetchedResults(fetchedResults: self.currentFetchedResults)
-
-            // apply the changes to the pending results
-            pendingFetchedResult.apply(inserted: Array(inserted), changed: Array(changed), deleted: Array(deleted))
-
-            // apply the new results
-            self.currentFetchedResults = pendingFetchedResult
-
+            // keep track of the current results (before applying the changes)
+            let oldFetchedResults: FetchedResults<ResultType>! = self.currentFetchedResults
+            
+            // starting from the current resuts, apply the changes to a new fetched results object
+            let newFetchedResults = FetchedResults(fetchedResults: self.currentFetchedResults)
+            newFetchedResults.apply(inserted: Array(inserted), changed: Array(changed), deleted: Array(deleted))
+            
+            // update the current results
+            self.currentFetchedResults = newFetchedResults
+            
+            // compute the difference if the change tracker is configured
+            if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
+                // compute the difference
+                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: Array(changed))
+                controllerDidChangeResults(self, diff)
+            }
+            
             // notify the delegate
             self.delegate.controllerDidChangeContent?(self)
         }
@@ -146,4 +150,19 @@ extension FetchedResultsController: CustomStringConvertible {
     public var description: String {
         return currentFetchedResults.description
     }
+}
+
+public class FetchedResultsControllerDelegate<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
+    /// Called when the results controller begins receiving changes.
+    public var controllerWillChangeContent: ((FetchedResultsController<RequestType, ResultType>) -> Void)?
+    
+    /// Called when the controller has completed processing the all changes.
+    public var controllerDidChangeContent: ((FetchedResultsController<RequestType, ResultType>) -> Void)?
+}
+
+public class FetchedResultsControllerChangeTracking<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
+    /// Notifies the change tracker that the controller has changed its results.
+    ///
+    /// The change between the previous and new states is provided as a difference object.
+    public var controllerDidChangeResults: ((_ controller: FetchedResultsController<RequestType, ResultType>, _ difference: FetchedResultsDifference<ResultType>) -> Void)?
 }

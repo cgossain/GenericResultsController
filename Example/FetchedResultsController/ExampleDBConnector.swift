@@ -24,6 +24,16 @@ let exampleData: [ExampleModel] = [
 
 final class ExampleDBConnector: PersistentStoreConnector<ExampleDBFetchRequest, ExampleModel> {
     override func execute(_ request: ExampleDBFetchRequest) {
+        // perform the query and then call the appropriate `enqueue` method
+        // when data becomes available
+        //
+        // note if your database supports observing changes to the executed
+        // query you can setup your observers here and then call the
+        // appropriate `enqueue` method on the superclass; this would trigger
+        // realtime updates to the displayed results
+        
+        // in this example we're just providing the results of the query
+        // by enqueuing an insertion for each returned object
         exampleData.forEach({ self.enqueue(inserted: $0) })
     }
 }
