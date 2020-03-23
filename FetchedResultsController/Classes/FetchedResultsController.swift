@@ -74,6 +74,7 @@ public class FetchedResultsController<RequestType: PersistentStoreRequest, Resul
     
     /// Executes the fetch request.
     public func performFetch() {
+        // TODO: Test if we should send a delegate callback at this point to allow a UITableView to clear our its contents?
         currentFetchHandle += 1
         
         // since we're starting a new fetch we'll wipe out our current
