@@ -3,7 +3,7 @@ PODS:
   - Dwifft (0.9)
   - FetchedResultsController (1.0.0):
     - Debounce
-    - Dwifft (~> 0.9)
+    - Dwifft (= 0.9)
   - Nimble (7.3.4)
   - Quick (1.2.0)
 
@@ -26,7 +26,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Debounce: 5bb67bb6007489e7de25fb7a949b87ef0318566d
   Dwifft: 42912068ed2a8146077d1a1404df18625bd086e1
-  FetchedResultsController: 7e6c926ab61cf39da33f56576cd149b677892a1f
+  FetchedResultsController: 8f74d382c92271e26ac8f85f5c0c063dd33fc681
   Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
 
