@@ -27,9 +27,14 @@ import Foundation
 /// PersistentStoreConnector is an abstract superclass defining a simple API to communicate with between an instance of
 /// fetched results controller and any data store. This superclass is intended to be a stateless adapter to some database.
 ///
-/// The provided API is intentionally basic and makes no assumptions about how you manage the connection to some underlying
-/// store. Your subclass should implement any state and logic related to communicating with the underlying store including
-/// opening, closing, cleaning up, and setting up observers.
+/// The API is intentionally simple, and it makes no assumptions about how you manage your connection to some
+/// underlying data store. The only responsibility of the abstract store connector is to act as a throttling adapter between
+/// your data store and the fetched results controller.
+///
+/// Your concrete subclass should implement any state and logic related to communicating with your underlying
+/// store (i.e. opening connection, attaching observers, closing connection, cleaning up) and simply enqueue
+/// changes to the executed persistent store request as they occur. Changes are grouped into batches, and passed
+/// to the fetched results controller to insert, update, or delete objects from its managed results.
 open class PersistentStoreConnector<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
     /// Initializes a new persistent store connector instance.
     public init() {
