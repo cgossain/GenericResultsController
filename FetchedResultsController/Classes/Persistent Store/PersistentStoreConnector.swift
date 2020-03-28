@@ -67,4 +67,9 @@ open class PersistentStoreConnector<RequestType: PersistentStoreRequest, ResultT
     open func enqueue(removed: ResultType) {
         batchController.enqueue(removed, with: .remove)
     }
+    
+    /// Proceses all enqueued changes immediately.
+    func processPendingChanges() {
+        batchController.processPendingChanges()
+    }
 }
