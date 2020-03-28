@@ -40,10 +40,10 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest, ResultT
     public let sectionNameKeyPath: String?
     
     /// The results of the fetch. Returns `nil` if `performFetch()` hasn't yet been called.
-    public var fetchedObjects: [ResultType] { return currentFetchedResults.results }
+    public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
 
     /// The sections for the receiver’s fetch results.
-    public var sections: [FetchedResultsSection<ResultType>] { return currentFetchedResults.sections }
+    public var sections: [FetchedResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
     
     /// The delegate handling all the results controller delegate callbacks.
     public var delegate = FetchedResultsControllerDelegate<RequestType, ResultType>()
@@ -54,7 +54,7 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest, ResultT
     
     // MARK: - Private Properties
     /// The current fetched results.
-    private var currentFetchedResults: FetchedResults<ResultType>!
+    private var currentFetchedResults: FetchedResults<ResultType>?
     
     /// This value is incremented each time `-execute` is called.
     ///
@@ -96,8 +96,10 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest, ResultT
             // keep track of the current results (before applying the changes)
             let oldFetchedResults: FetchedResults<ResultType>! = self.currentFetchedResults
             
-            // starting from the current resuts, apply the changes to a new fetched results object
-            let newFetchedResults = FetchedResults(fetchedResults: self.currentFetchedResults)
+            // starting from the current resuts, apply the changes to a new fetched results
+            // object; note that force unwraping the current fetched results here is safe
+            // since we've creating it at the start of the `performFetch()` method
+            let newFetchedResults = FetchedResults(fetchedResults: self.currentFetchedResults!)
             newFetchedResults.apply(inserted: Array(inserted), changed: Array(changed), deleted: Array(deleted))
             
             // update the current results
@@ -143,13 +145,16 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest, ResultT
     ///
     /// - returns: The index path of object in the receiver’s fetch results, or nil if object could not be found.
     public func indexPath(for obj: ResultType) -> IndexPath? {
-        return currentFetchedResults.indexPath(for: obj)
+        return currentFetchedResults?.indexPath(for: obj)
     }
 }
 
 extension FetchedResultsController: CustomStringConvertible {
     public var description: String {
-        return currentFetchedResults.description
+        if let d = currentFetchedResults?.description {
+            return d
+        }
+        return "No fetched results. You must call `performFetch()`."
     }
 }
 
