@@ -111,8 +111,10 @@ extension BatchController {
         }
     }
     
-    /// Forces the receiver to process changes immediately. This will terminate any running batching activity, and notify the delegate of the results.
-    func processBatch() {
+    /// By default, the batch controller flushes enqueued changes when it reaches its throttling interval. This method flushes it explicitly.
+    ///
+    /// - Note: This method is not useful if you've already set `processesChangesImmediately` to `true`.
+    func processPendingChanges() {
         throttler.throttle(fireNow: true) {
             self.flush()
         }

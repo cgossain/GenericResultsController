@@ -47,14 +47,15 @@ extension Array {
     /// From Stack Overflow:
     /// http://stackoverflow.com/questions/26678362/how-do-i-insert-an-element-at-the-correct-position-into-a-sorted-array-in-swift
     ///
-    /// Using binary search, finds the index at which a given element should be inserted into an
-    /// already sorted array (assumes the array is already sorted). This function behaves just
-    /// like the NSArray method `-indexOfObject:inSortedRange:options:usingComparator:`
+    /// Using binary search, finds the index at which the given element should be inserted.
+    /// This function behaves just like the NSArray method `-indexOfObject:inSortedRange:options:usingComparator:`.
     ///
     /// - parameters:
     ///     - element: The object to insert.
     ///     - isOrderedBefore: A predicate that returns true if its first argument should be
     ///                        ordered before its second argument; otherwise, false.
+    /// - important: Your array must already be sorted for this method to work, this is simply because binary
+    ///              search assumes you are inserting into an already sorted array.
     func insertionIndex(of element: Element, isOrderedBefore: (Element, Element) -> Bool) -> Int {
         var low = 0
         var high = self.count - 1
