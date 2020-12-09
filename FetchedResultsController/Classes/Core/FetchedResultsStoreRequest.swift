@@ -28,7 +28,7 @@ import Foundation
 /// your store understands in order to run a query against your store.
 open class FetchedResultsStoreRequest {
     /// A type that fetched objects must conform to.
-    public typealias Result = NSObject & IdentifiableFetchRequestResult
+    public typealias Result = NSObject & Identifiable
     
     /// A predicate used by the results controller to filter the query results.
     open var predicate: NSPredicate?
@@ -40,12 +40,4 @@ open class FetchedResultsStoreRequest {
     public init() {
         
     }
-}
-
-/// A class of types whose instances hold the value of an entity with stable identity.
-///
-/// This is similar to iOS 13's `Identifiable` protocol.
-public protocol IdentifiableFetchRequestResult {
-    /// The stable identity of the entity associated with `self`.
-    var id: String { get }
 }

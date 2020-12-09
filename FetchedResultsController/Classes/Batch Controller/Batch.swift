@@ -27,17 +27,17 @@ import Foundation
 /// A Batch object allows tracking and grouping a batch of changes together as a single unit.
 class Batch<ResultType: FetchedResultsStoreRequest.Result> {
     struct Result {
-        let inserted: [String: ResultType]
-        let changed: [String: ResultType]
-        let removed: [String: ResultType]
+        let inserted: [AnyHashable: ResultType]
+        let changed: [AnyHashable: ResultType]
+        let removed: [AnyHashable: ResultType]
     }
     
     /// A unique identifier for this batch.
     let identifier = UUID().uuidString
     
-    private var rawInserted: [String: ResultType] = [:]
-    private var rawChanged: [String: ResultType] = [:]
-    private var rawRemoved: [String: ResultType] = [:]
+    private var rawInserted: [AnyHashable: ResultType] = [:]
+    private var rawChanged: [AnyHashable: ResultType] = [:]
+    private var rawRemoved: [AnyHashable: ResultType] = [:]
 }
 
 extension Batch {

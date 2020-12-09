@@ -26,10 +26,8 @@ import Foundation
 import FetchedResultsController
 import CoreData
 
-extension NSManagedObject: IdentifiableFetchRequestResult {
-    public var id: String {
-        return self.objectID.description
-    }
+extension NSManagedObject: Identifiable {
+    public var id: String { return self.objectID.description }
 }
 
 final class CoreDataFetchedResultsStoreConnector<EntityType: NSManagedObject>: FetchedResultsStoreConnector<CoreDataFetchedResultsStoreRequest<EntityType>, EntityType> {
