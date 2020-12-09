@@ -28,7 +28,6 @@ import CoreData
 
 final class CoreDataFetchedResultsStoreRequest<EntityType: NSFetchRequestResult>: FetchedResultsStoreRequest {
     let managedObjectContext: NSManagedObjectContext
-    
     let fetchRequest: NSFetchRequest<EntityType>
     
     init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<EntityType>) {

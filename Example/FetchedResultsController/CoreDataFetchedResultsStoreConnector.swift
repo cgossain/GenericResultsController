@@ -32,9 +32,10 @@ extension NSManagedObject: Identifiable {
 
 final class CoreDataFetchedResultsStoreConnector<EntityType: NSManagedObject>: FetchedResultsStoreConnector<CoreDataFetchedResultsStoreRequest<EntityType>, EntityType> {
     private var managedObjectContextChangeObserver: AnyObject?
-    
     private var currentFetchRequest: NSFetchRequest<EntityType>!
     
+    
+    // MARK: - FetchedResultsStoreConnector
     override func execute(_ request: CoreDataFetchedResultsStoreRequest<EntityType>) {
         // perform the query and then call the appropriate `enqueue` method
         // when data becomes available

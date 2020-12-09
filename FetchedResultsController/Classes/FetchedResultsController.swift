@@ -30,11 +30,11 @@ public enum FetchedResultsControllerError: Error {
 
 /// Use FetchedResultsController to manage the results of a query performed against your database and to display the results to the user.
 open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
-    /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
-    public let fetchRequest: RequestType
-    
     /// The store connector instance the controller uses to execute a fetch request against.
     public let storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>
+    
+    /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
+    public let fetchRequest: RequestType
     
     /// The keyPath on the fetched objects used to determine the section they belong to.
     public let sectionNameKeyPath: String?
@@ -66,9 +66,9 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
     
     // MARK: - Lifecycle
     /// Returns a fetch request controller initialized using the given arguments.
-    public init(fetchRequest: RequestType, storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>, sectionNameKeyPath: String?) {
-        self.fetchRequest = fetchRequest
+    public init(storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>, fetchRequest: RequestType, sectionNameKeyPath: String?) {
         self.storeConnector = storeConnector
+        self.fetchRequest = fetchRequest
         self.sectionNameKeyPath = sectionNameKeyPath
     }
     

@@ -52,8 +52,8 @@ class ViewController: UITableViewController {
         let storeRequest = CoreDataFetchedResultsStoreRequest(managedObjectContext: self.managedObjectContext, fetchRequest: fetchRequest)
         
         self.fetchedResultsController = FetchedResultsController(
-            fetchRequest: storeRequest,
             storeConnector: CoreDataFetchedResultsStoreConnector(),
+            fetchRequest: storeRequest,
             sectionNameKeyPath: "category")
         
         // implement table view row diffing
