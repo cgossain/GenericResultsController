@@ -26,7 +26,7 @@ import Foundation
 
 let nilSectionName = "" // the name of the `nil` section
 
-class FetchedResults<ResultType: FetchRequestResult> {
+class FetchedResults<ResultType: FetchedResultsStoreRequest.Result> {
     /// The predicate to use to filter fetched results.
     let predicate: NSPredicate?
     
@@ -241,7 +241,7 @@ extension FetchedResults {
         // an update
         
         // remove the "old" object
-        guard let idx = results.firstIndex(where: { $0.objectID == new.objectID }) else {
+        guard let idx = results.firstIndex(where: { $0.id == new.id }) else {
             return
         }
         let old = results[idx]
@@ -253,7 +253,7 @@ extension FetchedResults {
     
     /// Removes the object if it exists in the results.
     private func delete(obj: ResultType) {
-        guard let idx = results.firstIndex(where: { $0.objectID == obj.objectID }) else {
+        guard let idx = results.firstIndex(where: { $0.id == obj.id }) else {
             return
         }
         

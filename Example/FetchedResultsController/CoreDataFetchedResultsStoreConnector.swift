@@ -1,5 +1,5 @@
 //
-//  CoreDataPersistentStoreConnector.swift
+//  CoreDataFetchedResultsStoreConnector.swift
 //
 //  Copyright (c) 2017-2020 Christian Gossain
 //
@@ -26,22 +26,35 @@ import Foundation
 import FetchedResultsController
 import CoreData
 
-final class CoreDataPersistentStoreConnector: PersistentStoreConnector<CoreDataPersistentStoreRequest<Event>, Event> {
+extension NSManagedObject: IdentifiableFetchRequestResult {
+    public var id: String {
+        return self.objectID.description
+    }
+}
+
+final class CoreDataFetchedResultsStoreConnector<EntityType: NSManagedObject>: FetchedResultsStoreConnector<CoreDataFetchedResultsStoreRequest<EntityType>, EntityType> {
     private var managedObjectContextChangeObserver: AnyObject?
     
-    override func execute(_ request: CoreDataPersistentStoreRequest<Event>) {
-//        // perform the query and then call the appropriate `enqueue` method
-//        // when data becomes available
-//        //
-//        // note if your database supports observing changes to the executed
-//        // query you can setup your observers here and then call the
-//        // appropriate `enqueue` method on the superclass; this would trigger
-//        // realtime updates to the displayed results
-//
-//        // in this example we're just providing the results of the query
-//        // by enqueuing an insertion for each returned object
-//        exampleData.forEach({ self.enqueue(inserted: $0) })
+    private var currentFetchRequest: NSFetchRequest<EntityType>!
+    
+    override func execute(_ request: CoreDataFetchedResultsStoreRequest<EntityType>) {
+        // perform the query and then call the appropriate `enqueue` method
+        // when data becomes available
+        //
+        // note if your database supports observing changes to the executed
+        // query you can setup your observers here and then call the
+        // appropriate `enqueue` method on the superclass; this would trigger
+        // realtime updates to the displayed results
+
+        // in this example we're executing the core data fetch request, and then
+        // observing the for `NSManagedObjectContextObjectsDidChange` notification
+        // to detect further incrementation changes
         
+        // note, realistically you would use NSFetchedResultsController if you're
+        // using CoreData.
+        
+        // keep track of the executed fetch request
+        currentFetchRequest = request.fetchRequest
         
         // remove the previous observer if attached
         if let managedObjectContextChangeObserver = managedObjectContextChangeObserver {
@@ -65,22 +78,27 @@ final class CoreDataPersistentStoreConnector: PersistentStoreConnector<CoreDataP
             }
         }
     }
-    
+}
+
+extension CoreDataFetchedResultsStoreConnector {
     private func handleContextObjectsDidChangeNotification(_ notification: Notification) {
-        let insertedObjectsSet = notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject> ?? []
-        let updatedObjectsSet = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> ?? []
-        let deletedObjectsSet = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject> ?? []
+        let entityName = currentFetchRequest.entityName!
         
-        let filteredInserted = insertedObjectsSet.filter({ $0.entity.name == "Event" }) as? Set<Event>
+        // inserted
+        let insertedObjectsSet = notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject> ?? []
+        let filteredInserted = insertedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
         filteredInserted?.forEach({ self.enqueue(inserted: $0) })
         
-        let filteredUpdated = updatedObjectsSet.filter({ $0.entity.name == "Event" }) as? Set<Event>
+        // updated
+        let updatedObjectsSet = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> ?? []
+        let filteredUpdated = updatedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
         filteredUpdated?.forEach({ self.enqueue(updated: $0) })
         
-        let filteredDeleted = deletedObjectsSet.filter({ $0.entity.name == "Event" }) as? Set<Event>
+        // deleted
+        let deletedObjectsSet = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject> ?? []
+        let filteredDeleted = deletedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
         filteredDeleted?.forEach({ self.enqueue(removed: $0) })
         
         self.processPendingChanges()
     }
-    
 }

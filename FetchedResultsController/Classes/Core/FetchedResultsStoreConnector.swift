@@ -1,5 +1,5 @@
 //
-//  PersistentStoreConnector.swift
+//  FetchedResultsStoreConnector.swift
 //
 //  Copyright (c) 2017-2020 Christian Gossain
 //
@@ -24,7 +24,7 @@
 
 import Foundation
 
-/// PersistentStoreConnector is an abstract superclass defining a simple API to communicate with between an instance of
+/// FetchedResultsStoreConnector is an abstract superclass defining a simple API to communicate with between an instance of
 /// fetched results controller and any data store. This superclass is intended to be a stateless adapter to some database.
 ///
 /// The API is intentionally simple, and it makes no assumptions about how you manage your connection to some
@@ -35,7 +35,10 @@ import Foundation
 /// store (i.e. opening connection, attaching observers, closing connection, cleaning up) and simply enqueue
 /// changes to the executed persistent store request as they occur. Changes are grouped into batches, and passed
 /// to the fetched results controller to insert, update, or delete objects from its managed results.
-open class PersistentStoreConnector<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
+open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
+    /// The controller used to batch incoming changes from the persistent store.
+    let batchController = BatchController<ResultType>()
+    
     /// Initializes a new persistent store connector instance.
     public init() {
         
@@ -50,13 +53,12 @@ open class PersistentStoreConnector<RequestType: PersistentStoreRequest, ResultT
     
     
     // MARK: -  Incremental Operations
-    /// The controller used to batch incoming changes from the persistent store.
-    let batchController = BatchController<ResultType>()
-    
-    // 1. value added
-    // 2. value changed/moved
-    // 3. value removed
-    // 4. fetch request refreshed
+    /// Proceses all enqueued changes immediately.
+    ///
+    /// You should use this method if you've enqueued changes driven by user action (e.g. user deleted an item).
+    open func processPendingChanges() {
+        batchController.processPendingChanges()
+    }
     
     /// Enqueues the object as an insertion.
     open func enqueue(inserted: ResultType) {
@@ -71,10 +73,5 @@ open class PersistentStoreConnector<RequestType: PersistentStoreRequest, ResultT
     /// Enqueues the object as an deletion.
     open func enqueue(removed: ResultType) {
         batchController.enqueue(removed, with: .remove)
-    }
-    
-    /// Proceses all enqueued changes immediately.
-    func processPendingChanges() {
-        batchController.processPendingChanges()
     }
 }

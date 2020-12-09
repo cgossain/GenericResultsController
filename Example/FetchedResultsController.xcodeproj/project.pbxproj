@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		106492D12429223C00C38ABF /* ExampleDBConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BB242719A700C38ABF /* ExampleDBConnector.swift */; };
-		106492D22429223C00C38ABF /* ExampleDBFetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BD242719E700C38ABF /* ExampleDBFetchRequest.swift */; };
-		106492D32429223C00C38ABF /* ExampleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BF24271A4500C38ABF /* ExampleModel.swift */; };
-		106492D42429223C00C38ABF /* ExampleCategoryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492C12427C62D00C38ABF /* ExampleCategoryType.swift */; };
+		10542BA5242FFA95003753FE /* ExampleModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 10542BA3242FFA95003753FE /* ExampleModel.xcdatamodeld */; };
+		10542BEF242FFE5D003753FE /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10542BEE242FFE5D003753FE /* CoreDataManager.swift */; };
+		106492D12429223C00C38ABF /* CoreDataFetchedResultsStoreConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BB242719A700C38ABF /* CoreDataFetchedResultsStoreConnector.swift */; };
+		106492D22429223C00C38ABF /* CoreDataFetchedResultsStoreRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BD242719E700C38ABF /* CoreDataFetchedResultsStoreRequest.swift */; };
+		1069846C2430400C0006261D /* Event+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1069846A2430400C0006261D /* Event+CoreDataClass.swift */; };
+		1069846D2430400C0006261D /* Event+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1069846B2430400C0006261D /* Event+CoreDataProperties.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
@@ -32,10 +34,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		106492BB242719A700C38ABF /* ExampleDBConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleDBConnector.swift; sourceTree = "<group>"; };
-		106492BD242719E700C38ABF /* ExampleDBFetchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleDBFetchRequest.swift; sourceTree = "<group>"; };
-		106492BF24271A4500C38ABF /* ExampleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleModel.swift; sourceTree = "<group>"; };
-		106492C12427C62D00C38ABF /* ExampleCategoryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleCategoryType.swift; sourceTree = "<group>"; };
+		10542BA4242FFA95003753FE /* ExampleModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ExampleModel.xcdatamodel; sourceTree = "<group>"; };
+		10542BEE242FFE5D003753FE /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		106492BB242719A700C38ABF /* CoreDataFetchedResultsStoreConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataFetchedResultsStoreConnector.swift; sourceTree = "<group>"; };
+		106492BD242719E700C38ABF /* CoreDataFetchedResultsStoreRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataFetchedResultsStoreRequest.swift; sourceTree = "<group>"; };
+		1069846A2430400C0006261D /* Event+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataClass.swift"; sourceTree = "<group>"; };
+		1069846B2430400C0006261D /* Event+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		16C28AF0521A8556C33F9F49 /* Pods-FetchedResultsController_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FetchedResultsController_Tests.debug.xcconfig"; path = "Target Support Files/Pods-FetchedResultsController_Tests/Pods-FetchedResultsController_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		292FE6ABB83CF1E67E3A2389 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		330FBD4DCF9DDAB907BEAE49 /* Pods-FetchedResultsController_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FetchedResultsController_Example.debug.xcconfig"; path = "Target Support Files/Pods-FetchedResultsController_Example/Pods-FetchedResultsController_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -77,6 +81,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		10542BFA24300110003753FE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1069846A2430400C0006261D /* Event+CoreDataClass.swift */,
+				1069846B2430400C0006261D /* Event+CoreDataProperties.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		50080F1AB5B7762871831152 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -112,10 +125,11 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
-				106492BB242719A700C38ABF /* ExampleDBConnector.swift */,
-				106492BD242719E700C38ABF /* ExampleDBFetchRequest.swift */,
-				106492BF24271A4500C38ABF /* ExampleModel.swift */,
-				106492C12427C62D00C38ABF /* ExampleCategoryType.swift */,
+				10542BEE242FFE5D003753FE /* CoreDataManager.swift */,
+				106492BB242719A700C38ABF /* CoreDataFetchedResultsStoreConnector.swift */,
+				106492BD242719E700C38ABF /* CoreDataFetchedResultsStoreRequest.swift */,
+				10542BFA24300110003753FE /* Model */,
+				10542BA3242FFA95003753FE /* ExampleModel.xcdatamodeld */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -370,12 +384,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				106492D42429223C00C38ABF /* ExampleCategoryType.swift in Sources */,
+				1069846D2430400C0006261D /* Event+CoreDataProperties.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
-				106492D32429223C00C38ABF /* ExampleModel.swift in Sources */,
+				1069846C2430400C0006261D /* Event+CoreDataClass.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
-				106492D12429223C00C38ABF /* ExampleDBConnector.swift in Sources */,
-				106492D22429223C00C38ABF /* ExampleDBFetchRequest.swift in Sources */,
+				106492D12429223C00C38ABF /* CoreDataFetchedResultsStoreConnector.swift in Sources */,
+				106492D22429223C00C38ABF /* CoreDataFetchedResultsStoreRequest.swift in Sources */,
+				10542BEF242FFE5D003753FE /* CoreDataManager.swift in Sources */,
+				10542BA5242FFA95003753FE /* ExampleModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -621,6 +637,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		10542BA3242FFA95003753FE /* ExampleModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				10542BA4242FFA95003753FE /* ExampleModel.xcdatamodel */,
+			);
+			currentVersion = 10542BA4242FFA95003753FE /* ExampleModel.xcdatamodel */;
+			path = ExampleModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 607FACC81AFB9204008FA782 /* Project object */;
 }

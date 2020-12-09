@@ -1,5 +1,5 @@
 //
-//  ExampleDBFetchRequest.swift
+//  CoreDataPersistentStoreRequest.swift
 //
 //  Copyright (c) 2017-2020 Christian Gossain
 //
@@ -24,7 +24,16 @@
 
 import Foundation
 import FetchedResultsController
+import CoreData
 
-final class ExampleDBFetchRequest: PersistentStoreRequest {
-    // some custom definition of a query
+final class CoreDataPersistentStoreRequest<EntityType: NSFetchRequestResult>: PersistentStoreRequest {
+    let managedObjectContext: NSManagedObjectContext
+    
+    let fetchRequest: NSFetchRequest<EntityType>
+    
+    init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<EntityType>) {
+        self.managedObjectContext = managedObjectContext
+        self.fetchRequest = fetchRequest
+        super.init()
+    }
 }

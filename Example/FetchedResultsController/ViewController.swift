@@ -22,24 +22,42 @@
 //  THE SOFTWARE.
 //
 
-import UIKit
+import CoreData
 import FetchedResultsController
+import UIKit
 
 class ViewController: UITableViewController {
-    lazy var fetchedResultsController: FetchedResultsController<ExampleDBFetchRequest, ExampleModel> = {
-        let fetchRequest = ExampleDBFetchRequest()
-        let persistentStoreConnector = ExampleDBConnector()
-        let fetchedResultsController = FetchedResultsController(fetchRequest: fetchRequest, persistentStoreConnector: persistentStoreConnector, sectionNameKeyPath: "category")
-        return fetchedResultsController
-    }()
+    private(set) var fetchedResultsController: FetchedResultsController<CoreDataFetchedResultsStoreRequest<Event>, Event>!
+    
+    var managedObjectContext: NSManagedObjectContext { return CoreDataManager.shared.persistentContainer.viewContext }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        navigationItem.leftBarButtonItem = editButtonItem
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
+        navigationItem.rightBarButtonItem = addButton
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        configureResultsController()
+        
+        fetchedResultsController.performFetch()
+    }
+    
+    private func configureResultsController() {
+        let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        let storeRequest = CoreDataFetchedResultsStoreRequest(managedObjectContext: self.managedObjectContext, fetchRequest: fetchRequest)
+        
+        self.fetchedResultsController = FetchedResultsController(
+            fetchRequest: storeRequest,
+            persistentStoreConnector: CoreDataFetchedResultsStoreConnector(),
+            sectionNameKeyPath: "category")
         
         // implement table view row diffing
-        fetchedResultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in
+        self.fetchedResultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in
             self.tableView.performBatchUpdates({
                 // apply section changes
                 difference.enumerateSectionChanges { (section, sectionIndex, type) in
@@ -52,7 +70,7 @@ class ViewController: UITableViewController {
                         break
                     }
                 }
-
+                
                 // apply row changes
                 difference.enumerateRowChanges { (anObject, indexPath, type, newIndexPath) in
                     switch type {
@@ -68,6 +86,9 @@ class ViewController: UITableViewController {
                     }
                 }
             })
+            
+            // save any changes that triggered this change
+            CoreDataManager.shared.saveContext()
         }
         
 //        fetchedResultsController.delegate.controllerWillChangeContent = { (controller) in
@@ -78,8 +99,6 @@ class ViewController: UITableViewController {
 //            print("Did change content.")
 //            self.tableView.reloadData()
 //        }
-
-        fetchedResultsController.performFetch()
     }
     
     
@@ -103,10 +122,47 @@ class ViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return fetchedResultsController.sections[section].name
     }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let obj = try! fetchedResultsController.object(at: indexPath)
+            let context = managedObjectContext
+            context.delete(obj)
+        }
+    }
 }
 
 extension ViewController {
-    func configureCell(_ cell: UITableViewCell, with obj: ExampleModel) {
-        cell.textLabel?.text = obj.name
+    @objc func insertNewObject(_ sender: Any) {
+        let context = self.managedObjectContext
+        let newEvent = Event(context: context)
+
+        // If appropriate, configure the new managed object.
+        newEvent.timestamp = Date()
+        
+        // Set a random category to demonstrate sectionning
+        if arc4random_uniform(2) == 0 {
+            newEvent.category = "Category A"
+        }
+        else {
+            newEvent.category = "Category B"
+        }
+        
+
+        // Save the context.
+        do {
+            try context.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            let nserror = error as NSError
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+        }
+    }
+}
+
+extension ViewController {
+    func configureCell(_ cell: UITableViewCell, with event: Event) {
+        cell.textLabel!.text = event.timestamp!.description
     }
 }

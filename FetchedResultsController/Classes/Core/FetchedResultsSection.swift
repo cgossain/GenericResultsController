@@ -24,7 +24,7 @@
 
 import Foundation
 
-public class FetchedResultsSection<ResultType: FetchRequestResult> {
+public class FetchedResultsSection<ResultType: FetchedResultsStoreRequest.Result> {
     /// Name of the section.
     public var name: String { return sectionKeyValue }
     
@@ -77,7 +77,7 @@ public class FetchedResultsSection<ResultType: FetchRequestResult> {
     
     /// Returns the index of the snapshot in the section, or `nil` if it was not found.
     func index(of obj: ResultType) -> Int? {
-        guard let idx = objects.firstIndex(where: { $0.objectID == obj.objectID }) else {
+        guard let idx = objects.firstIndex(where: { $0.id == obj.id }) else {
             return nil
         }
         return idx

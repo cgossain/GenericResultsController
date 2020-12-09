@@ -24,7 +24,7 @@
 
 import Foundation
 
-extension Array where Element: FetchRequestResult {
+extension Array where Element: FetchedResultsStoreRequest.Result {
     /// Returns the index at which you should insert the snapshot in order to maintain a
     /// sorted array (according to the given sort descriptors).
     func insertionIndex(of element: Element, using sortDescriptors: [NSSortDescriptor]?) -> Int {

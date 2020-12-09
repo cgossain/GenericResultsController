@@ -29,12 +29,12 @@ public enum FetchedResultsControllerError: Error {
 }
 
 /// Use FetchedResultsController to manage the results of a query performed against your database and to display the results to the user.
-open class FetchedResultsController<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
+open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
     public let fetchRequest: RequestType
     
     /// The persistent store connector instance the controller uses to execute a fetch request against.
-    public let persistentStoreConnector: PersistentStoreConnector<RequestType, ResultType>
+    public let persistentStoreConnector: FetchedResultsStoreConnector<RequestType, ResultType>
     
     /// The keyPath on the fetched objects used to determine the section they belong to.
     public let sectionNameKeyPath: String?
@@ -66,7 +66,7 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest, ResultT
     
     // MARK: - Lifecycle
     /// Returns a fetch request controller initialized using the given arguments.
-    public init(fetchRequest: RequestType, persistentStoreConnector: PersistentStoreConnector<RequestType, ResultType>, sectionNameKeyPath: String?) {
+    public init(fetchRequest: RequestType, persistentStoreConnector: FetchedResultsStoreConnector<RequestType, ResultType>, sectionNameKeyPath: String?) {
         self.fetchRequest = fetchRequest
         self.persistentStoreConnector = persistentStoreConnector
         self.sectionNameKeyPath = sectionNameKeyPath
@@ -79,13 +79,13 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest, ResultT
         
         // since we're starting a new fetch we'll wipe out our current
         // results and start fresh with an empty fetched results object
-        self.currentFetchedResults = FetchedResults(
+        currentFetchedResults = FetchedResults(
             predicate: fetchRequest.predicate,
             sortDescriptors: fetchRequest.sortDescriptors,
             sectionNameKeyPath: sectionNameKeyPath)
         
         // notify delegate
-        self.delegate.controllerWillChangeContent?(self)
+        delegate.controllerWillChangeContent?(self)
         
         // configure batch controller callbacks
         persistentStoreConnector.batchController.delegate.controllerWillBeginBatchingChanges = { [unowned self] (controller) in
@@ -158,7 +158,7 @@ extension FetchedResultsController: CustomStringConvertible {
     }
 }
 
-public class FetchedResultsControllerDelegate<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
+public class FetchedResultsControllerDelegate<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
     /// Called when the results controller begins receiving changes.
     public var controllerWillChangeContent: ((FetchedResultsController<RequestType, ResultType>) -> Void)?
     
@@ -166,7 +166,7 @@ public class FetchedResultsControllerDelegate<RequestType: PersistentStoreReques
     public var controllerDidChangeContent: ((FetchedResultsController<RequestType, ResultType>) -> Void)?
 }
 
-public class FetchedResultsControllerChangeTracking<RequestType: PersistentStoreRequest, ResultType: FetchRequestResult> {
+public class FetchedResultsControllerChangeTracking<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
     /// Notifies the change tracker that the controller has changed its results.
     ///
     /// The change between the previous and new states is provided as a difference object.

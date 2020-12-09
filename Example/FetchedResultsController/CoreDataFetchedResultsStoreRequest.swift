@@ -1,5 +1,5 @@
 //
-//  ExampleModel.swift
+//  CoreDataFetchedResultsStoreRequest.swift
 //
 //  Copyright (c) 2017-2020 Christian Gossain
 //
@@ -24,20 +24,16 @@
 
 import Foundation
 import FetchedResultsController
+import CoreData
 
-extension ExampleModel: IdentifiableFetchRequestResult {
-    var objectID: String { return key }
-}
-
-class ExampleModel: NSObject {
-    let key: String = UUID().uuidString
+final class CoreDataFetchedResultsStoreRequest<EntityType: NSFetchRequestResult>: FetchedResultsStoreRequest {
+    let managedObjectContext: NSManagedObjectContext
     
-    @objc let name: String
+    let fetchRequest: NSFetchRequest<EntityType>
     
-    @objc let category: Int
-    
-    init(name: String, categoryType: ExampleCategoryType) {
-        self.name = name
-        self.category = categoryType.rawValue
+    init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<EntityType>) {
+        self.managedObjectContext = managedObjectContext
+        self.fetchRequest = fetchRequest
+        super.init()
     }
 }

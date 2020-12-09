@@ -25,7 +25,7 @@
 import Foundation
 
 /// A Batch object allows tracking and grouping a batch of changes together as a single unit.
-class Batch<ResultType: FetchRequestResult> {
+class Batch<ResultType: FetchedResultsStoreRequest.Result> {
     struct Result {
         let inserted: [String: ResultType]
         let changed: [String: ResultType]
@@ -44,19 +44,19 @@ extension Batch {
     func insert(_ obj: ResultType) {
         // note that if the object already exists it will
         // simply be replaced with its newer version
-        rawInserted[obj.objectID] = obj
+        rawInserted[obj.id] = obj
     }
     
     func update(_ obj: ResultType) {
         // note that if the object already exists it will
         // simply be replaced with its newer version
-        rawChanged[obj.objectID] = obj
+        rawChanged[obj.id] = obj
     }
     
     func remove(_ obj: ResultType) {
         // note that if the object already exists it will
         // simply be replaced with its newer version
-        rawRemoved[obj.objectID] = obj
+        rawRemoved[obj.id] = obj
     }
 }
 

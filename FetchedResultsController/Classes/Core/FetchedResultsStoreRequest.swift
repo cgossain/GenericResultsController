@@ -1,5 +1,5 @@
 //
-//  PersistentStoreRequest.swift
+//  FetchedResultsStoreRequest.swift
 //
 //  Copyright (c) 2017-2020 Christian Gossain
 //
@@ -24,9 +24,12 @@
 
 import Foundation
 
-/// PersistentStoreRequest is an abstract superclass for define a query that
+/// FetchedResultsStoreRequest is an abstract superclass for define a query that
 /// your store understands in order to run a query against your store.
-open class PersistentStoreRequest {
+open class FetchedResultsStoreRequest {
+    /// A type that fetched objects must conform to.
+    public typealias Result = NSObject & IdentifiableFetchRequestResult
+    
     /// A predicate used by the results controller to filter the query results.
     open var predicate: NSPredicate?
     
@@ -37,4 +40,12 @@ open class PersistentStoreRequest {
     public init() {
         
     }
+}
+
+/// A class of types whose instances hold the value of an entity with stable identity.
+///
+/// This is similar to iOS 13's `Identifiable` protocol.
+public protocol IdentifiableFetchRequestResult {
+    /// The stable identity of the entity associated with `self`.
+    var id: String { get }
 }

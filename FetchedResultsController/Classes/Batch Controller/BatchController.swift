@@ -31,7 +31,7 @@ enum BatchOperation {
     case remove
 }
 
-final class BatchControllerDelegate<ResultType: FetchRequestResult> {
+final class BatchControllerDelegate<ResultType: FetchedResultsStoreRequest.Result> {
     /// Called when the controller is about to begin collecting a new batch.
     var controllerWillBeginBatchingChanges: ((_ controller: BatchController<ResultType>) -> Void)?
     
@@ -44,7 +44,7 @@ final class BatchControllerDelegate<ResultType: FetchRequestResult> {
 /// Using an internal throttler, the batch controller resets a timer (currently 0.3 seconds) each time a new change is added to the batch. In some cases you
 /// may want to process a batch immediatly, in this case you can call the `processBatch()` method. If the controller should always process changes
 /// immediatly, simply set the `processesChangesImmediately` property to `true`.
-final class BatchController<ResultType: FetchRequestResult> {
+final class BatchController<ResultType: FetchedResultsStoreRequest.Result> {
     /// A unique identifier for the batch controller.
     public var identifier: String { return throttler.identifier }
     

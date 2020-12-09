@@ -35,7 +35,7 @@ public enum ResultsChangeType: Int {
 /// A FetchedResultsDifference object provides detailed information about the differences between two
 /// fetched results objects. The difference object provides information useful for updating a UI that
 /// lists the contents of a fetched results, such as the indexes of added, removed, and rearranged objects.
-public struct FetchedResultsDifference<ResultType: FetchRequestResult> {
+public struct FetchedResultsDifference<ResultType: FetchedResultsStoreRequest.Result> {
     public struct Section {
         let idx: Int
         let section: FetchedResultsSection<ResultType>
@@ -106,7 +106,7 @@ public struct FetchedResultsDifference<ResultType: FetchRequestResult> {
         
         // 1. We first need to identify the moved rows by simply checking that a deleted row also shows up as an inserted row.
         for deletion in deletions {
-            if let insertion = insertions.filter({ $0.value.objectID == deletion.value.objectID }).first {
+            if let insertion = insertions.filter({ $0.value.id == deletion.value.id }).first {
                 moves.append((from: deletion, to: insertion))
             }
         }
@@ -115,12 +115,12 @@ public struct FetchedResultsDifference<ResultType: FetchRequestResult> {
         // to "double dip". In otherwords we are saying that we will interpret those specific insertions and deletions as moves.
         for move in moves {
             // remove the deletions that will be handled in the move
-            if let idx = deletions.firstIndex(where: { $0.value.objectID == move.from.value.objectID }) {
+            if let idx = deletions.firstIndex(where: { $0.value.id == move.from.value.id }) {
                 deletions.remove(at: idx)
             }
             
             // remove the insertion that will be handled in the move
-            if let idx = insertions.firstIndex(where: { $0.value.objectID == move.to.value.objectID }) {
+            if let idx = insertions.firstIndex(where: { $0.value.id == move.to.value.id }) {
                 insertions.remove(at: idx)
             }
         }
