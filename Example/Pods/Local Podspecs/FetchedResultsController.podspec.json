@@ -19,7 +19,7 @@
     "5.0"
   ],
   "platforms": {
-    "ios": "11.4"
+    "ios": "13.0"
   },
   "source_files": "FetchedResultsController/Classes/**/*",
   "dependencies": {

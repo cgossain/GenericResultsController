@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.author           = { 'Christian Gossain' => 'cgossain@gmail.com' }
   s.source           = { :git => 'https://github.com/cgossain/FetchedResultsController.git', :tag => s.version.to_s }
   s.swift_versions   = ['5.0']
-  s.ios.deployment_target = '11.4'
+  s.ios.deployment_target = '13.0'
   s.source_files = 'FetchedResultsController/Classes/**/*'
   s.dependency 'Debounce'
   s.dependency 'Dwifft', '0.9'
