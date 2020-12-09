@@ -33,8 +33,8 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
     public let fetchRequest: RequestType
     
-    /// The persistent store connector instance the controller uses to execute a fetch request against.
-    public let persistentStoreConnector: FetchedResultsStoreConnector<RequestType, ResultType>
+    /// The store connector instance the controller uses to execute a fetch request against.
+    public let storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>
     
     /// The keyPath on the fetched objects used to determine the section they belong to.
     public let sectionNameKeyPath: String?
@@ -66,9 +66,9 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
     
     // MARK: - Lifecycle
     /// Returns a fetch request controller initialized using the given arguments.
-    public init(fetchRequest: RequestType, persistentStoreConnector: FetchedResultsStoreConnector<RequestType, ResultType>, sectionNameKeyPath: String?) {
+    public init(fetchRequest: RequestType, storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>, sectionNameKeyPath: String?) {
         self.fetchRequest = fetchRequest
-        self.persistentStoreConnector = persistentStoreConnector
+        self.storeConnector = storeConnector
         self.sectionNameKeyPath = sectionNameKeyPath
     }
     
@@ -88,11 +88,11 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
         delegate.controllerWillChangeContent?(self)
         
         // configure batch controller callbacks
-        persistentStoreConnector.batchController.delegate.controllerWillBeginBatchingChanges = { [unowned self] (controller) in
+        storeConnector.batchController.delegate.controllerWillBeginBatchingChanges = { [unowned self] (controller) in
             self.delegate.controllerWillChangeContent?(self)
         }
         
-        persistentStoreConnector.batchController.delegate.controllerDidFinishBatchingChanges = { [unowned self] (controller, inserted, changed, deleted) in
+        storeConnector.batchController.delegate.controllerDidFinishBatchingChanges = { [unowned self] (controller, inserted, changed, deleted) in
             // keep track of the current results (before applying the changes)
             let oldFetchedResults: FetchedResults<ResultType>! = self.currentFetchedResults
             
@@ -117,7 +117,7 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
         }
         
         // execute the fetch
-        persistentStoreConnector.execute(fetchRequest)
+        storeConnector.execute(fetchRequest)
     }
     
     /// Returns the snapshot at a given indexPath.

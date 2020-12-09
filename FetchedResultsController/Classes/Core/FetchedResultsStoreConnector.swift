@@ -32,14 +32,16 @@ import Foundation
 /// your data store and the fetched results controller.
 ///
 /// Your concrete subclass should implement any state and logic related to communicating with your underlying
-/// store (i.e. opening connection, attaching observers, closing connection, cleaning up) and simply enqueue
-/// changes to the executed persistent store request as they occur. Changes are grouped into batches, and passed
-/// to the fetched results controller to insert, update, or delete objects from its managed results.
+/// store (i.e. opening connections, attaching observers, closing connections, cleaning up) and should manage enqueuing
+/// changes detected by observers.
+///
+/// Changes are grouped into batches and passed to the fetched results controller to insert, update, or delete objects
+/// from its managed results.
 open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
-    /// The controller used to batch incoming changes from the persistent store.
+    /// The controller used to batch incoming changes from the data store.
     let batchController = BatchController<ResultType>()
     
-    /// Initializes a new persistent store connector instance.
+    /// Initializes a new store connector instance.
     public init() {
         
     }

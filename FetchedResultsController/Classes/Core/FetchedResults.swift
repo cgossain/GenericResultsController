@@ -88,8 +88,8 @@ class FetchedResults<ResultType: FetchedResultsStoreRequest.Result> {
     /// Initializes a new fetched results objects with the given arguments.
     ///
     /// - parameters:
-    ///   - predicate: The predicate specified on a persistent store request.
-    ///   - sortDescriptors: The sort descriptors specified on a persistent store request.
+    ///   - predicate: The predicate specified on a fetched results store request.
+    ///   - sortDescriptors: The sort descriptors specified on a fetched results store request.
     ///   - sectionNameKeyPath: The key path on result objects that represents the section name.
     ///   - fetchedResults: The fetch result whose contents should be added to the receiver.
     init(predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, sectionNameKeyPath: String?, fetchedResults: FetchedResults? = nil) {
