@@ -25,7 +25,7 @@
 import Foundation
 
 /// A Batch object allows tracking and grouping a batch of changes together as a single unit.
-class Batch<ResultType: FetchedResultsStoreRequest.Result> {
+final class Batch<ResultType: FetchedResultsStoreRequest.Result> {
     struct Result {
         let inserted: [AnyHashable: ResultType]
         let changed: [AnyHashable: ResultType]
@@ -35,24 +35,32 @@ class Batch<ResultType: FetchedResultsStoreRequest.Result> {
     /// A unique identifier for this batch.
     let identifier = UUID().uuidString
     
+    /// The raw un-deduplicated insertions.
     private var rawInserted: [AnyHashable: ResultType] = [:]
+    
+    /// The raw un-deduplicated changes.
     private var rawChanged: [AnyHashable: ResultType] = [:]
+    
+    /// The raw un-deduplicated deletions.
     private var rawRemoved: [AnyHashable: ResultType] = [:]
 }
 
 extension Batch {
+    /// Tracks the object as an insertion to the batch.
     func insert(_ obj: ResultType) {
         // note that if the object already exists it will
         // simply be replaced with its newer version
         rawInserted[obj.id] = obj
     }
     
+    /// Tracks the object as an update to the batch.
     func update(_ obj: ResultType) {
         // note that if the object already exists it will
         // simply be replaced with its newer version
         rawChanged[obj.id] = obj
     }
     
+    /// Tracks the object as a deletion from the batch.
     func remove(_ obj: ResultType) {
         // note that if the object already exists it will
         // simply be replaced with its newer version
@@ -61,6 +69,7 @@ extension Batch {
 }
 
 extension Batch {
+    /// Processes the current contents of the batch and returns the dedpuplicated results.
     func flush() -> Batch.Result {
         // deduplicate
         var inserted = rawInserted

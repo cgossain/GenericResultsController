@@ -81,7 +81,7 @@ final class BatchController<ResultType: FetchedResultsStoreRequest.Result> {
 
 extension BatchController {
     /// Adds the given object to the batch using the specified batch operation.
-    func enqueue(_ obj: ResultType, with op: BatchOperation) {
+    func enqueue(_ obj: ResultType, as op: BatchOperation) {
         // enqueue writes to the batch onto the throttlers serial queue
         throttler.queue.async {
             self.notifyWillBeginBatchingIfNeeded()
@@ -134,7 +134,7 @@ extension BatchController {
         }
     }
     
-    /// Ends the current batch and flushes the results to the delegate.
+    /// Terminates any further tracking into the current batch and flushes the results to the delegate.
     private func flush() {
         if let batch = _batch {
             // flush the batch

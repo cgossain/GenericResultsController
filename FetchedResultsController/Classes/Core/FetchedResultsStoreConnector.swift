@@ -64,16 +64,16 @@ open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest,
     
     /// Enqueues the object as an insertion.
     open func enqueue(inserted: ResultType) {
-        batchController.enqueue(inserted, with: .insert)
+        batchController.enqueue(inserted, as: .insert)
     }
 
     /// Enqueues the object as an update.
     open func enqueue(updated: ResultType) {
-        batchController.enqueue(updated, with: .update)
+        batchController.enqueue(updated, as: .update)
     }
     
     /// Enqueues the object as an deletion.
     open func enqueue(removed: ResultType) {
-        batchController.enqueue(removed, with: .remove)
+        batchController.enqueue(removed, as: .remove)
     }
 }

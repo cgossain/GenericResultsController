@@ -66,13 +66,18 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
     
     // MARK: - Lifecycle
     /// Returns a fetch request controller initialized using the given arguments.
+    ///
+    /// - parameters:
+    ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The fetch request is executed against this connector instance.
+    ///   - fetchRequest: The fetch request that will be executed against the store connector.
+    ///   - sectionNameKeyPath: A key path on result objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
     public init(storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>, fetchRequest: RequestType, sectionNameKeyPath: String?) {
         self.storeConnector = storeConnector
         self.fetchRequest = fetchRequest
         self.sectionNameKeyPath = sectionNameKeyPath
     }
     
-    /// Executes the fetch request.
+    /// Executes the fetch request and begins observing further changes to the data store.
     public func performFetch() {
         // TODO: Test if we should send a delegate callback at this point to allow a UITableView to clear our its contents?
         currentFetchHandle += 1
@@ -87,7 +92,7 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
         // notify delegate
         delegate.controllerWillChangeContent?(self)
         
-        // configure batch controller callbacks
+        // attach callbacks to the store connectors' internal batch controller
         storeConnector.batchController.delegate.controllerWillBeginBatchingChanges = { [unowned self] (controller) in
             self.delegate.controllerWillChangeContent?(self)
         }
