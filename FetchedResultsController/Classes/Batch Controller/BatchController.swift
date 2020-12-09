@@ -46,13 +46,13 @@ final class BatchControllerDelegate<ResultType: FetchedResultsStoreRequest.Resul
 /// immediatly, simply set the `processesChangesImmediately` property to `true`.
 final class BatchController<ResultType: FetchedResultsStoreRequest.Result> {
     /// A unique identifier for the batch controller.
-    public var identifier: String { return throttler.identifier }
+    var identifier: String { return throttler.identifier }
     
-    /// The object that will receive batching updates.
-    var delegate = BatchControllerDelegate<ResultType>()
-    
-    /// Set to true if changes should no be batched, but rather processed as soon as they are received.
+    /// Set to true if changes should not be batched but rather processed as soon as they are received.
     var processesChangesImmediately = false
+    
+    /// The object that will receive batching updates. For internal use only.
+    var delegate = BatchControllerDelegate<ResultType>()
     
     /// Indicates if the controller is currently batching.
     private(set) var isBatching = false

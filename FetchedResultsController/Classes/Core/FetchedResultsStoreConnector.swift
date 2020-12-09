@@ -38,6 +38,18 @@ import Foundation
 /// Changes are grouped into batches and passed to the fetched results controller to insert, update, or delete objects
 /// from its managed results.
 open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
+    /// Indicates if changes should always be processed as soon as they're enqueued.
+    ///
+    /// Alternatively, if you only want to process changes in some cases (i.e. in response to user action) you can call `processPendingChanges()`.
+    public var processesChangesImmediately: Bool {
+        get {
+            return batchController.processesChangesImmediately
+        }
+        set {
+            batchController.processesChangesImmediately = newValue
+        }
+    }
+    
     /// The controller used to batch incoming changes from the data store.
     let batchController = BatchController<ResultType>()
     
