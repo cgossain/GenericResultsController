@@ -28,6 +28,10 @@ import Foundation
 /// your store understands in order to run a query against your store.
 open class FetchedResultsStoreRequest {
     /// A type that fetched objects must conform to.
+    ///
+    /// - Note: Result objects need to subclass NSObject because the controller uses
+    ///         key-value coding (i.e. `-value(forKeyPath:)`) to query result objects
+    ///         for the section name, predicate key paths, and sort descriptor key paths.
     public typealias Result = NSObject & Identifiable
     
     /// A predicate used by the results controller to filter the query results.
