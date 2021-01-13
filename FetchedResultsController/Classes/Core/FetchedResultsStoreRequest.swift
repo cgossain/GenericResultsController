@@ -24,8 +24,12 @@
 
 import Foundation
 
-/// FetchedResultsStoreRequest is an abstract superclass for define a query that
-/// your store understands in order to run a query against your store.
+/// FetchedResultsStoreRequest provides the basic structure of for a fetch request that can be
+/// executed against a FetchedResultsStoreConnector.
+///
+/// The idea is that this fetch request is executed against a concrete instance of a store connector,
+/// therefore you can subclass this to create a more specific fetch request with additional paramters
+/// that your store connector understands.
 open class FetchedResultsStoreRequest {
     /// A type that fetched objects must conform to.
     ///

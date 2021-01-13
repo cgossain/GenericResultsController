@@ -24,11 +24,7 @@
 
 import Foundation
 
-public enum FetchedResultsControllerError: Error {
-    case invalidIndexPath(row: Int, section: Int)
-}
-
-/// Use FetchedResultsController to manage the results of a query performed against your database and to display the results to the user.
+/// A controller that you use to manage the results of a query performed against your database and to display data to the user.
 open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
     /// The store connector instance the controller uses to execute a fetch request against.
     public let storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>

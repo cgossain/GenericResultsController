@@ -26,6 +26,7 @@ import Foundation
 
 let nilSectionName = "" // the name of the `nil` section
 
+/// FetchedResults manages the entire set of results of a fetched results controller.
 class FetchedResults<ResultType: FetchedResultsStoreRequest.Result> {
     /// The predicate to use to filter fetched results.
     let predicate: NSPredicate?

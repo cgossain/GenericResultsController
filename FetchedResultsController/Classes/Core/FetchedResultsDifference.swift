@@ -32,9 +32,11 @@ public enum ResultsChangeType: Int {
     case update     = 4
 }
 
-/// A FetchedResultsDifference object provides detailed information about the differences between two
-/// fetched results objects. The difference object provides information useful for updating a UI that
-/// lists the contents of a fetched results, such as the indexes of added, removed, and rearranged objects.
+/// FetchedResultsDifference provides detailed information about the differences between two
+/// fetched results objects.
+///
+/// This information is useful for updating UI that lists the contents of a fetched results, such as
+/// the indexes of added, removed, updated, and rearranged objects.
 public struct FetchedResultsDifference<ResultType: FetchedResultsStoreRequest.Result> {
     public struct Section {
         let idx: Int

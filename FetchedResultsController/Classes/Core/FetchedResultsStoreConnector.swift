@@ -50,9 +50,13 @@ open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest,
         }
     }
     
+    
+    // MARK: -  Internal
     /// The controller used to batch incoming changes from the data store.
     let batchController = BatchController<ResultType>()
     
+    
+    // MARK: -  Lifecycle
     /// Initializes a new store connector instance.
     public init() {
         
