@@ -158,18 +158,3 @@ extension FetchedResultsController: CustomStringConvertible {
         return "No fetched results. You must call `performFetch()`."
     }
 }
-
-public class FetchedResultsControllerDelegate<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
-    /// Called when the results controller begins receiving changes.
-    public var controllerWillChangeContent: ((FetchedResultsController<RequestType, ResultType>) -> Void)?
-    
-    /// Called when the controller has completed processing the all changes.
-    public var controllerDidChangeContent: ((FetchedResultsController<RequestType, ResultType>) -> Void)?
-}
-
-public class FetchedResultsControllerChangeTracking<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
-    /// Notifies the change tracker that the controller has changed its results.
-    ///
-    /// The change between the previous and new states is provided as a difference object.
-    public var controllerDidChangeResults: ((_ controller: FetchedResultsController<RequestType, ResultType>, _ difference: FetchedResultsDifference<ResultType>) -> Void)?
-}

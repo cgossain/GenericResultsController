@@ -24,23 +24,28 @@
 
 import Foundation
 
-/// FetchedResultsStoreConnector is an abstract superclass defining a simple API to communicate with between an instance of
-/// fetched results controller and any data store. This superclass is intended to be a stateless adapter to some database.
+/// FetchedResultsStoreConnector is an abstract superclass exposing a simple API for interfacing between a
+/// fetched results controller and any data store. It's a stateless adapter to some database.
 ///
-/// The API is intentionally simple, and it makes no assumptions about how you manage your connection to some
-/// underlying data store. The only responsibility of the abstract store connector is to act as a throttling adapter between
-/// your data store and the fetched results controller.
+/// The API is intentionally simple and makes no assumptions about how you manage your connection to the
+/// underlying data store. Your concrete subclass should implement any state and logic needed to communicate
+/// with your underlying store (i.e. opening connections, attaching observers, closing connections, cleaning up).
 ///
-/// Your concrete subclass should implement any state and logic related to communicating with your underlying
-/// store (i.e. opening connections, attaching observers, closing connections, cleaning up) and should manage enqueuing
-/// changes detected by observers.
+/// The abstract connector uses a batching mechanism internally to efficiently compute diffs in batches, however
+/// this can be bypassed if you want changes to be processed immediately (especially if the change is user initiated).
 ///
-/// Changes are grouped into batches and passed to the fetched results controller to insert, update, or delete objects
-/// from its managed results.
+/// Your concrete subclass should use the defined enqueuing methods to notify the connector of the results of a
+/// query or any subsequent changes (if observers were attached).
 open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
+    /// A short decriptive title for the data store.
+    ///
+    /// This value is used to populate the segment name.
+    public let title: String
+    
     /// Indicates if changes should always be processed as soon as they're enqueued.
     ///
-    /// Alternatively, if you only want to process changes in some cases (i.e. in response to user action) you can call `processPendingChanges()`.
+    /// Alternatively, if you only want to process changes in some cases (i.e. due to user initiated action) you
+    /// can call `processPendingChanges()`.
     public var processesChangesImmediately: Bool {
         get {
             return batchController.processesChangesImmediately
@@ -58,13 +63,14 @@ open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest,
     
     // MARK: -  Lifecycle
     /// Initializes a new store connector instance.
-    public init() {
-        
+    public init(title: String) {
+        self.title = title
     }
     
     /// Executes the given fetch request.
     ///
-    /// You must subclass this method and implement your own fetching logic. When data becomes available, call appropriate `enqueue` operation to update the receivers data.
+    /// You must subclass this method and implement your own fetching logic. When data becomes available, call the
+    /// appropriate `enqueue` operation to update the receivers data.
     open func execute(_ request: RequestType) {
         
     }
