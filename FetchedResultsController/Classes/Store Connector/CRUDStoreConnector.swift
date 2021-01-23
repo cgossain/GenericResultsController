@@ -27,11 +27,10 @@ import FetchedResultsController
 /// CRUDStoreConnector is an abstract superclass that adds insert, update, and delete methods
 /// to the base store connector.
 ///
-/// This class is provided for convenience since this is a logical place to implement CRUD
-/// operations given that the store connector should already know about the particulars of the
-/// database being fetched (i.e. `func execute(_ request: RequestType)`) from,
-/// therefore it probably also knows how to store to that database or even a specific table in that
-/// database.
+/// This class is provided for convenience. Given that the base store connector should already understand the
+/// particulars of fetching data from the underlying store (i.e. `func execute(_ request: RequestType)`),
+/// it follows that if one wanted to also perform CRUD operations on that same store (or specific location in that store)
+/// this would be the logical place to do it.
 ///
 /// - Note: The results controller does not call any of these methods itself.
 open class CRUDStoreConnector<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result>: FetchedResultsStoreConnector<RequestType, ResultType> {
