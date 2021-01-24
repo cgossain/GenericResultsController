@@ -93,7 +93,7 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
             self.delegate.controllerWillChangeContent?(self)
         }
         
-        storeConnector.batchController.delegate.controllerDidFinishBatchingChanges = { [unowned self] (controller, inserted, changed, deleted) in
+        storeConnector.batchController.delegate.controllerDidFinishBatchingChanges = { [unowned self] (controller, inserted, updated, deleted) in
             // keep track of the current results (before applying the changes)
             let oldFetchedResults: FetchedResults<ResultType>! = self.currentFetchedResults
             
@@ -101,7 +101,7 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
             // object; note that force unwraping the current fetched results here is safe
             // since we've creating it at the start of the `performFetch()` method
             let newFetchedResults = FetchedResults(fetchedResults: self.currentFetchedResults!)
-            newFetchedResults.apply(inserted: Array(inserted), changed: Array(changed), deleted: Array(deleted))
+            newFetchedResults.apply(inserted: Array(inserted), changed: Array(updated), deleted: Array(deleted))
             
             // update the current results
             self.currentFetchedResults = newFetchedResults
@@ -109,7 +109,7 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
             // compute the difference if the change tracker is configured
             if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
                 // compute the difference
-                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: Array(changed))
+                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: Array(updated))
                 controllerDidChangeResults(self, diff)
             }
             
@@ -152,9 +152,9 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
 
 extension FetchedResultsController: CustomStringConvertible {
     public var description: String {
-        if let d = currentFetchedResults?.description {
-            return d
+        guard let description = currentFetchedResults?.description else {
+            return "No fetched results. You must call `performFetch()`."
         }
-        return "No fetched results. You must call `performFetch()`."
+        return description
     }
 }

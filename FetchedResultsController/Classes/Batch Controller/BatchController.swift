@@ -25,18 +25,12 @@
 import Foundation
 import Debounce
 
-enum BatchOperation {
-    case insert
-    case update
-    case remove
-}
-
 final class BatchControllerDelegate<ResultType: FetchedResultsStoreRequest.Result> {
     /// Called when the controller is about to begin collecting a new batch.
     var controllerWillBeginBatchingChanges: ((_ controller: BatchController<ResultType>) -> Void)?
     
     /// Called when the controller has finished processing a batch.
-    var controllerDidFinishBatchingChanges: ((_ controller: BatchController<ResultType>, _ inserted: Set<ResultType>, _ changed: Set<ResultType>, _ removed: Set<ResultType>) -> Void)?
+    var controllerDidFinishBatchingChanges: ((_ controller: BatchController<ResultType>, _ inserted: Set<ResultType>, _ updated: Set<ResultType>, _ deleted: Set<ResultType>) -> Void)?
 }
 
 /// A controller object used to group incoming changes into a single batch of changes.
@@ -45,6 +39,12 @@ final class BatchControllerDelegate<ResultType: FetchedResultsStoreRequest.Resul
 /// may want to process a batch immediatly, in this case you can call the `processBatch()` method. If the controller should always process changes
 /// immediatly, simply set the `processesChangesImmediately` property to `true`.
 final class BatchController<ResultType: FetchedResultsStoreRequest.Result> {
+    enum OperationType {
+        case insert
+        case update
+        case delete
+    }
+    
     /// A unique identifier for the batch controller.
     var identifier: String { return throttler.identifier }
     
@@ -81,7 +81,7 @@ final class BatchController<ResultType: FetchedResultsStoreRequest.Result> {
 
 extension BatchController {
     /// Adds the given object to the batch using the specified batch operation.
-    func enqueue(_ obj: ResultType, as op: BatchOperation) {
+    func enqueue(_ obj: ResultType, as op: OperationType) {
         // enqueue writes to the batch onto the throttlers serial queue
         throttler.queue.async {
             self.notifyWillBeginBatchingIfNeeded()
@@ -97,9 +97,9 @@ extension BatchController {
             throttler.queue.async {
                 self.batch.update(obj)
             }
-        case .remove:
+        case .delete:
             throttler.queue.async {
-                self.batch.remove(obj)
+                self.batch.delete(obj)
             }
         }
         
@@ -148,7 +148,7 @@ extension BatchController {
             
             // notify the delegate
             DispatchQueue.main.async {
-                self.delegate.controllerDidFinishBatchingChanges?(self, Set(results.inserted.values), Set(results.changed.values), Set(results.removed.values))
+                self.delegate.controllerDidFinishBatchingChanges?(self, Set(results.inserted.values), Set(results.updated.values), Set(results.deleted.values))
             }
         }
         else {

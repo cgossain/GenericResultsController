@@ -96,6 +96,6 @@ open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest,
     
     /// Enqueues the object as an deletion.
     open func enqueue(removed: ResultType) {
-        batchController.enqueue(removed, as: .remove)
+        batchController.enqueue(removed, as: .delete)
     }
 }
