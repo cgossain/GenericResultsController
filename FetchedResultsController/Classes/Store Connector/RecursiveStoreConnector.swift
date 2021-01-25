@@ -39,7 +39,7 @@ open class RecursiveStoreConnector<RequestType: FetchedResultsStoreRequest, Resu
     
     /// Called just before the store connector is added or removed from another store connector.
     open func willMoveToParent(_ parent: RecursiveStoreConnector<RequestType, ResultType>?) {
-        self.parent = parent
+        
     }
     
     /// Called after the store connector is added or removed from another store connector.
