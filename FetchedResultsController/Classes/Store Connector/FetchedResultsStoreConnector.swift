@@ -36,10 +36,8 @@ import Foundation
 ///
 /// Your concrete subclass should use the defined enqueuing methods to notify the connector of the results of a
 /// query or any subsequent changes (if observers were attached).
-open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
+open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result>: NSObject {
     /// A short decriptive title for the data store.
-    ///
-    /// This value is used to populate the segment name.
     public let title: String
     
     /// Indicates if changes should always be processed as soon as they're enqueued.
