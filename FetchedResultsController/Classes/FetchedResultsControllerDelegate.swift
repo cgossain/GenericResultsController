@@ -24,7 +24,7 @@
 
 import Foundation
 
-public class FetchedResultsControllerDelegate<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
+public class FetchedResultsControllerDelegate<RequestType: FetchedResultsStoreRequest<ResultType>, ResultType: BaseResultObject> {
     public typealias Handler = (FetchedResultsController<RequestType, ResultType>) -> Void
     
     /// Called when the controller has completed processing the all changes.

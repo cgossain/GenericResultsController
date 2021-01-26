@@ -24,18 +24,19 @@
 
 import Foundation
 
-let nilSectionName = "" // the name of the `nil` section
+/// The name of the `nil` section
+let nilSectionName = ""
 
 /// FetchedResults manages the entire set of results of a fetched results controller.
-class FetchedResults<ResultType: FetchedResultsStoreRequest.Result> {
-    /// The predicate to use to filter fetched results.
-    let predicate: NSPredicate?
+class FetchedResults<ResultType: BaseResultObject> {
+    /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
+    let isIncluded: ((ResultType) -> Bool)?
     
-    /// The array of sort descriptors to use to sort fetched results in each section.
-    let sortDescriptors: [NSSortDescriptor]?
+    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    let areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
     
-    /// The keyPath on the fetched objects used to determine the section they belong to.
-    let sectionNameKeyPath: String?
+    /// A block that is run against fetched objects used to determine the section they belong to.
+    let sectionNameProvider: SectionNameProvider<ResultType>?
     
     /// The current fetch results ordered by section first (if a `sectionNameKeyPath` was provided), then by the fetch request sort descriptors.
     private(set) var results: [ResultType] = []
@@ -67,21 +68,33 @@ class FetchedResults<ResultType: FetchedResultsStoreRequest.Result> {
     /// A dictionary that maps the sections' offset (i.e. first index of the section in the overall `results` array) to its `sectionKeyValue`.
     private var sectionOffsetsBySectionKeyValue: [String: Int] = [:]
     
-    /// Specifies all the sort descriptors that should be used when inserting snapshots (including the `sectionNameKeyPath`).
-    private var fetchSortDescriptors: [NSSortDescriptor] {
-        var descriptors = [NSSortDescriptor]()
-        
-        // first sort by sections
-        if let sectionNameKeyPath = sectionNameKeyPath {
-            descriptors.append(NSSortDescriptor(key: sectionNameKeyPath, ascending: true))
+    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    ///
+    /// - Note: This predicate sorts against the section name as its primary key and then falls back to the section specifc sorting logic. It is intended to be used against the entire fetched results and not just a single section.
+    private var fetchedResultsAreInIncreasingOrder: (ResultType, ResultType) -> Bool {
+        return { (left, right) -> Bool in
+            // 1. sort by sections first
+            if let sectionNameProvider = self.sectionNameProvider {
+                let leftSectionName = sectionNameProvider(left)
+                let rightSectionName = sectionNameProvider(right)
+                
+                if leftSectionName < rightSectionName {
+                    return true
+                }
+                
+                if leftSectionName > rightSectionName {
+                    return false
+                }
+            }
+            
+            // 2. if section names are the same, sort using the section sorting logic
+            if let areInIncreasingOrder = self.areInIncreasingOrder {
+                return areInIncreasingOrder(left, right)
+            }
+            
+            // 3. fallback to true if needed
+            return true
         }
-        
-        // then by custom sort descriptors
-        if let sortDescriptors = sortDescriptors {
-            descriptors.append(contentsOf: sortDescriptors)
-        }
-        
-        return descriptors
     }
     
     
@@ -89,14 +102,17 @@ class FetchedResults<ResultType: FetchedResultsStoreRequest.Result> {
     /// Initializes a new fetched results objects with the given arguments.
     ///
     /// - parameters:
-    ///   - predicate: The predicate specified on a fetched results store request.
-    ///   - sortDescriptors: The sort descriptors specified on a fetched results store request.
-    ///   - sectionNameKeyPath: The key path on result objects that represents the section name.
+    ///   - isIncluded: A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
+    ///   - areInIncreasingOrder: A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
     ///   - fetchedResults: The fetch result whose contents should be added to the receiver.
-    init(predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, sectionNameKeyPath: String?, fetchedResults: FetchedResults? = nil) {
-        self.predicate = predicate?.copy() as? NSPredicate
-        self.sortDescriptors = sortDescriptors?.compactMap({ $0.copy() as? NSSortDescriptor })
-        self.sectionNameKeyPath = sectionNameKeyPath
+    init(isIncluded: ((ResultType) -> Bool)?,
+         areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?,
+         sectionNameProvider: SectionNameProvider<ResultType>? = nil,
+         fetchedResults: FetchedResults? = nil) {
+        self.isIncluded = isIncluded
+        self.areInIncreasingOrder = areInIncreasingOrder
+        self.sectionNameProvider = sectionNameProvider
         
         // configure the initial state with the contents of a previous fetch result if provided
         if let fetchedResults = fetchedResults {
@@ -111,7 +127,7 @@ class FetchedResults<ResultType: FetchedResultsStoreRequest.Result> {
             for (sectionKeyValue, resultsSection) in fetchedResults.sectionsBySectionKeyValue {
                 let newResultsSection = FetchedResultsSection<ResultType>(
                     sectionKeyValue: resultsSection.sectionKeyValue,
-                    sortDescriptors: resultsSection.sortDescriptors,
+                    areInIncreasingOrder: resultsSection.areInIncreasingOrder,
                     objects: resultsSection.objects)
                 
                 sectionsBySectionKeyValue[sectionKeyValue] = newResultsSection
@@ -122,9 +138,9 @@ class FetchedResults<ResultType: FetchedResultsStoreRequest.Result> {
     /// Initializes a new fetched results objects using the contents of an existing fetched results objects.
     convenience init(fetchedResults: FetchedResults) {
         self.init(
-            predicate: fetchedResults.predicate,
-            sortDescriptors: fetchedResults.sortDescriptors,
-            sectionNameKeyPath: fetchedResults.sectionNameKeyPath,
+            isIncluded: fetchedResults.isIncluded,
+            areInIncreasingOrder: fetchedResults.areInIncreasingOrder,
+            sectionNameProvider: fetchedResults.sectionNameProvider,
             fetchedResults: fetchedResults)
     }
 }
@@ -168,7 +184,7 @@ extension FetchedResults {
     
     /// Returns the section index the given object belongs to.
     func sectionIndex(for obj: ResultType) -> Int? {
-        let sectionKeyValue = self.sectionKeyValue(for: obj)
+        let sectionKeyValue = self.sectionName(for: obj)
         
         // return the already computed index if available
         if let idx = sectionIndicesBySectionKeyValue[sectionKeyValue] {
@@ -189,7 +205,7 @@ extension FetchedResults {
     
     /// Returns the index within the overall results array where the given objects section begins.
     func sectionOffset(for obj: ResultType) -> Int? {
-        let sectionKeyValue = self.sectionKeyValue(for: obj)
+        let sectionKeyValue = self.sectionName(for: obj)
         
         // return the already computed index if available
         if let idx = sectionOffsetsBySectionKeyValue[sectionKeyValue] {
@@ -199,7 +215,7 @@ extension FetchedResults {
         // the offset has not yet been computed for this section key, so lets
         // find it then store it to avoid redundant work the next time this
         // function is called
-        guard let idx = results.firstIndex(where: { self.sectionKeyValue(for: $0) == sectionKeyValue }) else {
+        guard let idx = results.firstIndex(where: { self.sectionName(for: $0) == sectionKeyValue }) else {
             return nil
         }
         
@@ -219,14 +235,15 @@ extension FetchedResults {
         }
         
         // compute the insertion index that maintains the sort order
-        let idx = results.insertionIndex(of: obj, using: fetchSortDescriptors)
+//        let idx = results.insertionIndex(of: obj, using: fetchSortDescriptors)
+        let idx = results.insertionIndex(of: obj, isOrderedBefore: self.fetchedResultsAreInIncreasingOrder)
         
         // insert at the insertion index
         results.insert(obj, at: idx)
         
         // create or update the section
-        let sectionKeyValue = self.sectionKeyValue(for: obj)
-        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, sortDescriptors: sortDescriptors)
+        let sectionKeyValue = self.sectionName(for: obj)
+        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: areInIncreasingOrder)
         section.insert(obj: obj)
         sectionsBySectionKeyValue[sectionKeyValue] = section
     }
@@ -262,7 +279,7 @@ extension FetchedResults {
         results.remove(at: idx)
         
         // update or remove the section
-        let sectionKeyValue = self.sectionKeyValue(for: obj)
+        let sectionKeyValue = self.sectionName(for: obj)
         
         // the force unwrap is intentional here; we've validated that this object exists in
         // the `results` array at the start of this method, therefore we can safely assume
@@ -284,22 +301,17 @@ extension FetchedResults {
 extension FetchedResults {
     /// Indicates if the given object should be included in the data set.
     private func canInclude(obj: ResultType) -> Bool {
-        guard let predicate = predicate else {
-            return true // no filter
-        }
-        
-        // filter through the predicate
-        return predicate.evaluate(with: obj)
+        return self.isIncluded?(obj) ?? true
     }
     
     /// Returns the section key value for the given object.
-    private func sectionKeyValue(for obj: ResultType) -> String {
-        guard let sectionNameKeyPath = sectionNameKeyPath,
-            let value = obj.value(forKeyPath: sectionNameKeyPath) else {
+    private func sectionName(for obj: ResultType) -> String {
+        guard let sectionNameProvider = sectionNameProvider else {
             return nilSectionName
         }
         
-        return String(describing: value)
+        let sectionName = sectionNameProvider(obj)
+        return sectionName
     }
 }
 

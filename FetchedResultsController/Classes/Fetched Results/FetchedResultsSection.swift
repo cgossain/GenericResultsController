@@ -25,7 +25,7 @@
 import Foundation
 
 /// FetchedResultsSection manages the objects within a single section of the results data.
-public class FetchedResultsSection<ResultType: FetchedResultsStoreRequest.Result> {
+public class FetchedResultsSection<ResultType: BaseResultObject> {
     /// Name of the section.
     public var name: String { return sectionKeyValue }
     
@@ -38,8 +38,8 @@ public class FetchedResultsSection<ResultType: FetchedResultsStoreRequest.Result
     /// The section key value represented by the receiver.
     let sectionKeyValue: String
     
-    /// The sort descriptors being used to sorts items in this section.
-    let sortDescriptors: [NSSortDescriptor]?
+    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    let areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
     
     
     // MARK: - Lifecycle
@@ -50,9 +50,9 @@ public class FetchedResultsSection<ResultType: FetchedResultsStoreRequest.Result
     ///     - sortDescriptors: The sort descriptors that describe how items in this sections will be sorted.
     ///     - objects: The initial set of objects in this section. The objects are assumed to be sorted. Used internally.
     ///
-    init(sectionKeyValue: String, sortDescriptors: [NSSortDescriptor]?, objects: [ResultType] = []) {
+    init(sectionKeyValue: String, areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?, objects: [ResultType] = []) {
         self.sectionKeyValue = sectionKeyValue
-        self.sortDescriptors = sortDescriptors
+        self.areInIncreasingOrder = areInIncreasingOrder
         self.objects = objects
     }
     
@@ -61,7 +61,8 @@ public class FetchedResultsSection<ResultType: FetchedResultsStoreRequest.Result
     /// Inserts the given object into the section and returns the index at which it was inserted.
     @discardableResult
     func insert(obj: ResultType) -> Int {
-        let idx = objects.insertionIndex(of: obj, using: sortDescriptors)
+//        let idx = objects.insertionIndex(of: obj, using: sortDescriptors)
+        let idx = objects.insertionIndex(of: obj) { self.areInIncreasingOrder?($0, $1) ?? true }
         objects.insert(obj, at: idx)
         return idx
     }

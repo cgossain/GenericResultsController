@@ -27,7 +27,7 @@ import Foundation
 /// A Batch groups a set of changes together such that they can be tracked as a single unit.
 ///
 /// Call `flush()` to get the deduplicated changes out of the batch.
-final class Batch<ResultType: FetchedResultsStoreRequest.Result> {
+final class Batch<ResultType: BaseResultObject> {
     /// A unique identifier for this batch.
     let identifier = UUID().uuidString
     

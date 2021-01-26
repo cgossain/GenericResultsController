@@ -23,25 +23,6 @@
 //
 import Foundation
 
-extension Array where Element: FetchedResultsStoreRequest.Result {
-    /// Returns the index at which you should insert the snapshot in order to maintain a
-    /// sorted array (according to the given sort descriptors).
-    func insertionIndex(of element: Element, using sortDescriptors: [NSSortDescriptor]?) -> Int {
-        return self.insertionIndex(of: element) {
-            var result: ComparisonResult = .orderedSame
-            if let sortDescriptors = sortDescriptors {
-                for sortDescriptor in sortDescriptors {
-                    result = sortDescriptor.compare($0, to: $1)
-                    if result != .orderedSame {
-                        break
-                    }
-                }
-            }
-            return (result == .orderedAscending)
-        }
-    }
-}
-
 extension Array {
     /// From Stack Overflow:
     /// http://stackoverflow.com/questions/26678362/how-do-i-insert-an-element-at-the-correct-position-into-a-sorted-array-in-swift
@@ -49,11 +30,11 @@ extension Array {
     /// Using binary search, finds the index at which the given element should be inserted.
     /// This function behaves just like the NSArray method `-indexOfObject:inSortedRange:options:usingComparator:`.
     ///
-    /// - parameters:
+    /// - Parameters:
     ///     - element: The object to insert.
     ///     - isOrderedBefore: A predicate that returns true if its first argument should be
     ///                        ordered before its second argument; otherwise, false.
-    /// - important: Your array must already be sorted for this method to work, this is simply because binary
+    /// - Important: Your array must already be sorted for this method to work, this is simply because binary
     ///              search assumes you are inserting into an already sorted array.
     func insertionIndex(of element: Element, isOrderedBefore: (Element, Element) -> Bool) -> Int {
         var low = 0

@@ -30,22 +30,13 @@ import Foundation
 /// The idea is that this fetch request is executed against a concrete instance of a store connector,
 /// therefore you can subclass this to create a more specific fetch request with additional paramters
 /// that your store connector understands.
-open class FetchedResultsStoreRequest {
-    /// A type that fetched objects must conform to.
-    ///
-    /// - Note: Result objects need to subclass NSObject because the controller uses
-    ///         key-value coding (i.e. `-value(forKeyPath:)`) to query result objects
-    ///         for the section name, predicate key paths, and sort descriptor key paths.
-    public typealias Result = NSObject & Identifiable
+open class FetchedResultsStoreRequest<ResultType: BaseResultObject> {
+    /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
+    open var isIncluded: ((ResultType) -> Bool)?
     
-    /// A predicate used by the results controller to filter the query results.
-    open var predicate: NSPredicate?
+    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    open var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
     
-    /// An array of sort descriptors used by the results controller to sorts the fetched snapshots in each section.
-    open var sortDescriptors: [NSSortDescriptor]?
-    
-    /// Initializes a new fetch request.
-    public init() {
-        
-    }
+    /// Creates and initializes a new fetch request.
+    public init() {}
 }

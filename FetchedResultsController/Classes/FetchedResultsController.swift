@@ -24,16 +24,22 @@
 
 import Foundation
 
+/// A type that fetched objects must conform to.
+public typealias BaseResultObject = Identifiable & Hashable
+
+/// The signature for a block that is run against fetched objects used to determine the section they belong to.
+public typealias SectionNameProvider<T> = (_ obj: T) -> String
+
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result> {
+open class FetchedResultsController<RequestType: FetchedResultsStoreRequest<ResultType>, ResultType: BaseResultObject> {
     /// The store connector instance the controller uses to execute a fetch request against.
     public let storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>
     
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
     public let fetchRequest: RequestType
     
-    /// The keyPath on the fetched objects used to determine the section they belong to.
-    public let sectionNameKeyPath: String?
+    /// A block that is run against fetched objects used to determine the section they belong to.
+    public let sectionNameProvider: SectionNameProvider<ResultType>?
     
     /// The results of the fetch. Returns `nil` if `performFetch()` hasn't yet been called.
     public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
@@ -67,10 +73,11 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The fetch request is executed against this connector instance.
     ///   - fetchRequest: The fetch request that will be executed against the store connector.
     ///   - sectionNameKeyPath: A key path on result objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
-    public init(storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>, fetchRequest: RequestType, sectionNameKeyPath: String?) {
+    ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
+    public init(storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>, fetchRequest: RequestType, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
         self.storeConnector = storeConnector
         self.fetchRequest = fetchRequest
-        self.sectionNameKeyPath = sectionNameKeyPath
+        self.sectionNameProvider = sectionNameProvider
     }
     
     /// Executes the fetch request and begins observing further changes to the data store.
@@ -80,10 +87,9 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest, Res
         
         // since we're starting a new fetch we'll wipe out our current
         // results and start fresh with an empty fetched results object
-        currentFetchedResults = FetchedResults(
-            predicate: fetchRequest.predicate,
-            sortDescriptors: fetchRequest.sortDescriptors,
-            sectionNameKeyPath: sectionNameKeyPath)
+        currentFetchedResults = FetchedResults(isIncluded: fetchRequest.isIncluded,
+                                               areInIncreasingOrder: fetchRequest.areInIncreasingOrder,
+                                               sectionNameProvider: sectionNameProvider)
         
         // notify delegate
         delegate.controllerWillChangeContent?(self)

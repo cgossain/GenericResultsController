@@ -36,7 +36,7 @@ import Foundation
 ///
 /// Your concrete subclass should use the defined enqueuing methods to notify the connector of the results of a
 /// query or any subsequent changes (if observers were attached).
-open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest, ResultType: FetchedResultsStoreRequest.Result>: NSObject {
+open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest<ResultType>, ResultType: BaseResultObject>: NSObject {
     /// A short decriptive title for the data store.
     public let title: String
     
