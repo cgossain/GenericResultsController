@@ -24,7 +24,7 @@
 
 import FetchedResultsController
 
-open class RecursiveStoreConnector<RequestType: FetchedResultsStoreRequest<ResultType>, ResultType: BaseResultObject>: CRUDStoreConnector<RequestType, ResultType> {
+open class RecursiveStoreConnector<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject>: CRUDStoreConnector<RequestType, ResultType> {
     // MARK: - Parent-Child Relationship
     /// The parent store connector of the recipient.
     public internal(set) weak var parent: RecursiveStoreConnector<RequestType, ResultType>?

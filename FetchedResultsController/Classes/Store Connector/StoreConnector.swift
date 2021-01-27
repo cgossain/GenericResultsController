@@ -1,5 +1,5 @@
 //
-//  FetchedResultsStoreConnector.swift
+//  StoreConnector.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,7 +24,7 @@
 
 import Foundation
 
-/// FetchedResultsStoreConnector is an abstract superclass exposing a simple API for interfacing between a
+/// StoreConnector is an abstract superclass exposing a simple API for interfacing between a
 /// fetched results controller and any data store. It's a stateless adapter to some database.
 ///
 /// The API is intentionally simple and makes no assumptions about how you manage your connection to the
@@ -36,7 +36,7 @@ import Foundation
 ///
 /// Your concrete subclass should use the defined enqueuing methods to notify the connector of the results of a
 /// query or any subsequent changes (if observers were attached).
-open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest<ResultType>, ResultType: BaseResultObject>: NSObject {
+open class StoreConnector<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject>: NSObject {
     /// A short decriptive title for the data store.
     public let title: String
     
@@ -61,7 +61,7 @@ open class FetchedResultsStoreConnector<RequestType: FetchedResultsStoreRequest<
     
     // MARK: -  Lifecycle
     /// Initializes a new store connector instance.
-    public init(title: String) {
+    public init(title: String = "") {
         self.title = title
     }
     

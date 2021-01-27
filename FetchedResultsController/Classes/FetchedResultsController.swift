@@ -31,9 +31,9 @@ public typealias BaseResultObject = Identifiable & Hashable
 public typealias SectionNameProvider<T> = (_ obj: T) -> String
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<RequestType: FetchedResultsStoreRequest<ResultType>, ResultType: BaseResultObject> {
+open class FetchedResultsController<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject> {
     /// The store connector instance the controller uses to execute a fetch request against.
-    public let storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>
+    public let storeConnector: StoreConnector<RequestType, ResultType>
     
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
     public let fetchRequest: RequestType
@@ -74,7 +74,7 @@ open class FetchedResultsController<RequestType: FetchedResultsStoreRequest<Resu
     ///   - fetchRequest: The fetch request that will be executed against the store connector.
     ///   - sectionNameKeyPath: A key path on result objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
     ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
-    public init(storeConnector: FetchedResultsStoreConnector<RequestType, ResultType>, fetchRequest: RequestType, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
+    public init(storeConnector: StoreConnector<RequestType, ResultType>, fetchRequest: RequestType, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
         self.storeConnector = storeConnector
         self.fetchRequest = fetchRequest
         self.sectionNameProvider = sectionNameProvider

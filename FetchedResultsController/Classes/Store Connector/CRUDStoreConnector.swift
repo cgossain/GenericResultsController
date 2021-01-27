@@ -33,7 +33,7 @@ import FetchedResultsController
 /// this would be the logical place to do it.
 ///
 /// - Note: The results controller does not call any of these methods itself.
-open class CRUDStoreConnector<RequestType: FetchedResultsStoreRequest<ResultType>, ResultType: BaseResultObject>: FetchedResultsStoreConnector<RequestType, ResultType> {
+open class CRUDStoreConnector<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject>: StoreConnector<RequestType, ResultType> {
     // MARK: - CRUD
     /// Inserts the object into the underlying store.
     open func insert(_ obj: ResultType) {

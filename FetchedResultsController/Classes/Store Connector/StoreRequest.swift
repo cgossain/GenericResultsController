@@ -1,5 +1,5 @@
 //
-//  FetchedResultsStoreRequest.swift
+//  StoreRequest.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,13 +24,13 @@
 
 import Foundation
 
-/// FetchedResultsStoreRequest provides the basic structure of for a fetch request that can be
-/// executed against a FetchedResultsStoreConnector.
+/// StoreRequest provides the basic structure of for a fetch request that can be
+/// executed against a StoreConnector.
 ///
 /// The idea is that this fetch request is executed against a concrete instance of a store connector,
 /// therefore you can subclass this to create a more specific fetch request with additional paramters
 /// that your store connector understands.
-open class FetchedResultsStoreRequest<ResultType: BaseResultObject> {
+open class StoreRequest<ResultType: BaseResultObject> {
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
     open var isIncluded: ((ResultType) -> Bool)?
     
