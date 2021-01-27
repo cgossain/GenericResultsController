@@ -4,20 +4,14 @@ PODS:
   - FetchedResultsController (1.1.0):
     - Debounce
     - Dwifft (= 0.9)
-  - Nimble (7.3.4)
-  - Quick (1.2.0)
 
 DEPENDENCIES:
   - FetchedResultsController (from `../`)
-  - Nimble (~> 7.0)
-  - Quick (~> 1.2.0)
 
 SPEC REPOS:
   trunk:
     - Debounce
     - Dwifft
-    - Nimble
-    - Quick
 
 EXTERNAL SOURCES:
   FetchedResultsController:
@@ -27,9 +21,7 @@ SPEC CHECKSUMS:
   Debounce: 3e8df5bc51c6f824ef5f487d21043ec12223613d
   Dwifft: 42912068ed2a8146077d1a1404df18625bd086e1
   FetchedResultsController: 5bed18e65c64a4f5bba06e96c59ee30200287499
-  Nimble: 051e3d8912d40138fa5591c78594f95fb172af37
-  Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
 
-PODFILE CHECKSUM: d1f675fd67a3f89993ded73f9e9ea59d8120f11b
+PODFILE CHECKSUM: 826d83b74c568a6c1c1ceca2e36cc9cc97745f5d
 
 COCOAPODS: 1.10.1
