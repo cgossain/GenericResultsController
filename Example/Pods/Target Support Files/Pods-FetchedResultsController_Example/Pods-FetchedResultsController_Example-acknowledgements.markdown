@@ -3,7 +3,7 @@ This application makes use of the following third party libraries:
 
 ## Debounce
 
-Copyright (c) 2020 cgossain <cgossain@gmail.com>
+Copyright (c) 2021 Christian Gossain <cgossain@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

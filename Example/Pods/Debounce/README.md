@@ -1,5 +1,5 @@
 # Debounce
-
+/Users/christiangossain/Dev/Open Source/Debounce/Example/Debounce/ViewController.swift
 [![CI Status](https://img.shields.io/travis/cgossain/Debounce.svg?style=flat)](https://travis-ci.org/cgossain/Debounce)
 [![Version](https://img.shields.io/cocoapods/v/Debounce.svg?style=flat)](https://cocoapods.org/pods/Debounce)
 [![License](https://img.shields.io/cocoapods/l/Debounce.svg?style=flat)](https://cocoapods.org/pods/Debounce)
@@ -22,7 +22,7 @@ pod 'Debounce'
 
 ## Author
 
-cgossain, cgossain@gmail.com
+Christian Gossain, cgossain@gmail.com
 
 ## License
 

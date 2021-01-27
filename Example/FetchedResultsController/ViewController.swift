@@ -27,7 +27,7 @@ import FetchedResultsController
 import UIKit
 
 class ViewController: UITableViewController {
-    private(set) var fetchedResultsController: FetchedResultsController<CoreDataFetchedResultsStoreRequest<Event>, Event>!
+    private(set) var fetchedResultsController: FetchedResultsController<CoreDataStoreRequest<Event>, Event>!
     
     var managedObjectContext: NSManagedObjectContext { return CoreDataManager.shared.persistentContainer.viewContext }
     
@@ -49,12 +49,11 @@ class ViewController: UITableViewController {
         let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
         fetchRequest.returnsObjectsAsFaults = false
         
-        let storeRequest = CoreDataFetchedResultsStoreRequest(managedObjectContext: self.managedObjectContext, fetchRequest: fetchRequest)
+        let storeRequest = CoreDataStoreRequest(managedObjectContext: self.managedObjectContext, fetchRequest: fetchRequest)
         
-        self.fetchedResultsController = FetchedResultsController(
-            storeConnector: CoreDataFetchedResultsStoreConnector(),
-            fetchRequest: storeRequest,
-            sectionNameKeyPath: "category")
+        self.fetchedResultsController = FetchedResultsController(storeConnector: CoreDataStoreConnector(), fetchRequest: storeRequest) { (obj) -> String in
+            return obj.category ?? "none"
+        }
         
         // implement table view row diffing
         self.fetchedResultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in

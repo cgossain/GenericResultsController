@@ -1,7 +1,7 @@
 //
 //  Throttler.swift
 //
-//  Copyright (c) 2020 Christian Gossain
+//  Copyright (c) 2021 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import Foundation
 ///
 /// This class was inspired by this blog post:
 /// http://danielemargutti.com/2017/10/19/throttle-in-swift/
-public class Throttler {
+public final class Throttler {
     /// A unique identifier for the throttler. This identifier is used as part of the internal dispatch queue label.
     public let identifier: String
     

@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		10542BA5242FFA95003753FE /* ExampleModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 10542BA3242FFA95003753FE /* ExampleModel.xcdatamodeld */; };
 		10542BEF242FFE5D003753FE /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10542BEE242FFE5D003753FE /* CoreDataManager.swift */; };
-		106492D12429223C00C38ABF /* CoreDataFetchedResultsStoreConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BB242719A700C38ABF /* CoreDataFetchedResultsStoreConnector.swift */; };
-		106492D22429223C00C38ABF /* CoreDataFetchedResultsStoreRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BD242719E700C38ABF /* CoreDataFetchedResultsStoreRequest.swift */; };
+		106492D12429223C00C38ABF /* CoreDataStoreConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BB242719A700C38ABF /* CoreDataStoreConnector.swift */; };
+		106492D22429223C00C38ABF /* CoreDataStoreRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106492BD242719E700C38ABF /* CoreDataStoreRequest.swift */; };
 		1069846C2430400C0006261D /* Event+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1069846A2430400C0006261D /* Event+CoreDataClass.swift */; };
 		1069846D2430400C0006261D /* Event+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1069846B2430400C0006261D /* Event+CoreDataProperties.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -36,8 +36,8 @@
 /* Begin PBXFileReference section */
 		10542BA4242FFA95003753FE /* ExampleModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ExampleModel.xcdatamodel; sourceTree = "<group>"; };
 		10542BEE242FFE5D003753FE /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
-		106492BB242719A700C38ABF /* CoreDataFetchedResultsStoreConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataFetchedResultsStoreConnector.swift; sourceTree = "<group>"; };
-		106492BD242719E700C38ABF /* CoreDataFetchedResultsStoreRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataFetchedResultsStoreRequest.swift; sourceTree = "<group>"; };
+		106492BB242719A700C38ABF /* CoreDataStoreConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStoreConnector.swift; sourceTree = "<group>"; };
+		106492BD242719E700C38ABF /* CoreDataStoreRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStoreRequest.swift; sourceTree = "<group>"; };
 		1069846A2430400C0006261D /* Event+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataClass.swift"; sourceTree = "<group>"; };
 		1069846B2430400C0006261D /* Event+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		16C28AF0521A8556C33F9F49 /* Pods-FetchedResultsController_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FetchedResultsController_Tests.debug.xcconfig"; path = "Target Support Files/Pods-FetchedResultsController_Tests/Pods-FetchedResultsController_Tests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -126,8 +126,8 @@
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				10542BEE242FFE5D003753FE /* CoreDataManager.swift */,
-				106492BB242719A700C38ABF /* CoreDataFetchedResultsStoreConnector.swift */,
-				106492BD242719E700C38ABF /* CoreDataFetchedResultsStoreRequest.swift */,
+				106492BB242719A700C38ABF /* CoreDataStoreConnector.swift */,
+				106492BD242719E700C38ABF /* CoreDataStoreRequest.swift */,
 				10542BFA24300110003753FE /* Model */,
 				10542BA3242FFA95003753FE /* ExampleModel.xcdatamodeld */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -388,8 +388,8 @@
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				1069846C2430400C0006261D /* Event+CoreDataClass.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
-				106492D12429223C00C38ABF /* CoreDataFetchedResultsStoreConnector.swift in Sources */,
-				106492D22429223C00C38ABF /* CoreDataFetchedResultsStoreRequest.swift in Sources */,
+				106492D12429223C00C38ABF /* CoreDataStoreConnector.swift in Sources */,
+				106492D22429223C00C38ABF /* CoreDataStoreRequest.swift in Sources */,
 				10542BEF242FFE5D003753FE /* CoreDataManager.swift in Sources */,
 				10542BA5242FFA95003753FE /* ExampleModel.xcdatamodeld in Sources */,
 			);

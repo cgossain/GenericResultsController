@@ -1,5 +1,5 @@
 //
-//  CoreDataFetchedResultsStoreRequest.swift
+//  CoreDataStoreRequest.swift
 //
 //  Copyright (c) 2017-2020 Christian Gossain
 //
@@ -26,8 +26,9 @@ import Foundation
 import FetchedResultsController
 import CoreData
 
-final class CoreDataFetchedResultsStoreRequest<EntityType: NSFetchRequestResult>: FetchedResultsStoreRequest {
+final class CoreDataStoreRequest<EntityType: NSManagedObject>: StoreRequest<EntityType> {
     let managedObjectContext: NSManagedObjectContext
+    
     let fetchRequest: NSFetchRequest<EntityType>
     
     init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<EntityType>) {

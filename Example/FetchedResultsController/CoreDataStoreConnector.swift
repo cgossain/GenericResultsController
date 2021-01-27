@@ -1,5 +1,5 @@
 //
-//  CoreDataFetchedResultsStoreConnector.swift
+//  CoreDataStoreConnector.swift
 //
 //  Copyright (c) 2017-2020 Christian Gossain
 //
@@ -30,13 +30,14 @@ extension NSManagedObject: Identifiable {
     public var id: String { return self.objectID.description }
 }
 
-final class CoreDataFetchedResultsStoreConnector<EntityType: NSManagedObject>: FetchedResultsStoreConnector<CoreDataFetchedResultsStoreRequest<EntityType>, EntityType> {
+final class CoreDataStoreConnector<EntityType: NSManagedObject>: StoreConnector<CoreDataStoreRequest<EntityType>, EntityType> {
+    // MARK: - Private
     private var managedObjectContextChangeObserver: AnyObject?
     private var currentFetchRequest: NSFetchRequest<EntityType>!
     
     
-    // MARK: - FetchedResultsStoreConnector
-    override func execute(_ request: CoreDataFetchedResultsStoreRequest<EntityType>) {
+    // MARK: - StoreConnector
+    override func execute(_ request: CoreDataStoreRequest<EntityType>) {
         // perform the query and then call the appropriate `enqueue` method
         // when data becomes available
         //
@@ -48,24 +49,24 @@ final class CoreDataFetchedResultsStoreConnector<EntityType: NSManagedObject>: F
         // in this example we're executing the core data fetch request, and then
         // observing the for `NSManagedObjectContextObjectsDidChange` notification
         // to detect further incrementation changes
-        
+
         // note, realistically you would use NSFetchedResultsController if you're
         // using CoreData.
-        
+
         // keep track of the executed fetch request
         currentFetchRequest = request.fetchRequest
-        
+
         // remove the previous observer if attached
         if let managedObjectContextChangeObserver = managedObjectContextChangeObserver {
             NotificationCenter.default.removeObserver(managedObjectContextChangeObserver)
         }
-        
+
         // attach a new observer
         managedObjectContextChangeObserver =
             NotificationCenter.default.addObserver(forName: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: request.managedObjectContext, queue: nil, using: { [unowned self] (note) in
                 self.handleContextObjectsDidChangeNotification(note)
             })
-        
+
         // execute the fetch request
         request.managedObjectContext.perform {
             do {
@@ -77,27 +78,27 @@ final class CoreDataFetchedResultsStoreConnector<EntityType: NSManagedObject>: F
             }
         }
     }
-}
-
-extension CoreDataFetchedResultsStoreConnector {
+    
+    
+    // MARK: - Private
     private func handleContextObjectsDidChangeNotification(_ notification: Notification) {
         let entityName = currentFetchRequest.entityName!
-        
+
         // inserted
         let insertedObjectsSet = notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject> ?? []
         let filteredInserted = insertedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
         filteredInserted?.forEach({ self.enqueue(inserted: $0) })
-        
+
         // updated
         let updatedObjectsSet = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> ?? []
         let filteredUpdated = updatedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
         filteredUpdated?.forEach({ self.enqueue(updated: $0) })
-        
+
         // deleted
         let deletedObjectsSet = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject> ?? []
         let filteredDeleted = deletedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
         filteredDeleted?.forEach({ self.enqueue(removed: $0) })
-        
-        self.processPendingChanges()
+
+//        self.processPendingChanges()
     }
 }
