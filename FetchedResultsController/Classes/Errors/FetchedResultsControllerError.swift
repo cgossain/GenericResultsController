@@ -25,5 +25,8 @@
 import Foundation
 
 public enum FetchedResultsControllerError: Error {
+    /// An indication that the requested index path is invalid.
+    ///
+    /// The requested row and section indicies are provides as associated values for context.
     case invalidIndexPath(row: Int, section: Int)
 }

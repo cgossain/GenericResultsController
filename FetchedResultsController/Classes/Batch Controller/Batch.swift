@@ -32,7 +32,7 @@ final class Batch<ResultType: BaseResultObject> {
     let identifier = UUID().uuidString
     
     
-    // MARK: - Private
+    // MARK: - Private Properties
     /// The raw insertions.
     private var rawInserted: [AnyHashable: ResultType] = [:]
     

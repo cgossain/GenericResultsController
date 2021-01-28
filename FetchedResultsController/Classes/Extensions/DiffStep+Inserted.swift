@@ -25,8 +25,8 @@
 import Foundation
 import Dwifft
 
-/// Simplifies filtering.
 extension DiffStep {
+    /// Indicates if the receiver represents an insertion.
     var isInserted: Bool {
         switch self {
         case .insert(_, _):

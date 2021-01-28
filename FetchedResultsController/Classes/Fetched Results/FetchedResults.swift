@@ -57,6 +57,8 @@ class FetchedResults<ResultType: BaseResultObject> {
         _sections = computed
         return computed
     }
+    
+    // MARK: - Private Properties
     private var _sections: [FetchedResultsSection<ResultType>]? // hold the current non-stale sections array
     
     /// A dictionary that maps a section to its `sectionKeyValue`.
@@ -99,7 +101,7 @@ class FetchedResults<ResultType: BaseResultObject> {
     // MARK: - Lifecycle
     /// Initializes a new fetched results objects with the given arguments.
     ///
-    /// - parameters:
+    /// - Parameters:
     ///   - isIncluded: A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
     ///   - areInIncreasingOrder: A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
@@ -256,24 +258,19 @@ extension FetchedResults {
         // simply have removed and inserted the object at the same index which is equivalent to
         // an update
         
-        // remove the "old" object
-        guard let idx = results.firstIndex(where: { $0.id == new.id }) else {
-            return
-        }
+        // delete the "old" version
+        guard let idx = results.firstIndex(where: { $0.id == new.id }) else { return }
         let old = results[idx]
         delete(obj: old)
         
-        // insert the "new" object
+        // insert the "updated" version
         insert(obj: new)
     }
     
     /// Removes the object if it exists in the results.
     private func delete(obj: ResultType) {
-        guard let idx = results.firstIndex(where: { $0.id == obj.id }) else {
-            return
-        }
-        
         // remove the object
+        guard let idx = results.firstIndex(where: { $0.id == obj.id }) else { return }
         results.remove(at: idx)
         
         // update or remove the section

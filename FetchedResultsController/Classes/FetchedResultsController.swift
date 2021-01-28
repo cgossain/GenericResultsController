@@ -69,7 +69,7 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
     // MARK: - Lifecycle
     /// Returns a fetch request controller initialized using the given arguments.
     ///
-    /// - parameters:
+    /// - Parameters:
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The fetch request is executed against this connector instance.
     ///   - storeRequest: The fetch request that will be executed against the store connector.
     ///   - sectionNameKeyPath: A key path on result objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
@@ -129,10 +129,10 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
     
     /// Returns the snapshot at a given indexPath.
     ///
-    /// - parameters:
+    /// - Parameters:
     ///     - indexPath: An index path in the fetch results. If indexPath does not describe a valid index path in the fetch results, an error is thrown.
     ///
-    /// - returns: The object at a given index path in the fetch results.
+    /// - Returns: The object at a given index path in the fetch results.
     public func object(at indexPath: IndexPath) throws -> ResultType {
         if indexPath.section < sections.count {
             let section = sections[indexPath.section]
@@ -147,10 +147,10 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
     
     /// Returns the indexPath of a given object.
     ///
-    /// - parameters:
+    /// - Parameters:
     ///     - obj: An object in the receiver’s fetch results.
     ///
-    /// - returns: The index path of object in the receiver’s fetch results, or nil if object could not be found.
+    /// - Returns: The index path of object in the receiver’s fetch results, or nil if object could not be found.
     public func indexPath(for obj: ResultType) -> IndexPath? {
         return currentFetchedResults?.indexPath(for: obj)
     }

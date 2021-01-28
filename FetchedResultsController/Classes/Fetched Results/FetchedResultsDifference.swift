@@ -76,7 +76,7 @@ public struct FetchedResultsDifference<ResultType: BaseResultObject> {
     // MARK: - Lifecycle
     /// Creates a difference between two fetched results objects.
     ///
-    /// - parameters:
+    /// - Parameters:
     ///     - from: The fetched results object with the state of objects before the change.
     ///     - to: The fetched results object with the state of objects after the change.
     ///     - changedObjects: The objects in the fetch result whose content has been changed.
@@ -217,9 +217,9 @@ public struct FetchedResultsDifference<ResultType: BaseResultObject> {
         }
         self.changedRows = changedRows
     }
-    
-    
-    // MARK: - Public
+}
+
+extension FetchedResultsDifference {
     /// Convenience method that enumerates all the section changes described by the difference object.
     public func enumerateSectionChanges(_ body: ((_ section: FetchedResultsSection<ResultType>, _ sectionIndex: Int, _ type: ResultsChangeType) -> Void)) {
         // removed sections

@@ -45,7 +45,7 @@ public class FetchedResultsSection<ResultType: BaseResultObject> {
     // MARK: - Lifecycle
     /// Initializes a section object with the given section key value and sort descriptors.
     ///
-    /// - parameters:
+    /// - Parameters:
     ///     - sectionKeyValue: The value that represents this section.
     ///     - sortDescriptors: The sort descriptors that describe how items in this sections will be sorted.
     ///     - objects: The initial set of objects in this section. The objects are assumed to be sorted. Used internally.
@@ -56,12 +56,9 @@ public class FetchedResultsSection<ResultType: BaseResultObject> {
         self.objects = objects
     }
     
-    
-    // MARK: - Public
     /// Inserts the given object into the section and returns the index at which it was inserted.
     @discardableResult
     func insert(obj: ResultType) -> Int {
-//        let idx = objects.insertionIndex(of: obj, using: sortDescriptors)
         let idx = objects.insertionIndex(of: obj) { self.areInIncreasingOrder?($0, $1) ?? true }
         objects.insert(obj, at: idx)
         return idx
