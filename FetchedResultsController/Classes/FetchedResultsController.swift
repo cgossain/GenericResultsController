@@ -55,18 +55,13 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
     
     
     // MARK: - Private Properties
+    
     /// The current fetched results.
     private var currentFetchedResults: FetchedResults<ResultType>?
     
-    /// This value is incremented each time `-execute` is called.
-    ///
-    /// When executing an asynchronous fetch, you can use this value to validate that the
-    /// handle has not changed between when `-execute` is called and the asynchronous
-    /// results are returned. If the handle has changed, you can discard the returned results.
-    public private(set) var currentFetchHandle = 0
-    
     
     // MARK: - Lifecycle
+    
     /// Returns a fetch request controller initialized using the given arguments.
     ///
     /// - Parameters:
@@ -80,10 +75,15 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
         self.sectionNameProvider = sectionNameProvider
     }
     
-    /// Executes the fetch request and begins observing further changes to the data store.
+    /// Executes the current store request against the store connector.
+    ///
+    /// - Important: Calling this method effectively invalidates any previous results.
     public func performFetch() {
-        // TODO: Test if we should send a delegate callback at this point to allow a UITableView to clear our its contents?
-        currentFetchHandle += 1
+        // TODO: Should we send a delegate callback at this point to allow a UITableView to clear our its
+        //       contents? Since calling `performFetch()` would technically invalidate any existing results.
+        //       for example we could add a separate delegate method when a perform fetch is completed or a
+        //       flag which hints to the table view that it needs to call its `reloadData()` method to reset
+        //       its content
         
         // since we're starting a new fetch we'll wipe out our current
         // results and start fresh with an empty fetched results object
@@ -94,7 +94,7 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
         // notify delegate
         delegate.controllerWillChangeContent?(self)
         
-        // attach callbacks to the store connectors' internal batch controller
+        // attach callbacks to the store connectors' batch controller
         storeConnector.batchController.delegate.controllerWillBeginBatchingChanges = { [unowned self] (controller) in
             self.delegate.controllerWillChangeContent?(self)
         }

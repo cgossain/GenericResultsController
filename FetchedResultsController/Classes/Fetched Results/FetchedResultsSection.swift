@@ -35,6 +35,9 @@ public class FetchedResultsSection<ResultType: BaseResultObject> {
     /// Returns the array of objects in the section.
     public private(set) var objects: [ResultType]
     
+    
+    // MARK: - Internal
+    
     /// The section key value represented by the receiver.
     let sectionKeyValue: String
     
@@ -43,6 +46,7 @@ public class FetchedResultsSection<ResultType: BaseResultObject> {
     
     
     // MARK: - Lifecycle
+    
     /// Initializes a section object with the given section key value and sort descriptors.
     ///
     /// - Parameters:

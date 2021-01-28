@@ -28,11 +28,6 @@ import Foundation
 ///
 /// Call `flush()` to get the deduplicated changes out of the batch.
 final class Batch<ResultType: BaseResultObject> {
-    /// A unique identifier for this batch.
-    let identifier = UUID().uuidString
-    
-    
-    // MARK: - Private Properties
     /// The raw insertions.
     private var rawInserted: [AnyHashable: ResultType] = [:]
     
@@ -41,9 +36,10 @@ final class Batch<ResultType: BaseResultObject> {
     
     /// The raw deletions.
     private var rawDeleted: [AnyHashable: ResultType] = [:]
-}
-
-extension Batch {
+    
+    
+    // MARK: - Lifecycle
+    
     /// Tracks the object as an insertion to the batch.
     func insert(_ obj: ResultType) {
         // note that if the object already exists, it
@@ -78,7 +74,7 @@ extension Batch {
         let deleted: [AnyHashable: ResultType]
     }
     
-    /// Processes the current contents of the batch and returns the dedpuplicated results.
+    /// Returns the dedpuplicated set of changes in the batch..
     func flush() -> Batch.Result {
         var dedupedIns = rawInserted
         var dedupedUpd = rawUpdated

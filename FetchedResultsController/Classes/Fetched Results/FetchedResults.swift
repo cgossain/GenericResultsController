@@ -58,7 +58,9 @@ class FetchedResults<ResultType: BaseResultObject> {
         return computed
     }
     
+    
     // MARK: - Private Properties
+    
     private var _sections: [FetchedResultsSection<ResultType>]? // hold the current non-stale sections array
     
     /// A dictionary that maps a section to its `sectionKeyValue`.
@@ -99,6 +101,7 @@ class FetchedResults<ResultType: BaseResultObject> {
     
     
     // MARK: - Lifecycle
+    
     /// Initializes a new fetched results objects with the given arguments.
     ///
     /// - Parameters:
@@ -235,7 +238,6 @@ extension FetchedResults {
         }
         
         // compute the insertion index that maintains the sort order
-//        let idx = results.insertionIndex(of: obj, using: fetchSortDescriptors)
         let idx = results.insertionIndex(of: obj, isOrderedBefore: self.fetchedResultsAreInIncreasingOrder)
         
         // insert at the insertion index

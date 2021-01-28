@@ -53,28 +53,32 @@ open class StoreConnector<RequestType: StoreRequest<ResultType>, ResultType: Bas
         }
     }
     
+    /// Th fetch handle associated with the most recent call to `execute(_:)`.
+    ///
+    /// This value is incremented everytime `performFetch(_:)` is called.
+    public private(set) var currentFetchHandle: Int = 0 {
+        didSet {
+            // the store connector act as the "source of truth" for the
+            // fetch handle, so we just pass it on down to the batch controller
+            // whenever it changes here
+            batchController.currentFetchHandle = currentFetchHandle
+        }
+    }
+    
     
     // MARK: -  Internal
+    
     /// The controller used to batch incoming changes from the data store.
     let batchController = BatchController<ResultType>()
     
     
     // MARK: -  Lifecycle
+    
     /// Initializes a new store connector instance.
     public init(title: String = "") {
         self.title = title
     }
     
-    /// Executes the given fetch request.
-    ///
-    /// You must subclass this method and implement your own fetching logic. When data becomes available, call the
-    /// appropriate `enqueue` operation to update the receivers data.
-    open func execute(_ request: RequestType) {
-        
-    }
-    
-    
-    // MARK: -  Incremental Operations
     /// Proceses all enqueued changes immediately.
     ///
     /// You should use this method if you've enqueued changes driven by user action (e.g. user deleted an item).
@@ -82,18 +86,48 @@ open class StoreConnector<RequestType: StoreRequest<ResultType>, ResultType: Bas
         batchController.processPendingChanges()
     }
     
+    /// Executes the given store request.
+    ///
+    /// You must subclass this method and implement your own fetching logic.
+    ///
+    /// A simple way to impmement this method is to fetch the data (according to the constraints of the given store request) and
+    /// return the results with no further action. This assumes you've built some kind of pull to refresh mechanism and will call the
+    /// result controllers' `performFetch(_:)` method everytime to trigger a new fetch.
+    ///
+    /// A more advanced wat to implement this method would be to attach long running observers that observe the database
+    /// for changes (according to the constraints of the given store request) and then to return the results everytime an observer
+    /// notifies you of a change. With this kind of implementation, the fetch essentially becomes long running and enables
+    /// results to be "live updated" without user intervention.
+    ///
+    /// The above a just two examples, but there are surely myriad ways of implementing this method. Regardless of how you
+    /// implement this method, you notify the store connector of any results or changes to the data associated with the store request
+    /// by calling one of the appropriate `enqueue` methods.
+    ///
+    /// - Parameters:
+    ///     - request: The store request.
+    ///
+    /// - Important: Call `super.execute(_:)` as the first step in your implementation.
+    open func execute(_ request: RequestType) {
+        // increment the fetch handle
+        currentFetchHandle += 1
+    }
+    
+    
+    // MARK: -  Incremental Operations
+    
     /// Enqueues the object as an insertion.
     open func enqueue(inserted: ResultType) {
-        batchController.enqueue(inserted, as: .insert)
+        batchController.enqueue(inserted, as: .insert, fetchHandle: currentFetchHandle)
     }
 
     /// Enqueues the object as an update.
     open func enqueue(updated: ResultType) {
-        batchController.enqueue(updated, as: .update)
+        batchController.enqueue(updated, as: .update, fetchHandle: currentFetchHandle)
     }
     
     /// Enqueues the object as an deletion.
     open func enqueue(removed: ResultType) {
-        batchController.enqueue(removed, as: .delete)
+        batchController.enqueue(removed, as: .delete, fetchHandle: currentFetchHandle)
     }
+    
 }

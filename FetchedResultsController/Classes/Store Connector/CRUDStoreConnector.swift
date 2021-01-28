@@ -27,6 +27,10 @@ import Foundation
 /// CRUDStoreConnector is an abstract superclass that adds insert, update, and delete methods
 /// to the base store connector.
 ///
+/// It also added a mechanism for tracking draft changes, and managing
+/// parent-child relationships between store connectors (which is used to recursively commit draft
+/// changes, but could be used for other purposes too).
+///
 /// This class is provided for convenience. Given that the base store connector should already understand the
 /// particulars of fetching data from the underlying store (i.e. `func execute(_ request: RequestType)`),
 /// it follows that if one wanted to also perform CRUD operations on that same store (or specific location in that store)
@@ -34,7 +38,23 @@ import Foundation
 ///
 /// - Note: The results controller does not call any of these methods itself.
 open class CRUDStoreConnector<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject>: StoreConnector<RequestType, ResultType> {
+    /// The draft batch.
+    private var draft = Batch<ResultType>()
+    
+    
+    // MARK: - StoreConnector
+    
+    open override func execute(_ request: RequestType) {
+        super.execute(request)
+        // a new fetch means current results should be invalidated
+        // which includes draft objects, so just replace the old
+        // draft with a new empty batch instance
+        draft = Batch<ResultType>()
+    }
+    
+    
     // MARK: - CRUD
+    
     /// Inserts the object into the underlying store.
     open func insert(_ obj: ResultType) {
         
@@ -48,5 +68,108 @@ open class CRUDStoreConnector<RequestType: StoreRequest<ResultType>, ResultType:
     /// Deletes the object from the underlying store.
     open func delete(_ obj: ResultType) {
         
+    }
+    
+    
+    // MARK: - CRUD (Draft Mode)
+    
+    /// Adds the object to the stores' results but tracks it as a draft insertion (i.e. does not commit to the underlying store).
+    ///
+    /// Call `commit()` to commit the changes to the underlying store.
+    open func insertDraft(_ obj: ResultType) {
+        draft.insert(obj)
+        self.enqueue(inserted: obj)
+    }
+    
+    /// Adds the object to the stores' results but tracks it as a draft update (i.e. does not commit to the underlying store).
+    ///
+    /// Call `commit()` to commit the changes to the underlying store.
+    open func updateDraft(_ obj: ResultType) {
+        draft.update(obj)
+        self.enqueue(updated: obj)
+    }
+    
+    /// Adds the object to the stores' results but tracks it as a draft delete (i.e. does not commit to the underlying store).
+    ///
+    /// Call `commit()` to commit the changes to the underlying store.
+    open func deleteDraft(_ obj: ResultType) {
+        draft.delete(obj)
+        self.enqueue(removed: obj)
+    }
+    
+    /// Commits draft objects to the underlying store.
+    ///
+    /// This method commits draft changes to the underlying store by calling the respective CRUD methods (i.e. `insert(_:)`, `udpate(_:)`, `delete(_:)`).
+    ///
+    /// - Parameters:
+    ///     - recursively: Indicates if the commit should propagate through to child CRUD stores.
+    open func commit(recursively: Bool = false) {
+        // call `commit()` on each child CRUD stores (if commiting recursively)
+        if recursively {
+            children.forEach {
+                guard let crudStore = $0 as? CRUDStoreConnector else {
+                    return
+                }
+                crudStore.commit(recursively: true) }
+        }
+        
+        // deduplicate draft objects for our level
+        let result = draft.flush()
+        
+        // commit draft insertions
+        for food in Array(result.inserted.values) {
+            insert(food)
+        }
+        
+        // commit draft updates
+        for food in Array(result.updated.values) {
+            update(food)
+        }
+        
+        // commit draft deletions
+        for food in Array(result.deleted.values) {
+            delete(food)
+        }
+    }
+    
+    
+    // MARK: - Managing Parent-Child Relationship
+    
+    /// The parent store connector of the recipient.
+    public internal(set) weak var parent: CRUDStoreConnector<RequestType, ResultType>?
+    
+    /// An array of store connectors that are children of the current store connector.
+    public internal(set) var children: [CRUDStoreConnector<RequestType, ResultType>] = []
+    
+    /// Adds the specified store connector as a child of the current store connector.
+    ///
+    /// This method creates a parent-child relationship between the current store connector and the object in the `child` parameter.
+    ///
+    /// - Note: This method calls `willMoveToParent(_:)` before adding the child, however it is expected that you call didMoveToParentViewController:
+    open func addChild(_ child: CRUDStoreConnector<RequestType, ResultType>) {
+        // remove from existing parent if needed
+        if let parent = child.parent {
+            parent.removeFromParent()
+        }
+        
+        child.willMoveToParent(self)
+        children.append(child)
+    }
+    
+    /// Removes the store connector from its parent.
+    open func removeFromParent() {
+        guard let idx = parent?.children.firstIndex(of: self) else { return }
+        parent?.children.remove(at: idx)
+        didMoveToParent(nil)
+    }
+    
+    /// Called just before the store connector is added or removed from another store connector.
+    open func willMoveToParent(_ parent: CRUDStoreConnector<RequestType, ResultType>?) {
+        
+    }
+    
+    /// Called after the store connector is added or removed from another store connector.
+    open func didMoveToParent(_ parent: CRUDStoreConnector<RequestType, ResultType>?) {
+        self.parent = parent
     }
 }

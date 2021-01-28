@@ -38,15 +38,14 @@ final class BatchControllerDelegate<ResultType: BaseResultObject> {
 /// Using an internal throttler, the batch controller resets a timer (currently 0.3 seconds) each time a new change is added to the batch. In some cases you
 /// may want to process a batch immediatly, in this case you can call the `processBatch()` method. If the controller should always process changes
 /// immediatly, simply set the `processesChangesImmediately` property to `true`.
-final class BatchController<ResultType: BaseResultObject> {
-    enum OperationType {
-        case insert
-        case update
-        case delete
-    }
+final class BatchController<ResultType: BaseResultObject>: Identifiable {
+    /// The stable identity of the batch controller instance.
+    var id: String { return throttler.id }
     
-    /// A unique identifier for the batch controller.
-    var identifier: String { return throttler.identifier }
+    /// The current fetch handle.
+    ///
+    /// - Note: This is automatically incremented by the store connector whenever `execute(_:)` is called.
+    var currentFetchHandle = 0
     
     /// Set to true if changes should not be batched but rather processed as soon as they are received.
     var processesChangesImmediately = false
@@ -59,47 +58,46 @@ final class BatchController<ResultType: BaseResultObject> {
     
     
     // MARK: - Private Properties
-    /// Returns the current batch being managed by the receiver.
-    private var batch: Batch<ResultType> {
-        // return the existing batch
-        if let existingBatch = _batch {
-            return existingBatch
-        }
-        
-        // otherwise, create a new batch
-        let newBatch = Batch<ResultType>()
-        _batch = newBatch
-        return newBatch
-    }
     
-    /// The backing ivar for the current batch.
-    private var _batch: Batch<ResultType>?
-    
-    /// The internal throttler.
+    /// The throttler.
     private let throttler = Throttler(throttlingInterval: 0.3)
+    
+    /// The currently active batches keyed by the fetch handle they're associated with.
+    private var batchByFetchHandle: [Int : Batch<ResultType>] = [:]
+    
 }
 
 extension BatchController {
+    enum OperationType {
+        case insert
+        case update
+        case delete
+    }
+    
     /// Adds the given object to the batch using the specified batch operation.
-    func enqueue(_ obj: ResultType, as op: OperationType) {
+    func enqueue(_ obj: ResultType, as op: OperationType, fetchHandle: Int = 0) {
         // enqueue writes to the batch onto the throttlers serial queue
         throttler.queue.async {
             self.notifyWillBeginBatchingIfNeeded()
         }
         
+        // get the batch associated with the requested fetch handle
+        let batch = batchByFetchHandle[fetchHandle] ?? Batch()
+        batchByFetchHandle[fetchHandle] = batch
+        
         // enqueue writes to the batch onto the throttlers serial queue
         switch op {
         case .insert:
             throttler.queue.async {
-                self.batch.insert(obj)
+                batch.insert(obj)
             }
         case .update:
             throttler.queue.async {
-                self.batch.update(obj)
+                batch.update(obj)
             }
         case .delete:
             throttler.queue.async {
-                self.batch.delete(obj)
+                batch.delete(obj)
             }
         }
         
@@ -134,14 +132,17 @@ extension BatchController {
         }
     }
     
-    /// Terminates any further tracking into the current batch and flushes the results to the delegate.
+    /// Flushes the batch associated with the current fetch handle to the delegate.
+    ///
+    /// Calling this method terminates the batch meaning any futher changes will now become part of a new batch.
+    ///
+    /// Any batches associated with older fetch handles are discarded.
+    ///
+    /// - Important: This method is called from the throtter's queue.
     private func flush() {
-        if let batch = _batch {
+        if let batch = batchByFetchHandle[currentFetchHandle] {
             // flush the batch
             let results = batch.flush()
-            
-            // clear the reference to the current batch
-            _batch = nil
             
             // finish the batch
             isBatching = false
@@ -157,5 +158,8 @@ extension BatchController {
                 self.delegate.controllerDidFinishBatchingChanges?(self, [], [], [])
             }
         }
+        
+        // clear the reference to all tracked batches
+        batchByFetchHandle.removeAll()
     }
 }

@@ -74,6 +74,7 @@ public struct FetchedResultsDifference<ResultType: BaseResultObject> {
     
     
     // MARK: - Lifecycle
+    
     /// Creates a difference between two fetched results objects.
     ///
     /// - Parameters:
