@@ -51,9 +51,7 @@ class ViewController: UITableViewController {
         
         let storeRequest = CoreDataStoreRequest(managedObjectContext: self.managedObjectContext, fetchRequest: fetchRequest)
         
-        self.fetchedResultsController = FetchedResultsController(storeConnector: CoreDataStoreConnector(), fetchRequest: storeRequest) { (obj) -> String in
-            return obj.category ?? "none"
-        }
+        self.fetchedResultsController = FetchedResultsController(storeConnector: CoreDataStoreConnector(), storeRequest: storeRequest) { $0.category }
         
         // implement table view row diffing
         self.fetchedResultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in

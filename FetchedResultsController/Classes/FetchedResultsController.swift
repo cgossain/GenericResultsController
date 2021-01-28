@@ -28,7 +28,7 @@ import Foundation
 public typealias BaseResultObject = Identifiable & Hashable
 
 /// The signature for a block that is run against fetched objects used to determine the section they belong to.
-public typealias SectionNameProvider<T> = (_ obj: T) -> String
+public typealias SectionNameProvider<T> = (_ obj: T) -> String?
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
 open class FetchedResultsController<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject> {
@@ -36,7 +36,7 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
     public let storeConnector: StoreConnector<RequestType, ResultType>
     
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
-    public let fetchRequest: RequestType
+    public let storeRequest: RequestType
     
     /// A block that is run against fetched objects used to determine the section they belong to.
     public let sectionNameProvider: SectionNameProvider<ResultType>?
@@ -71,12 +71,12 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
     ///
     /// - parameters:
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The fetch request is executed against this connector instance.
-    ///   - fetchRequest: The fetch request that will be executed against the store connector.
+    ///   - storeRequest: The fetch request that will be executed against the store connector.
     ///   - sectionNameKeyPath: A key path on result objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
     ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
-    public init(storeConnector: StoreConnector<RequestType, ResultType>, fetchRequest: RequestType, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
+    public init(storeConnector: StoreConnector<RequestType, ResultType>, storeRequest: RequestType, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
         self.storeConnector = storeConnector
-        self.fetchRequest = fetchRequest
+        self.storeRequest = storeRequest
         self.sectionNameProvider = sectionNameProvider
     }
     
@@ -87,8 +87,8 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
         
         // since we're starting a new fetch we'll wipe out our current
         // results and start fresh with an empty fetched results object
-        currentFetchedResults = FetchedResults(isIncluded: fetchRequest.isIncluded,
-                                               areInIncreasingOrder: fetchRequest.areInIncreasingOrder,
+        currentFetchedResults = FetchedResults(isIncluded: storeRequest.isIncluded,
+                                               areInIncreasingOrder: storeRequest.areInIncreasingOrder,
                                                sectionNameProvider: sectionNameProvider)
         
         // notify delegate
@@ -124,7 +124,7 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
         }
         
         // execute the fetch
-        storeConnector.execute(fetchRequest)
+        storeConnector.execute(storeRequest)
     }
     
     /// Returns the snapshot at a given indexPath.

@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-import FetchedResultsController
+import Foundation
 
 /// CRUDStoreConnector is an abstract superclass that adds insert, update, and delete methods
 /// to the base store connector.

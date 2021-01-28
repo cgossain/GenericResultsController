@@ -74,17 +74,15 @@ class FetchedResults<ResultType: BaseResultObject> {
     private var fetchedResultsAreInIncreasingOrder: (ResultType, ResultType) -> Bool {
         return { (left, right) -> Bool in
             // 1. sort by sections first
-            if let sectionNameProvider = self.sectionNameProvider {
-                let leftSectionName = sectionNameProvider(left)
-                let rightSectionName = sectionNameProvider(right)
-                
-                if leftSectionName < rightSectionName {
-                    return true
-                }
-                
-                if leftSectionName > rightSectionName {
-                    return false
-                }
+            let leftSectionName = self.sectionName(for: left)
+            let rightSectionName = self.sectionName(for: right)
+            
+            if leftSectionName < rightSectionName {
+                return true
+            }
+            
+            if leftSectionName > rightSectionName {
+                return false
             }
             
             // 2. if section names are the same, sort using the section sorting logic
@@ -306,11 +304,11 @@ extension FetchedResults {
     
     /// Returns the section key value for the given object.
     private func sectionName(for obj: ResultType) -> String {
-        guard let sectionNameProvider = sectionNameProvider else {
+        guard let sectionNameProvider = sectionNameProvider,
+              let sectionName = sectionNameProvider(obj) else {
             return nilSectionName
         }
         
-        let sectionName = sectionNameProvider(obj)
         return sectionName
     }
 }

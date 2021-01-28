@@ -85,7 +85,7 @@ extension Batch {
         var dedupedDel = rawDeleted
         
         // deduplicate insersions
-        for (insertedKey, insertedObj) in rawInserted {
+        for (insertedKey, _) in rawInserted {
             // if the inserted object is also deleted in the
             // same batch, these events cancel each other out
             // and the effective change is that "nothing hapenned" so
@@ -107,7 +107,7 @@ extension Batch {
         }
         
         // deduplicate updates
-        for (updatedKey, updatedObj) in rawUpdated {
+        for (updatedKey, _) in rawUpdated {
             // if the updated object is also deleted in the
             // same batch, the effective change in the
             // batch is that "the object was deleted",

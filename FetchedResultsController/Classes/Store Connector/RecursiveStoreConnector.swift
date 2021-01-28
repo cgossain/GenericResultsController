@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-import FetchedResultsController
+import Foundation
 
 open class RecursiveStoreConnector<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject>: CRUDStoreConnector<RequestType, ResultType> {
     // MARK: - Parent-Child Relationship
