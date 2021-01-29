@@ -42,19 +42,19 @@ final class BatchController<ResultType: BaseResultObject>: Identifiable {
     /// The stable identity of the batch controller instance.
     var id: String { return throttler.id }
     
-    /// The current fetch handle.
-    ///
-    /// - Note: This is automatically incremented by the store connector whenever `execute(_:)` is called.
-    var currentFetchHandle = 0
-    
     /// Set to true if changes should not be batched but rather processed as soon as they are received.
     var processesChangesImmediately = false
     
     /// The object that will receive batching updates. For internal use only.
     var delegate = BatchControllerDelegate<ResultType>()
     
-    /// Indicates if the controller is currently batching.
-    private(set) var isBatching = false
+    /// The current fetch handle.
+    ///
+    /// - Note: This is automatically incremented by the store connector whenever `execute(_:)` is called.
+    var currentFetchHandle = 0
+    
+    /// Indicates if the receiver has an active batch.
+    var isBatching: Bool { return batchByFetchHandle[currentFetchHandle] != nil }
     
     
     // MARK: - Private Properties
@@ -76,36 +76,30 @@ extension BatchController {
     
     /// Adds the given object to the batch using the specified batch operation.
     func enqueue(_ obj: ResultType, as op: OperationType, fetchHandle: Int = 0) {
-        // enqueue writes to the batch onto the throttlers serial queue
-        throttler.queue.async {
-            self.notifyWillBeginBatchingIfNeeded()
+        // notify the delegate if we're about to start a new batch
+        if !isBatching {
+            delegate.controllerWillBeginBatchingChanges?(self)
         }
         
         // get the batch associated with the requested fetch handle
         let batch = batchByFetchHandle[fetchHandle] ?? Batch()
         batchByFetchHandle[fetchHandle] = batch
         
-        // enqueue writes to the batch onto the throttlers serial queue
+        // enqueue writes to the current batch
         switch op {
         case .insert:
-            throttler.queue.async {
-                batch.insert(obj)
-            }
+            batch.insert(obj)
         case .update:
-            throttler.queue.async {
-                batch.update(obj)
-            }
+            batch.update(obj)
         case .delete:
-            throttler.queue.async {
-                batch.delete(obj)
-            }
+            batch.delete(obj)
         }
         
-        // throttle the flush; the throttler uses a serial execution queue so while chunks of work keep getting
-        // enqueue above, this chunk of work effectively will keep moving to the end of the execution queue until
-        // no more writes are enqueued for the throttling interval
+        // throttle the flush
         throttler.throttle(fireNow: processesChangesImmediately) {
-            self.flush()
+            DispatchQueue.main.async {
+                self.flush()
+            }
         }
     }
     
@@ -114,24 +108,14 @@ extension BatchController {
     /// - Note: This method is not useful if you've already set `processesChangesImmediately` to `true`.
     func processPendingChanges() {
         throttler.throttle(fireNow: true) {
-            self.flush()
+            DispatchQueue.main.async {
+                self.flush()
+            }
         }
     }
 }
 
 extension BatchController {
-    /// Internal method that calls `controllerWillBeginBatchingChanges` if the controller is not currently batching. Otherwise does nothing.
-    private func notifyWillBeginBatchingIfNeeded() {
-        if !isBatching {
-            isBatching = true
-            
-            // notify the delegate
-            DispatchQueue.main.async {
-                self.delegate.controllerWillBeginBatchingChanges?(self)
-            }
-        }
-    }
-    
     /// Flushes the batch associated with the current fetch handle to the delegate.
     ///
     /// Calling this method terminates the batch meaning any futher changes will now become part of a new batch.
@@ -144,22 +128,23 @@ extension BatchController {
             // flush the batch
             let results = batch.flush()
             
-            // finish the batch
-            isBatching = false
+            // discarding the processed the batch
+            batchByFetchHandle[currentFetchHandle] = nil
             
             // notify the delegate
-            DispatchQueue.main.async {
-                self.delegate.controllerDidFinishBatchingChanges?(self, Set(results.inserted.values), Set(results.updated.values), Set(results.deleted.values))
-            }
+            delegate.controllerDidFinishBatchingChanges?(self, Set(results.inserted.values), Set(results.updated.values), Set(results.deleted.values))
         }
         else {
             // notify the delegate
-            DispatchQueue.main.async {
-                self.delegate.controllerDidFinishBatchingChanges?(self, [], [], [])
-            }
+            delegate.controllerDidFinishBatchingChanges?(self, [], [], [])
         }
         
-        // clear the reference to all tracked batches
+        // cleanup by discarding any other batches; this might
+        // happen if a call to `performFetch()` was made while
+        // there was an active batch in process which in turn would have
+        // caused the `currentFetchHandle` to be incremented; note this
+        // mechanism is by design in order to invalidate results
+        // between calls to `performFetch()`
         batchByFetchHandle.removeAll()
     }
 }
