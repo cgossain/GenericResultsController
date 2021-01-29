@@ -99,6 +99,7 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: StoreConnector<
         let filteredDeleted = deletedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
         filteredDeleted?.forEach({ self.enqueue(removed: $0) })
 
-//        self.processPendingChanges()
+        // process immediately
+        self.processPendingChanges()
     }
 }

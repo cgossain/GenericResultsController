@@ -3,7 +3,7 @@ use_frameworks!
 
 target 'FetchedResultsController_Example' do
   pod 'FetchedResultsController', :path => '../'
-
+  
   target 'FetchedResultsController_Tests' do
     inherit! :search_paths
     

@@ -29,8 +29,10 @@ import Foundation
 /// This class was inspired by this blog post:
 /// http://danielemargutti.com/2017/10/19/throttle-in-swift/
 public final class Throttler {
-    /// A unique identifier for the throttler. This identifier is used as part of the internal dispatch queue label.
-    public let identifier: String
+    /// The stable identity of the throttler instance.
+    ///
+    /// This identifier is used as part of the receivers' dispatch queue label.
+    public let id: String
     
     /// Internal serial execution queue initialized with the specified QOS class.
     public let queue: DispatchQueue
@@ -44,11 +46,11 @@ public final class Throttler {
     
     
     // MARK: - Lifecycle
-    public init(identifier: String = UUID().uuidString, throttlingInterval: Double, maxInterval: Double = 0, qosClass: DispatchQoS.QoSClass = .background) {
-        self.identifier = identifier
+    public init(id: String = UUID().uuidString, throttlingInterval: Double, maxInterval: Double = 0, qosClass: DispatchQoS.QoSClass = .background) {
+        self.id = id
         self.throttlingInterval = throttlingInterval
         self.maxInterval = maxInterval
-        self.queue = DispatchQueue(label: "com.debounce.throttler.\(identifier)", qos: DispatchQoS(qosClass: qosClass, relativePriority: 0), attributes: [])
+        self.queue = DispatchQueue(label: "com.debounce.throttler.\(id)", qos: DispatchQoS(qosClass: qosClass, relativePriority: 0), attributes: [])
     }
     
     public func throttle(fireNow: Bool = false, block: @escaping () -> ()) {
