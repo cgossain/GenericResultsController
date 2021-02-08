@@ -24,12 +24,12 @@
 
 import Foundation
 
-/// CRUDStoreConnector is an abstract superclass that adds insert, update, and delete methods
-/// to the base store connector.
+/// CRUDStoreConnector is an abstract superclass that adds insert, update, and delete
+/// methods to the base store connector.
 ///
-/// It also added a mechanism for tracking draft changes, and managing
-/// parent-child relationships between store connectors (which is used to recursively commit draft
-/// changes, but could be used for other purposes too).
+/// It also adds a mechanism for tracking draft changes, and managing parent-child relationships
+/// between store connectors (which is used to recursively commit draft changes, but could
+/// be used for other purposes too).
 ///
 /// This class is provided for convenience. Given that the base store connector should already understand the
 /// particulars of fetching data from the underlying store (i.e. `func execute(_ request: RequestType)`),
@@ -37,7 +37,7 @@ import Foundation
 /// this would be the logical place to do it.
 ///
 /// - Note: The results controller does not call any of these methods itself.
-open class CRUDStoreConnector<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject>: StoreConnector<RequestType, ResultType> {
+open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>>: StoreConnector<ResultType, RequestType> {
     /// The draft batch.
     private var draft = Batch<ResultType>()
     
@@ -106,11 +106,7 @@ open class CRUDStoreConnector<RequestType: StoreRequest<ResultType>, ResultType:
     open func commit(recursively: Bool = false) {
         // call `commit()` on each child CRUD stores (if commiting recursively)
         if recursively {
-            children.forEach {
-                guard let crudStore = $0 as? CRUDStoreConnector else {
-                    return
-                }
-                crudStore.commit(recursively: true) }
+            children.forEach { $0.commit(recursively: true) }
         }
         
         // deduplicate draft objects for our level
@@ -136,17 +132,17 @@ open class CRUDStoreConnector<RequestType: StoreRequest<ResultType>, ResultType:
     // MARK: - Managing Parent-Child Relationship
     
     /// The parent store connector of the recipient.
-    public internal(set) weak var parent: CRUDStoreConnector<RequestType, ResultType>?
+    public internal(set) weak var parent: CRUDStoreConnector<ResultType, RequestType>?
     
     /// An array of store connectors that are children of the current store connector.
-    public internal(set) var children: [CRUDStoreConnector<RequestType, ResultType>] = []
+    public internal(set) var children: [CRUDStoreConnector<ResultType, RequestType>] = []
     
     /// Adds the specified store connector as a child of the current store connector.
     ///
     /// This method creates a parent-child relationship between the current store connector and the object in the `child` parameter.
     ///
     /// - Note: This method calls `willMoveToParent(_:)` before adding the child, however it is expected that you call didMoveToParentViewController:
-    open func addChild(_ child: CRUDStoreConnector<RequestType, ResultType>) {
+    open func addChild(_ child: CRUDStoreConnector<ResultType, RequestType>) {
         // remove from existing parent if needed
         if let parent = child.parent {
             parent.removeFromParent()
@@ -164,12 +160,12 @@ open class CRUDStoreConnector<RequestType: StoreRequest<ResultType>, ResultType:
     }
     
     /// Called just before the store connector is added or removed from another store connector.
-    open func willMoveToParent(_ parent: CRUDStoreConnector<RequestType, ResultType>?) {
+    open func willMoveToParent(_ parent: CRUDStoreConnector<ResultType, RequestType>?) {
         
     }
     
     /// Called after the store connector is added or removed from another store connector.
-    open func didMoveToParent(_ parent: CRUDStoreConnector<RequestType, ResultType>?) {
+    open func didMoveToParent(_ parent: CRUDStoreConnector<ResultType, RequestType>?) {
         self.parent = parent
     }
 }

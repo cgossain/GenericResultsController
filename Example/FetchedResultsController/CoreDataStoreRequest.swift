@@ -26,7 +26,7 @@ import Foundation
 import FetchedResultsController
 import CoreData
 
-final class CoreDataStoreRequest<EntityType: NSManagedObject>: StoreRequest<EntityType> {
+final class CoreDataStoreRequest<EntityType: NSManagedObject>: FetchRequest<EntityType> {
     let managedObjectContext: NSManagedObjectContext
     
     let fetchRequest: NSFetchRequest<EntityType>

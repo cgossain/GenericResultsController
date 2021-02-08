@@ -17,7 +17,7 @@ struct TestModel: Hashable, Identifiable {
     let category: String?
 }
 
-class TestStoreRequest: StoreRequest<TestModel> {
+class TestStoreRequest: FetchRequest<TestModel> {
     
 }
 

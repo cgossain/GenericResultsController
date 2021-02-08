@@ -28,7 +28,7 @@ import Foundation
 let nilSectionName = ""
 
 /// FetchedResults manages the entire set of results of a fetched results controller.
-class FetchedResults<ResultType: BaseResultObject> {
+class FetchedResults<ResultType: FetchRequestResult> {
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
     let isIncluded: ((ResultType) -> Bool)?
     

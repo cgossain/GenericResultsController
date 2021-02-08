@@ -1,5 +1,5 @@
 //
-//  StoreRequest.swift
+//  FetchRequest.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,13 +24,18 @@
 
 import Foundation
 
-/// StoreRequest provides the basic structure of for a fetch request that can be
+/// A type that fetched objects must conform to.
+public typealias FetchRequestResult = Identifiable & Hashable
+
+/// FetchRequest provides the basic structure of for a fetch request that can be
 /// executed against a StoreConnector.
+///
+/// Just like in Core Data, it provides a description of search criteria used to retrieve data from a persistent store.
 ///
 /// The idea is that this fetch request is executed against a concrete instance of a store connector,
 /// therefore you can subclass this to create a more specific fetch request with additional paramters
 /// that your store connector understands.
-open class StoreRequest<ResultType: BaseResultObject> {
+open class FetchRequest<ResultType: FetchRequestResult> {
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
     open var isIncluded: ((ResultType) -> Bool)?
     

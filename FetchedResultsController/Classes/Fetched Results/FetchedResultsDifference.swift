@@ -37,7 +37,7 @@ public enum ResultsChangeType: Int {
 ///
 /// This information is useful for updating UI that lists the contents of a fetched results, such as
 /// the indexes of added, removed, updated, and rearranged objects.
-public struct FetchedResultsDifference<ResultType: BaseResultObject> {
+public struct FetchedResultsDifference<ResultType: FetchRequestResult> {
     public struct Section {
         let idx: Int
         let section: FetchedResultsSection<ResultType>

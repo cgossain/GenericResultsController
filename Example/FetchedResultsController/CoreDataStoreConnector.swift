@@ -30,7 +30,7 @@ extension NSManagedObject: Identifiable {
     public var id: String { return self.objectID.description }
 }
 
-final class CoreDataStoreConnector<EntityType: NSManagedObject>: StoreConnector<CoreDataStoreRequest<EntityType>, EntityType> {
+final class CoreDataStoreConnector<EntityType: NSManagedObject>: StoreConnector<EntityType, CoreDataStoreRequest<EntityType>> {
     // MARK: - Private
     private var managedObjectContextChangeObserver: AnyObject?
     private var currentFetchRequest: NSFetchRequest<EntityType>!

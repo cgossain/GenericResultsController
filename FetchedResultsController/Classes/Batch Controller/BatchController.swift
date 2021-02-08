@@ -25,7 +25,7 @@
 import Foundation
 import Debounce
 
-final class BatchControllerDelegate<ResultType: BaseResultObject> {
+final class BatchControllerDelegate<ResultType: FetchRequestResult> {
     /// Called when the controller is about to begin collecting a new batch.
     var controllerWillBeginBatchingChanges: ((_ controller: BatchController<ResultType>) -> Void)?
     
@@ -38,7 +38,7 @@ final class BatchControllerDelegate<ResultType: BaseResultObject> {
 /// Using an internal throttler, the batch controller resets a timer (currently 0.3 seconds) each time a new change is added to the batch. In some cases you
 /// may want to process a batch immediatly, in this case you can call the `processBatch()` method. If the controller should always process changes
 /// immediatly, simply set the `processesChangesImmediately` property to `true`.
-final class BatchController<ResultType: BaseResultObject>: Identifiable {
+final class BatchController<ResultType: FetchRequestResult>: Identifiable {
     /// The stable identity of the batch controller instance.
     var id: String { return throttler.id }
     

@@ -27,7 +27,7 @@ import Foundation
 /// A Batch groups a set of changes together such that they can be tracked as a single unit.
 ///
 /// Call `flush()` to get the deduplicated changes out of the batch.
-final class Batch<ResultType: BaseResultObject> {
+final class Batch<ResultType: FetchRequestResult> {
     /// The raw insertions.
     private var rawInserted: [AnyHashable: ResultType] = [:]
     

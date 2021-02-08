@@ -24,16 +24,13 @@
 
 import Foundation
 
-/// A type that fetched objects must conform to.
-public typealias BaseResultObject = Identifiable & Hashable
-
 /// The signature for a block that is run against fetched objects used to determine the section they belong to.
 public typealias SectionNameProvider<T> = (_ obj: T) -> String?
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<RequestType: StoreRequest<ResultType>, ResultType: BaseResultObject> {
+open class FetchedResultsController<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
     /// The store connector instance the controller uses to execute a fetch request against.
-    public let storeConnector: StoreConnector<RequestType, ResultType>
+    public let storeConnector: StoreConnector<ResultType, RequestType>
     
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
     public let storeRequest: RequestType
@@ -48,10 +45,10 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
     public var sections: [FetchedResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
     
     /// The delegate handling all the results controller delegate callbacks.
-    public var delegate = FetchedResultsControllerDelegate<RequestType, ResultType>()
+    public var delegate = FetchedResultsControllerDelegate<ResultType, RequestType>()
     
     /// The delegate handling all the results controller delegate callbacks.
-    public var changeTracker = FetchedResultsControllerChangeTracking<RequestType, ResultType>()
+    public var changeTracker = FetchedResultsControllerChangeTracking<ResultType, RequestType>()
     
     
     // MARK: - Private Properties
@@ -69,7 +66,7 @@ open class FetchedResultsController<RequestType: StoreRequest<ResultType>, Resul
     ///   - storeRequest: The fetch request that will be executed against the store connector.
     ///   - sectionNameKeyPath: A key path on result objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
     ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
-    public init(storeConnector: StoreConnector<RequestType, ResultType>, storeRequest: RequestType, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
+    public init(storeConnector: StoreConnector<ResultType, RequestType>, storeRequest: RequestType, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
         self.storeConnector = storeConnector
         self.storeRequest = storeRequest
         self.sectionNameProvider = sectionNameProvider

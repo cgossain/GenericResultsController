@@ -27,7 +27,7 @@ import FetchedResultsController
 import UIKit
 
 class ViewController: UITableViewController {
-    private(set) var fetchedResultsController: FetchedResultsController<CoreDataStoreRequest<Event>, Event>!
+    private(set) var fetchedResultsController: FetchedResultsController<Event, CoreDataStoreRequest<Event>>!
     
     var managedObjectContext: NSManagedObjectContext { return CoreDataManager.shared.persistentContainer.viewContext }
     
