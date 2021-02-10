@@ -31,13 +31,29 @@ class ViewController: UITableViewController {
     
     var managedObjectContext: NSManagedObjectContext { return CoreDataManager.shared.persistentContainer.viewContext }
     
+    
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         navigationItem.leftBarButtonItem = editButtonItem
         
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
-        navigationItem.rightBarButtonItem = addButton
+        if #available(iOS 14.0, *) {
+            let addButton = UIBarButtonItem(systemItem: .add, primaryAction: UIAction(handler: { (action) in
+                self.insertNewObject(action)
+            }))
+            
+            let refreshButton = UIBarButtonItem(systemItem: .refresh, primaryAction: UIAction(handler: { (action) in
+                self.fetchedResultsController.performFetch()
+            }))
+            navigationItem.rightBarButtonItems = [addButton, refreshButton]
+            
+            refreshControl = UIRefreshControl()
+            refreshControl?.addAction(UIAction(handler: { (action) in
+                self.fetchedResultsController.performFetch()
+            }), for: .valueChanged)
+        }
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         configureResultsController()
@@ -67,7 +83,7 @@ class ViewController: UITableViewController {
                         break
                     }
                 }
-                
+
                 // apply row changes
                 difference.enumerateRowChanges { (anObject, indexPath, type, newIndexPath) in
                     switch type {
@@ -84,22 +100,26 @@ class ViewController: UITableViewController {
                 }
             })
             
-            // save any changes that triggered this change
-            CoreDataManager.shared.saveContext()
+            self.refreshControl?.endRefreshing()
         }
         
 //        fetchedResultsController.delegate.controllerWillChangeContent = { (controller) in
 //            print("Will change content.")
 //        }
-//
-//        fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
-//            print("Did change content.")
+
+        fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
+            print("Did change content.")
 //            self.tableView.reloadData()
-//        }
+//            self.refreshControl?.endRefreshing()
+            
+            let context = self.managedObjectContext
+            try! context.save()
+        }
     }
     
     
     // MARK: - UITableViewDataSource
+    
     let cellIdentifier = "cellIdentifier"
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -112,7 +132,8 @@ class ViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-        configureCell(cell, with: fetchedResultsController.sections[indexPath.section].objects[indexPath.row])
+        let obj = try! fetchedResultsController.object(at: indexPath)
+        configureCell(cell, with: obj)
         return cell
     }
 

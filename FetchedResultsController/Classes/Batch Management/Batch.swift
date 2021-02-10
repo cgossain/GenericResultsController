@@ -27,7 +27,25 @@ import Foundation
 /// A Batch groups a set of changes together such that they can be tracked as a single unit.
 ///
 /// Call `flush()` to get the deduplicated changes out of the batch.
-final class Batch<ResultType: FetchRequestResult> {
+public final class Batch<ResultType: FetchRequestResult>: Identifiable {
+    /// The dedpuplicated set of changes in the batch.
+    public struct Digest {
+        /// The deduplicated insertions.
+        let inserted: Set<ResultType>
+        
+        /// The deduplicated updates.
+        let updated: Set<ResultType>
+        
+        /// The deduplicated deletions.
+        let deleted: Set<ResultType>
+    }
+    
+    /// The batch ID.
+    public let id: AnyHashable
+    
+    
+    // MARK: - Private Properties
+    
     /// The raw insertions.
     private var rawInserted: [AnyHashable: ResultType] = [:]
     
@@ -40,42 +58,33 @@ final class Batch<ResultType: FetchRequestResult> {
     
     // MARK: - Lifecycle
     
+    public init(id: AnyHashable) {
+        self.id = id
+    }
+    
     /// Tracks the object as an insertion to the batch.
-    func insert(_ obj: ResultType) {
+    public func insert(_ obj: ResultType) {
         // note that if the object already exists, it
         // will simply be replaced with its newer version
         rawInserted[obj.id] = obj
     }
     
     /// Tracks the object as an update to the batch.
-    func update(_ obj: ResultType) {
+    public func update(_ obj: ResultType) {
         // note that if the object already exists, it
         // will simply be replaced with its newer version
         rawUpdated[obj.id] = obj
     }
     
     /// Tracks the object as a deletion from the batch.
-    func delete(_ obj: ResultType) {
+    public func delete(_ obj: ResultType) {
         // note that if the object already exists, it
         // will simply be replaced with its newer version
         rawDeleted[obj.id] = obj
     }
-}
-
-extension Batch {
-    struct Result {
-        /// The deduplicated insertions.
-        let inserted: [AnyHashable: ResultType]
-        
-        /// The deduplicated updates.
-        let updated: [AnyHashable: ResultType]
-        
-        /// The deduplicated deletions.
-        let deleted: [AnyHashable: ResultType]
-    }
     
-    /// Returns the dedpuplicated set of changes in the batch..
-    func flush() -> Batch.Result {
+    /// Returns the dedpuplicated set of changes in the batch.
+    public func flush() -> Batch.Digest {
         var dedupedIns = rawInserted
         var dedupedUpd = rawUpdated
         var dedupedDel = rawDeleted
@@ -114,6 +123,13 @@ extension Batch {
         }
         
         // return the deduplicated batch
-        return Result(inserted: dedupedIns, updated: dedupedUpd, deleted: dedupedDel)
+        return Digest(inserted: Set(dedupedIns.values), updated: Set(dedupedUpd.values), deleted: Set(dedupedDel.values))
+    }
+    
+    /// Clears all tracked changes.
+    public func reset() {
+        rawInserted.removeAll()
+        rawUpdated.removeAll()
+        rawDeleted.removeAll()
     }
 }

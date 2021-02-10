@@ -9,162 +9,162 @@
 /* Begin PBXBuildFile section */
 		0B28AF4E12913AC5EEBAF7499182DF0B /* AbstractDiffCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431E4004AC2D0B165F5358EFCE9C8565 /* AbstractDiffCalculator.swift */; };
 		1409BA5E9B52B1B3AD9B2388C5A0400B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0902E779AE4B689F434EF715DD954DAC /* Foundation.framework */; };
-		164183FCB0BFF98C3FB7C7801B901299 /* FetchedResultsController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 82890E47AED7CAB1BC027FC40ABA2962 /* FetchedResultsController-dummy.m */; };
 		17EADA8473E6E0C93FB0BF87E2A35097 /* SearchThrottler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB1EAAB66C14E6D8E875B394C3C5D61 /* SearchThrottler.swift */; };
 		1ADD9D0AD5F0657B7809864B756BC155 /* SectionedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578B30DA52F58EE43BF5A6FDD1587837 /* SectionedValues.swift */; };
 		1C1BBF8C45926BE86D97D87D0D6C70E4 /* Pods-FetchedResultsController_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 880473EB767E9D72938591A0434A9278 /* Pods-FetchedResultsController_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		21C91F6DBE20996E57E597F7754400DA /* Array+InsertionIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F986DDB3F1EA46C9148FC4D9AF12BF0 /* Array+InsertionIndex.swift */; };
+		1EA7F9CBD1C9D4E3448A50D9A81BD1E8 /* CRUDStoreConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78374E7D22ADD1A887DEB53488752A13 /* CRUDStoreConnector.swift */; };
 		22DA629E433911AA74F51F235F00082C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0902E779AE4B689F434EF715DD954DAC /* Foundation.framework */; };
+		244FA7F77C51FD3A8863BFBD1C0AE9B4 /* FetchedResultsControllerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED895707AD8BC08F2B3E3BBA1A1AEF7 /* FetchedResultsControllerError.swift */; };
+		2D413B6F9B4C66909DC5EBBA123479F1 /* StoreConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEEFDB234BB6C6E2844983CF19FE677 /* StoreConnector.swift */; };
 		2EEAEBCC9EE4CE6C4433A6016F6E0FD8 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AB57815681B0E9BF85041F5308ED67 /* Throttler.swift */; };
 		2EFB5500A86DD18F1ABDA3813E524741 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0902E779AE4B689F434EF715DD954DAC /* Foundation.framework */; };
-		365A90B4332A11480C0DACA9ED8772BE /* FetchedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2C03A984F66658415A782D00B96F12 /* FetchedResults.swift */; };
-		41FD2DC71DD9A77B002F578A0C24D51C /* FetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E476C80F257BBFCB477F3ED04B82574 /* FetchRequest.swift */; };
+		37DCC18588043946F0B41258B799E91F /* FetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABAEF554B1C49D947A4612A80A38DC /* FetchRequest.swift */; };
 		4452A4C261337D00D753E7E3A12B8506 /* Dwifft+AppKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E1EE675829BC2ADE6E2F6301E418C7 /* Dwifft+AppKit.swift */; };
+		49FD38BD46A6B34F9689C648045A1BCF /* Batch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CD711879F612B3EAC22B4D21DA29D /* Batch.swift */; };
 		4F08A3D24A422650660DA9FFD9592E6B /* Debounce-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B3B4431355EF749548CE2F3023E5806F /* Debounce-dummy.m */; };
-		5DFB6BBDC4D6F6260D168E73D2F90EBA /* FetchedResultsControllerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23E59AB493B7908B949DEC048072121 /* FetchedResultsControllerError.swift */; };
 		607DFAE1ADD12F6DBE3F9CBB568EC713 /* Pods-FetchedResultsController_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C0DB96F4906DC6308C8DC0E851BB3825 /* Pods-FetchedResultsController_Tests-dummy.m */; };
-		64E9269248370DE6FD94E03249FF9669 /* FetchedResultsControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DCB1655ED96C89290C2E5789A329C4 /* FetchedResultsControllerDelegate.swift */; };
-		70040016A676C2A0528701D4B445791E /* CRUDStoreConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3F10FDC0C52D69207DE7E1CE0A5F659 /* CRUDStoreConnector.swift */; };
 		74C38469E317AE5FDB814E8438BB9DDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0902E779AE4B689F434EF715DD954DAC /* Foundation.framework */; };
 		7D98B888ACA1822CD885AE930EB9F1DA /* Dwifft-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BA52367FEF88A43D492A090DE4B49FD0 /* Dwifft-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		800BC506C30F13DD08B1094666A6F626 /* DiffStep+Inserted.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC760E3B0E099464FEB78EA46356ED1B /* DiffStep+Inserted.swift */; };
-		83424F3830EE1C24A7CD9A2B5566AE52 /* BatchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08385027D4E2937BAE91A3B646530318 /* BatchController.swift */; };
+		83CD8C0440C854D2FE7C1716E1A80A80 /* FetchedResultsController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A8DC3ACF194391C07FE7565C88F2FB1 /* FetchedResultsController-dummy.m */; };
 		894969C74BE3934962FF7FCBBC0BF161 /* Dwifft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FB035D27362A8D6B7198FB9D4751CA /* Dwifft.swift */; };
-		8D6747EF3A556E614F8CF156B2466C4E /* StoreConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EBC492E1F0114F77D06E3A372B79C7 /* StoreConnector.swift */; };
+		8A2DE289A09228DA5F2DAD099DBE2549 /* FetchedResultsDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E207A457E06D5144C54ADA4A26F0F /* FetchedResultsDifference.swift */; };
 		8F958A757695F959363483AF5B109D64 /* Dwifft+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1CE6455EF6E4745149B1FFDEB94FD3 /* Dwifft+UIKit.swift */; };
+		948DAB212F58DFDA326E03816CA5D4BE /* DiffStep+Inserted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BFEDF07F1F20F3E4B02E050C696DF6 /* DiffStep+Inserted.swift */; };
 		989E993880E9C4E3503FEB2EEA8951E4 /* Debounce-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA714445450D198FCB29706945AE9D2 /* Debounce-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A43088C8ACB02CA18115C17ED8653830 /* FetchedResultsDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5294D251C78C0F00DA9BB014EFDB26F9 /* FetchedResultsDifference.swift */; };
 		A504CAFC1B1F00BE0DB933348B3D91B6 /* Pods-FetchedResultsController_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 53D58CE9CB57363C5BDD2DDCE4846B27 /* Pods-FetchedResultsController_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF64B868761488374B55DE6024C48D06 /* FetchedResultsControllerChangeTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A88FA4ED5AF2009749CDA100D60A46B /* FetchedResultsControllerChangeTracking.swift */; };
-		C796F04268D8EC000005B17DDD62AD0E /* FetchedResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B916809188D02269F6539F56478D27BD /* FetchedResultsController.swift */; };
+		A7142607E7742FC36F44E975356789D4 /* FetchedResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEF045C07833011E8ABC434B52476B4 /* FetchedResultsController.swift */; };
+		A76CCEE7FBF333A378B3670C7A4C3FA5 /* ObserverQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96652F5C84F391CCBF5E6EAF600BC69 /* ObserverQuery.swift */; };
+		A9D1210E254ABA7B49590B0CFE7F0980 /* FetchedResultsControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE0EC4BD78F756CD5A02642C4DB2E2 /* FetchedResultsControllerDelegate.swift */; };
+		CBCC3766A3574A0962B1AB882B8D57E0 /* FetchedResultsControllerChangeTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6684B24978B306F46D21A1997E7BC08 /* FetchedResultsControllerChangeTracking.swift */; };
 		CD3F0A0EC71571DFC00B7EEB4146E7EE /* Dwifft.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA9282E6BEC3A5F3C9BD18DB196BDEF3 /* Dwifft.framework */; };
-		D40536BBA88D1DB51F29AE09F6757338 /* AsynchronousFetchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAAF3BF38D56616116B5985E3D315DB /* AsynchronousFetchRequest.swift */; };
-		D4BFE985E3AA8A82CDCEBE7B8A920FC3 /* FetchedResultsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7979D432986EDE832B3CD8B1641A08FF /* FetchedResultsSection.swift */; };
-		D55D5F25A78A6DFBA38C3B505D0B4F6A /* FetchedResultsController-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E4E06D37477C5BE3036D6A75B541003 /* FetchedResultsController-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D2FFFCB5D159E77A02089B260254E4F1 /* Array+InsertionIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F43617A07BC6347B611EC50974310E /* Array+InsertionIndex.swift */; };
+		D55D5F25A78A6DFBA38C3B505D0B4F6A /* FetchedResultsController-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 21A304DBA71C20FE996734D8EA2D48DE /* FetchedResultsController-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D880612CDACAACFCA6E5B149C2F99D6E /* Debounce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2342E7A2EEC38B1B429D93E3F3B78043 /* Debounce.framework */; };
 		DAE3D9A036FBA8C66993892440D8F1E9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0902E779AE4B689F434EF715DD954DAC /* Foundation.framework */; };
 		DF3B83C81214CC3290255C922E55DDF1 /* Dwifft-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B70BDA8590D38B0C0D9D7EAC456CED3 /* Dwifft-dummy.m */; };
+		E0A4FBCFEF8155CE9AD70E11358F1682 /* FetchedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307FCA31A3048EB6F829D35C74D7E5C0 /* FetchedResults.swift */; };
+		E58A9A2824AD94F4A8EECD0A48C308B1 /* BatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11E8E715F4CB0A562E77954441C1547 /* BatchQueue.swift */; };
+		ED2C4317E5E53F0C35EF36A43998602E /* FetchedResultsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3686D278856853B2C0ACF873B53223EF /* FetchedResultsSection.swift */; };
 		F2DFCF4F737B8A934766A8BC20B211CE /* Pods-FetchedResultsController_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ED2FEEB9D1A57218BE717D18CC1E9D1 /* Pods-FetchedResultsController_Example-dummy.m */; };
-		F323AB1265ACF83457CDF6A0039F1FD5 /* Batch.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF8C730E3C73D77B3479AA7B3301E806 /* Batch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2D1F4DE2E1EF36DCFEBE3EB4BFA1AF58 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4255A53C9FC46E2A6605D689307219F6;
-			remoteInfo = Dwifft;
-		};
-		33B47BABED81E7EA6014E8C9F965E0A8 /* PBXContainerItemProxy */ = {
+		10C714C87AF159BD0B9F8391C3FDEF3E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 133A7309CC548CF6D5FFFCB7B77B76C2;
 			remoteInfo = "Pods-FetchedResultsController_Example";
 		};
-		86EF1986599E4131AB01AF141D5DD460 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 66B3D61B50E90D7CF2923155A6832674;
-			remoteInfo = FetchedResultsController;
-		};
-		AA79D5FAD01ACFAE5E2039921BE1BCA4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 24620D5DA74B95BA8E31F927F62F4B02;
-			remoteInfo = Debounce;
-		};
-		E2C8F35480FB22C800E4975C2C5ABBCE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 24620D5DA74B95BA8E31F927F62F4B02;
-			remoteInfo = Debounce;
-		};
-		FB13043369AB4B41AC548DB7C645F809 /* PBXContainerItemProxy */ = {
+		6C04099ED41B090367533453CF6BBA12 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 4255A53C9FC46E2A6605D689307219F6;
 			remoteInfo = Dwifft;
 		};
+		DB00E7DA5D8EB7AEEB6A1D51FCE3A503 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 24620D5DA74B95BA8E31F927F62F4B02;
+			remoteInfo = Debounce;
+		};
+		E487B1EE19DC2F30D06B9DA8E3114352 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 24620D5DA74B95BA8E31F927F62F4B02;
+			remoteInfo = Debounce;
+		};
+		FE833C7B6764DEEE036680587A724750 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4255A53C9FC46E2A6605D689307219F6;
+			remoteInfo = Dwifft;
+		};
+		FF1DAD606B2A76658845567D0A4E4A38 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 66B3D61B50E90D7CF2923155A6832674;
+			remoteInfo = FetchedResultsController;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		08385027D4E2937BAE91A3B646530318 /* BatchController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatchController.swift; sourceTree = "<group>"; };
 		08681D295FB5F9616CC0A40215C0BA16 /* Pods-FetchedResultsController_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-FetchedResultsController_Example.modulemap"; sourceTree = "<group>"; };
 		08A95AF81DDA88687D3E3C3A01041804 /* Pods-FetchedResultsController_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-FetchedResultsController_Tests.modulemap"; sourceTree = "<group>"; };
 		0902E779AE4B689F434EF715DD954DAC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		0DB2532FC886BA45C00E92272D4BF175 /* FetchedResultsController.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FetchedResultsController.release.xcconfig; sourceTree = "<group>"; };
 		0E1CE6455EF6E4745149B1FFDEB94FD3 /* Dwifft+UIKit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Dwifft+UIKit.swift"; path = "Dwifft/Dwifft+UIKit.swift"; sourceTree = "<group>"; };
-		0F986DDB3F1EA46C9148FC4D9AF12BF0 /* Array+InsertionIndex.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Array+InsertionIndex.swift"; sourceTree = "<group>"; };
-		1C193AB7108843C26FC7738635E3FEC3 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		21A304DBA71C20FE996734D8EA2D48DE /* FetchedResultsController-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FetchedResultsController-umbrella.h"; sourceTree = "<group>"; };
+		22F43617A07BC6347B611EC50974310E /* Array+InsertionIndex.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Array+InsertionIndex.swift"; sourceTree = "<group>"; };
 		2342E7A2EEC38B1B429D93E3F3B78043 /* Debounce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Debounce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2A88FA4ED5AF2009749CDA100D60A46B /* FetchedResultsControllerChangeTracking.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FetchedResultsControllerChangeTracking.swift; path = FetchedResultsController/Classes/FetchedResultsControllerChangeTracking.swift; sourceTree = "<group>"; };
+		26BFEDF07F1F20F3E4B02E050C696DF6 /* DiffStep+Inserted.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "DiffStep+Inserted.swift"; sourceTree = "<group>"; };
+		2AEEFDB234BB6C6E2844983CF19FE677 /* StoreConnector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StoreConnector.swift; sourceTree = "<group>"; };
+		307FCA31A3048EB6F829D35C74D7E5C0 /* FetchedResults.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchedResults.swift; sourceTree = "<group>"; };
 		35E1EE675829BC2ADE6E2F6301E418C7 /* Dwifft+AppKit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Dwifft+AppKit.swift"; path = "Dwifft/Dwifft+AppKit.swift"; sourceTree = "<group>"; };
-		3D2C03A984F66658415A782D00B96F12 /* FetchedResults.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchedResults.swift; sourceTree = "<group>"; };
+		3686D278856853B2C0ACF873B53223EF /* FetchedResultsSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchedResultsSection.swift; sourceTree = "<group>"; };
+		3A6C422842299EB26DFCAEB47C7881DF /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		3AB9BAFE19F6B34331E77EE655B809E7 /* FetchedResultsController-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "FetchedResultsController-Info.plist"; sourceTree = "<group>"; };
 		3DE61514A2A20DB296A705C088EC58C9 /* Pods-FetchedResultsController_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-FetchedResultsController_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		41D70263D874FAEE46203BEFA6F94A3A /* Debounce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Debounce.debug.xcconfig; sourceTree = "<group>"; };
 		431E4004AC2D0B165F5358EFCE9C8565 /* AbstractDiffCalculator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AbstractDiffCalculator.swift; path = Dwifft/AbstractDiffCalculator.swift; sourceTree = "<group>"; };
 		47AB57815681B0E9BF85041F5308ED67 /* Throttler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Throttler.swift; path = Debounce/Classes/Throttler.swift; sourceTree = "<group>"; };
+		4D1240A7B71528DB458FB0C9DB55CA2C /* FetchedResultsController.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = FetchedResultsController.modulemap; sourceTree = "<group>"; };
 		4DE7F2D74ACE5C40149A851D4985EDCE /* Pods-FetchedResultsController_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-FetchedResultsController_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		4E4E06D37477C5BE3036D6A75B541003 /* FetchedResultsController-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FetchedResultsController-umbrella.h"; sourceTree = "<group>"; };
+		4ED895707AD8BC08F2B3E3BBA1A1AEF7 /* FetchedResultsControllerError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerError.swift; sourceTree = "<group>"; };
 		5082A2B120D2CDE1875B93DA194BF7B3 /* Pods-FetchedResultsController_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-FetchedResultsController_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		52061280ABD9EBC0C542C7A8E4304B0E /* Dwifft-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Dwifft-Info.plist"; sourceTree = "<group>"; };
 		522533F049B896975657B58A45FFF320 /* Pods-FetchedResultsController_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-FetchedResultsController_Example-frameworks.sh"; sourceTree = "<group>"; };
-		5294D251C78C0F00DA9BB014EFDB26F9 /* FetchedResultsDifference.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchedResultsDifference.swift; sourceTree = "<group>"; };
 		53D58CE9CB57363C5BDD2DDCE4846B27 /* Pods-FetchedResultsController_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-FetchedResultsController_Tests-umbrella.h"; sourceTree = "<group>"; };
 		541486F2DF1710368B179BBB0F9EBF84 /* Pods-FetchedResultsController_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FetchedResultsController_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		560F1D1415D48CB4B8B8DDE5ADD029F8 /* Debounce-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Debounce-prefix.pch"; sourceTree = "<group>"; };
 		578B30DA52F58EE43BF5A6FDD1587837 /* SectionedValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SectionedValues.swift; path = Dwifft/SectionedValues.swift; sourceTree = "<group>"; };
+		5A8DC3ACF194391C07FE7565C88F2FB1 /* FetchedResultsController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FetchedResultsController-dummy.m"; sourceTree = "<group>"; };
 		5B546B4E199617B90AB950136B692A3F /* Pods_FetchedResultsController_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_FetchedResultsController_Tests.framework; path = "Pods-FetchedResultsController_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BAE0EC4BD78F756CD5A02642C4DB2E2 /* FetchedResultsControllerDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FetchedResultsControllerDelegate.swift; path = FetchedResultsController/Classes/FetchedResultsControllerDelegate.swift; sourceTree = "<group>"; };
 		69E843D3B1FBE49AB1964C6A4C595B3D /* Pods-FetchedResultsController_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-FetchedResultsController_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		6FA73E874D8299048754B40EB4A982E5 /* Debounce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Debounce.framework; path = Debounce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		77DCB1655ED96C89290C2E5789A329C4 /* FetchedResultsControllerDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FetchedResultsControllerDelegate.swift; path = FetchedResultsController/Classes/FetchedResultsControllerDelegate.swift; sourceTree = "<group>"; };
-		7979D432986EDE832B3CD8B1641A08FF /* FetchedResultsSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchedResultsSection.swift; sourceTree = "<group>"; };
+		78374E7D22ADD1A887DEB53488752A13 /* CRUDStoreConnector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CRUDStoreConnector.swift; sourceTree = "<group>"; };
 		7B70BDA8590D38B0C0D9D7EAC456CED3 /* Dwifft-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Dwifft-dummy.m"; sourceTree = "<group>"; };
+		7D4CD711879F612B3EAC22B4D21DA29D /* Batch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Batch.swift; sourceTree = "<group>"; };
 		7DD67C8EA889E8A07C2ED490E5965E8A /* Pods-FetchedResultsController_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FetchedResultsController_Example-Info.plist"; sourceTree = "<group>"; };
-		7E476C80F257BBFCB477F3ED04B82574 /* FetchRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchRequest.swift; sourceTree = "<group>"; };
 		7ED2FEEB9D1A57218BE717D18CC1E9D1 /* Pods-FetchedResultsController_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-FetchedResultsController_Example-dummy.m"; sourceTree = "<group>"; };
+		7F2A04BC3C6136743148348D9EA8471C /* FetchedResultsController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FetchedResultsController-prefix.pch"; sourceTree = "<group>"; };
 		7FB9A7775963FA038BF4064D86064F9F /* Dwifft.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Dwifft.debug.xcconfig; sourceTree = "<group>"; };
-		82890E47AED7CAB1BC027FC40ABA2962 /* FetchedResultsController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FetchedResultsController-dummy.m"; sourceTree = "<group>"; };
 		845D6A29664BA8CC1BB8BD9CA62141AE /* Debounce.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Debounce.modulemap; sourceTree = "<group>"; };
-		871DB9BE5CD07985ED3E6FF42ED3EB0B /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		85ABAEF554B1C49D947A4612A80A38DC /* FetchRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchRequest.swift; sourceTree = "<group>"; };
 		880473EB767E9D72938591A0434A9278 /* Pods-FetchedResultsController_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-FetchedResultsController_Example-umbrella.h"; sourceTree = "<group>"; };
 		8DB1EAAB66C14E6D8E875B394C3C5D61 /* SearchThrottler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchThrottler.swift; path = Debounce/Classes/SearchThrottler.swift; sourceTree = "<group>"; };
+		8E5F6AF64A044646AA30CC0421A07CC8 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
 		90612E4BBD71C902EAE1F49F9F3BB7C3 /* Dwifft.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Dwifft.release.xcconfig; sourceTree = "<group>"; };
 		96FB035D27362A8D6B7198FB9D4751CA /* Dwifft.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Dwifft.swift; path = Dwifft/Dwifft.swift; sourceTree = "<group>"; };
 		9C4E9A4364B0BFCAED6ADF68ECAB9DB3 /* FetchedResultsController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FetchedResultsController.framework; path = FetchedResultsController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D33B2F7A8CB820A31FC976A87997905 /* FetchedResultsController.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FetchedResultsController.debug.xcconfig; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A0C700BC77E532DEC90B1710CD72853F /* Pods-FetchedResultsController_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FetchedResultsController_Tests-Info.plist"; sourceTree = "<group>"; };
 		A37A0F22C2A9D8EC852FC9368E9AD666 /* Dwifft.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Dwifft.modulemap; sourceTree = "<group>"; };
 		A581CE7DD28DFDE3C770BB21ECD3D609 /* Pods-FetchedResultsController_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FetchedResultsController_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
-		A6C90D4D4376B2822A65907383E8E3F8 /* FetchedResultsController.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = FetchedResultsController.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		B1D4EF3E09DA5E18E873C40D4948D3EB /* FetchedResultsController.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FetchedResultsController.debug.xcconfig; sourceTree = "<group>"; };
+		AA2E207A457E06D5144C54ADA4A26F0F /* FetchedResultsDifference.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchedResultsDifference.swift; sourceTree = "<group>"; };
 		B3B4431355EF749548CE2F3023E5806F /* Debounce-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Debounce-dummy.m"; sourceTree = "<group>"; };
-		B5EBC492E1F0114F77D06E3A372B79C7 /* StoreConnector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StoreConnector.swift; sourceTree = "<group>"; };
 		B63C7967FDDB111CE08106431E13BB2E /* Pods-FetchedResultsController_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-FetchedResultsController_Example.release.xcconfig"; sourceTree = "<group>"; };
-		B80C8A56CFA2CEE46BD1840F1740404F /* FetchedResultsController.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = FetchedResultsController.modulemap; sourceTree = "<group>"; };
-		B916809188D02269F6539F56478D27BD /* FetchedResultsController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FetchedResultsController.swift; path = FetchedResultsController/Classes/FetchedResultsController.swift; sourceTree = "<group>"; };
+		B96652F5C84F391CCBF5E6EAF600BC69 /* ObserverQuery.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ObserverQuery.swift; sourceTree = "<group>"; };
 		BA52367FEF88A43D492A090DE4B49FD0 /* Dwifft-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Dwifft-umbrella.h"; sourceTree = "<group>"; };
-		BC3646AF9C2B759BA5B9B66CB23709D7 /* FetchedResultsController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FetchedResultsController-prefix.pch"; sourceTree = "<group>"; };
 		BECDC94A8EC5327DDB67992ED014ACDA /* Debounce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Debounce.release.xcconfig; sourceTree = "<group>"; };
 		C0DB96F4906DC6308C8DC0E851BB3825 /* Pods-FetchedResultsController_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-FetchedResultsController_Tests-dummy.m"; sourceTree = "<group>"; };
 		C54E311F3D93AF051AF0BD2606EC26C0 /* Dwifft-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Dwifft-prefix.pch"; sourceTree = "<group>"; };
+		CBEF045C07833011E8ABC434B52476B4 /* FetchedResultsController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FetchedResultsController.swift; path = FetchedResultsController/Classes/FetchedResultsController.swift; sourceTree = "<group>"; };
 		CEA714445450D198FCB29706945AE9D2 /* Debounce-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Debounce-umbrella.h"; sourceTree = "<group>"; };
-		CF8C730E3C73D77B3479AA7B3301E806 /* Batch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Batch.swift; sourceTree = "<group>"; };
-		CFAAF3BF38D56616116B5985E3D315DB /* AsynchronousFetchRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AsynchronousFetchRequest.swift; sourceTree = "<group>"; };
-		D4F20FA2049CD7718E9DDCDEB3BB2088 /* FetchedResultsController.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FetchedResultsController.release.xcconfig; sourceTree = "<group>"; };
+		D5438B11EA5C14D0687F9753DBF63C70 /* FetchedResultsController.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = FetchedResultsController.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		DA33313F040756EC9F6A0D1FB1621800 /* Pods_FetchedResultsController_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_FetchedResultsController_Example.framework; path = "Pods-FetchedResultsController_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA9282E6BEC3A5F3C9BD18DB196BDEF3 /* Dwifft.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Dwifft.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E3F10FDC0C52D69207DE7E1CE0A5F659 /* CRUDStoreConnector.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CRUDStoreConnector.swift; sourceTree = "<group>"; };
-		EC760E3B0E099464FEB78EA46356ED1B /* DiffStep+Inserted.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "DiffStep+Inserted.swift"; sourceTree = "<group>"; };
-		F23E59AB493B7908B949DEC048072121 /* FetchedResultsControllerError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerError.swift; sourceTree = "<group>"; };
+		E11E8E715F4CB0A562E77954441C1547 /* BatchQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatchQueue.swift; sourceTree = "<group>"; };
+		E6684B24978B306F46D21A1997E7BC08 /* FetchedResultsControllerChangeTracking.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FetchedResultsControllerChangeTracking.swift; path = FetchedResultsController/Classes/FetchedResultsControllerChangeTracking.swift; sourceTree = "<group>"; };
 		F25E429F3295F583CA12B1BA5A61A490 /* Debounce-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Debounce-Info.plist"; sourceTree = "<group>"; };
 		F2E4874AC54A43308DE0238F3A963781 /* Pods-FetchedResultsController_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-FetchedResultsController_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		F76980BC39577DE167649B2F8C3BA39F /* FetchedResultsController-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "FetchedResultsController-Info.plist"; sourceTree = "<group>"; };
 		FF024DCEACF139617EC596C45282C2F1 /* Dwifft.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Dwifft.framework; path = Dwifft.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -214,31 +214,47 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0D0113B326B62223A9A5A018275D549F /* Errors */ = {
+		098DB0715BA3EC50F1A3C58ACE1BF7B9 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				F23E59AB493B7908B949DEC048072121 /* FetchedResultsControllerError.swift */,
+				4D1240A7B71528DB458FB0C9DB55CA2C /* FetchedResultsController.modulemap */,
+				5A8DC3ACF194391C07FE7565C88F2FB1 /* FetchedResultsController-dummy.m */,
+				3AB9BAFE19F6B34331E77EE655B809E7 /* FetchedResultsController-Info.plist */,
+				7F2A04BC3C6136743148348D9EA8471C /* FetchedResultsController-prefix.pch */,
+				21A304DBA71C20FE996734D8EA2D48DE /* FetchedResultsController-umbrella.h */,
+				9D33B2F7A8CB820A31FC976A87997905 /* FetchedResultsController.debug.xcconfig */,
+				0DB2532FC886BA45C00E92272D4BF175 /* FetchedResultsController.release.xcconfig */,
 			);
-			name = Errors;
-			path = FetchedResultsController/Classes/Errors;
+			name = "Support Files";
+			path = "Example/Pods/Target Support Files/FetchedResultsController";
 			sourceTree = "<group>";
 		};
-		1AFE49240D8DE32FC84EF4C9CA357737 /* FetchedResultsController */ = {
+		100B709D451C1CE02CA3E67145927950 /* FetchedResultsController */ = {
 			isa = PBXGroup;
 			children = (
-				B916809188D02269F6539F56478D27BD /* FetchedResultsController.swift */,
-				2A88FA4ED5AF2009749CDA100D60A46B /* FetchedResultsControllerChangeTracking.swift */,
-				77DCB1655ED96C89290C2E5789A329C4 /* FetchedResultsControllerDelegate.swift */,
-				EF0415747F1231D555B5A860BE0DB25B /* Batch Controller */,
-				0D0113B326B62223A9A5A018275D549F /* Errors */,
-				E975B5C704B6317ED5312A1F8759C344 /* Extensions */,
-				2F0BBD62DB292012033534E16400F348 /* Fetched Results */,
-				5907BF3BBC83FA3DE20E39329831DECF /* Pod */,
-				69FF8679325A7A4E362CCA7FF35FBACD /* Store Connector */,
-				78DB0BC866694715A44BD3FB87FF3C22 /* Support Files */,
+				CBEF045C07833011E8ABC434B52476B4 /* FetchedResultsController.swift */,
+				E6684B24978B306F46D21A1997E7BC08 /* FetchedResultsControllerChangeTracking.swift */,
+				5BAE0EC4BD78F756CD5A02642C4DB2E2 /* FetchedResultsControllerDelegate.swift */,
+				1C78A4D99AC743575B1EF083E9163C55 /* Batch Management */,
+				49CEB9722067EFD398996563E17116D5 /* Errors */,
+				5093D8F86AA806738CE85ED2CFF2F83D /* Extensions */,
+				6A06C1F508AB874B1A5637EFDF892FCB /* Fetched Results */,
+				DB422636252FB84AF87735A9EBBB1159 /* Persistent Store */,
+				30F60EB1F43B0DE736DA19296949707C /* Pod */,
+				098DB0715BA3EC50F1A3C58ACE1BF7B9 /* Support Files */,
 			);
 			name = FetchedResultsController;
 			path = ../..;
+			sourceTree = "<group>";
+		};
+		1C78A4D99AC743575B1EF083E9163C55 /* Batch Management */ = {
+			isa = PBXGroup;
+			children = (
+				7D4CD711879F612B3EAC22B4D21DA29D /* Batch.swift */,
+				E11E8E715F4CB0A562E77954441C1547 /* BatchQueue.swift */,
+			);
+			name = "Batch Management";
+			path = "FetchedResultsController/Classes/Batch Management";
 			sourceTree = "<group>";
 		};
 		24540792F604CDDCBEB373DCA5F5C7C8 /* Targets Support Files */ = {
@@ -250,15 +266,14 @@
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
-		2F0BBD62DB292012033534E16400F348 /* Fetched Results */ = {
+		30F60EB1F43B0DE736DA19296949707C /* Pod */ = {
 			isa = PBXGroup;
 			children = (
-				3D2C03A984F66658415A782D00B96F12 /* FetchedResults.swift */,
-				5294D251C78C0F00DA9BB014EFDB26F9 /* FetchedResultsDifference.swift */,
-				7979D432986EDE832B3CD8B1641A08FF /* FetchedResultsSection.swift */,
+				D5438B11EA5C14D0687F9753DBF63C70 /* FetchedResultsController.podspec */,
+				8E5F6AF64A044646AA30CC0421A07CC8 /* LICENSE */,
+				3A6C422842299EB26DFCAEB47C7881DF /* README.md */,
 			);
-			name = "Fetched Results";
-			path = "FetchedResultsController/Classes/Fetched Results";
+			name = Pod;
 			sourceTree = "<group>";
 		};
 		47F9ABFA20360FE3BE9FEDCBBF57CADB /* Frameworks */ = {
@@ -271,6 +286,25 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		49CEB9722067EFD398996563E17116D5 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				4ED895707AD8BC08F2B3E3BBA1A1AEF7 /* FetchedResultsControllerError.swift */,
+			);
+			name = Errors;
+			path = FetchedResultsController/Classes/Errors;
+			sourceTree = "<group>";
+		};
+		5093D8F86AA806738CE85ED2CFF2F83D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				22F43617A07BC6347B611EC50974310E /* Array+InsertionIndex.swift */,
+				26BFEDF07F1F20F3E4B02E050C696DF6 /* DiffStep+Inserted.swift */,
+			);
+			name = Extensions;
+			path = FetchedResultsController/Classes/Extensions;
+			sourceTree = "<group>";
+		};
 		5461DFCED4B1671142A83C269ABA92A4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -278,16 +312,6 @@
 				8169216A5F4A941E137161342D59A380 /* Dwifft */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		5907BF3BBC83FA3DE20E39329831DECF /* Pod */ = {
-			isa = PBXGroup;
-			children = (
-				A6C90D4D4376B2822A65907383E8E3F8 /* FetchedResultsController.podspec */,
-				1C193AB7108843C26FC7738635E3FEC3 /* LICENSE */,
-				871DB9BE5CD07985ED3E6FF42ED3EB0B /* README.md */,
-			);
-			name = Pod;
 			sourceTree = "<group>";
 		};
 		590D3DC9C2F8EC6538996C40B59E6BD1 /* Support Files */ = {
@@ -316,31 +340,15 @@
 			path = Debounce;
 			sourceTree = "<group>";
 		};
-		69FF8679325A7A4E362CCA7FF35FBACD /* Store Connector */ = {
+		6A06C1F508AB874B1A5637EFDF892FCB /* Fetched Results */ = {
 			isa = PBXGroup;
 			children = (
-				CFAAF3BF38D56616116B5985E3D315DB /* AsynchronousFetchRequest.swift */,
-				E3F10FDC0C52D69207DE7E1CE0A5F659 /* CRUDStoreConnector.swift */,
-				7E476C80F257BBFCB477F3ED04B82574 /* FetchRequest.swift */,
-				B5EBC492E1F0114F77D06E3A372B79C7 /* StoreConnector.swift */,
+				307FCA31A3048EB6F829D35C74D7E5C0 /* FetchedResults.swift */,
+				AA2E207A457E06D5144C54ADA4A26F0F /* FetchedResultsDifference.swift */,
+				3686D278856853B2C0ACF873B53223EF /* FetchedResultsSection.swift */,
 			);
-			name = "Store Connector";
-			path = "FetchedResultsController/Classes/Store Connector";
-			sourceTree = "<group>";
-		};
-		78DB0BC866694715A44BD3FB87FF3C22 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				B80C8A56CFA2CEE46BD1840F1740404F /* FetchedResultsController.modulemap */,
-				82890E47AED7CAB1BC027FC40ABA2962 /* FetchedResultsController-dummy.m */,
-				F76980BC39577DE167649B2F8C3BA39F /* FetchedResultsController-Info.plist */,
-				BC3646AF9C2B759BA5B9B66CB23709D7 /* FetchedResultsController-prefix.pch */,
-				4E4E06D37477C5BE3036D6A75B541003 /* FetchedResultsController-umbrella.h */,
-				B1D4EF3E09DA5E18E873C40D4948D3EB /* FetchedResultsController.debug.xcconfig */,
-				D4F20FA2049CD7718E9DDCDEB3BB2088 /* FetchedResultsController.release.xcconfig */,
-			);
-			name = "Support Files";
-			path = "Example/Pods/Target Support Files/FetchedResultsController";
+			name = "Fetched Results";
+			path = "FetchedResultsController/Classes/Fetched Results";
 			sourceTree = "<group>";
 		};
 		8169216A5F4A941E137161342D59A380 /* Dwifft */ = {
@@ -355,6 +363,16 @@
 			);
 			name = Dwifft;
 			path = Dwifft;
+			sourceTree = "<group>";
+		};
+		842745E49D07B7871B3011B70962908E /* Store Connector */ = {
+			isa = PBXGroup;
+			children = (
+				78374E7D22ADD1A887DEB53488752A13 /* CRUDStoreConnector.swift */,
+				2AEEFDB234BB6C6E2844983CF19FE677 /* StoreConnector.swift */,
+			);
+			name = "Store Connector";
+			path = "Store Connector";
 			sourceTree = "<group>";
 		};
 		88DB827F1FA44DE2F6D7E73092B6CD2E /* Pods-FetchedResultsController_Tests */ = {
@@ -412,22 +430,32 @@
 			);
 			sourceTree = "<group>";
 		};
+		D9B1AD5A41DFFB78504B5D3AF00C59DA /* Fetch Request */ = {
+			isa = PBXGroup;
+			children = (
+				85ABAEF554B1C49D947A4612A80A38DC /* FetchRequest.swift */,
+				B96652F5C84F391CCBF5E6EAF600BC69 /* ObserverQuery.swift */,
+			);
+			name = "Fetch Request";
+			path = "Fetch Request";
+			sourceTree = "<group>";
+		};
+		DB422636252FB84AF87735A9EBBB1159 /* Persistent Store */ = {
+			isa = PBXGroup;
+			children = (
+				D9B1AD5A41DFFB78504B5D3AF00C59DA /* Fetch Request */,
+				842745E49D07B7871B3011B70962908E /* Store Connector */,
+			);
+			name = "Persistent Store";
+			path = "FetchedResultsController/Classes/Persistent Store";
+			sourceTree = "<group>";
+		};
 		E7E412EE64ECA71CE2B9E331A8DA114E /* Development Pods */ = {
 			isa = PBXGroup;
 			children = (
-				1AFE49240D8DE32FC84EF4C9CA357737 /* FetchedResultsController */,
+				100B709D451C1CE02CA3E67145927950 /* FetchedResultsController */,
 			);
 			name = "Development Pods";
-			sourceTree = "<group>";
-		};
-		E975B5C704B6317ED5312A1F8759C344 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				0F986DDB3F1EA46C9148FC4D9AF12BF0 /* Array+InsertionIndex.swift */,
-				EC760E3B0E099464FEB78EA46356ED1B /* DiffStep+Inserted.swift */,
-			);
-			name = Extensions;
-			path = FetchedResultsController/Classes/Extensions;
 			sourceTree = "<group>";
 		};
 		EBF71B830538A9C93D7356CFDB80016A /* Pods-FetchedResultsController_Example */ = {
@@ -445,16 +473,6 @@
 			);
 			name = "Pods-FetchedResultsController_Example";
 			path = "Target Support Files/Pods-FetchedResultsController_Example";
-			sourceTree = "<group>";
-		};
-		EF0415747F1231D555B5A860BE0DB25B /* Batch Controller */ = {
-			isa = PBXGroup;
-			children = (
-				CF8C730E3C73D77B3479AA7B3301E806 /* Batch.swift */,
-				08385027D4E2937BAE91A3B646530318 /* BatchController.swift */,
-			);
-			name = "Batch Controller";
-			path = "FetchedResultsController/Classes/Batch Controller";
 			sourceTree = "<group>";
 		};
 		F4D871DE1C5243EAF8B6AFA87253ACD0 /* iOS */ = {
@@ -523,9 +541,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				FBC4C92197AF81F0F2844F26DB3753BA /* PBXTargetDependency */,
-				6B48CD0D76ECE957E121D54299160F0D /* PBXTargetDependency */,
-				434769878988DC11EA8A87F4B0E0CD95 /* PBXTargetDependency */,
+				DD87120A8AF89A7072FEC07C28524B5E /* PBXTargetDependency */,
+				96F927C7CD5FA8D072B9E49341DECA7B /* PBXTargetDependency */,
+				32FFC8A1EC2E202DAB40AEBDF3B42955 /* PBXTargetDependency */,
 			);
 			name = "Pods-FetchedResultsController_Example";
 			productName = "Pods-FetchedResultsController_Example";
@@ -544,7 +562,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				BCC30DAE537723DF316F18F4F3E109EF /* PBXTargetDependency */,
+				FA011FB0E8553D949993619BAB9CB79D /* PBXTargetDependency */,
 			);
 			name = "Pods-FetchedResultsController_Tests";
 			productName = "Pods-FetchedResultsController_Tests";
@@ -592,15 +610,15 @@
 			buildConfigurationList = B28946B9143AC4C1EF4A7D2A94F99D94 /* Build configuration list for PBXNativeTarget "FetchedResultsController" */;
 			buildPhases = (
 				F297925FB0CE301C9CD97CE10DFE00BD /* Headers */,
-				1DC22633CE3134F9C51B5C04A9C1CA6B /* Sources */,
+				FE08CA1DD0E530C751B20D653408010A /* Sources */,
 				6FF827AFF787818CC9630410BFFF529B /* Frameworks */,
 				54070311227ABA6A02938212B5836913 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C95F7BB0E2E26BC9FE5C0F82A7EE2C03 /* PBXTargetDependency */,
-				C10E353C92C32FF873F4089F37B04E3A /* PBXTargetDependency */,
+				C15B76096BCDF0B436C6AF8ACD50299D /* PBXTargetDependency */,
+				8A26930ACD5AAB64CC0F38E520C01146 /* PBXTargetDependency */,
 			);
 			name = FetchedResultsController;
 			productName = FetchedResultsController;
@@ -677,29 +695,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1DC22633CE3134F9C51B5C04A9C1CA6B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				21C91F6DBE20996E57E597F7754400DA /* Array+InsertionIndex.swift in Sources */,
-				D40536BBA88D1DB51F29AE09F6757338 /* AsynchronousFetchRequest.swift in Sources */,
-				F323AB1265ACF83457CDF6A0039F1FD5 /* Batch.swift in Sources */,
-				83424F3830EE1C24A7CD9A2B5566AE52 /* BatchController.swift in Sources */,
-				70040016A676C2A0528701D4B445791E /* CRUDStoreConnector.swift in Sources */,
-				800BC506C30F13DD08B1094666A6F626 /* DiffStep+Inserted.swift in Sources */,
-				365A90B4332A11480C0DACA9ED8772BE /* FetchedResults.swift in Sources */,
-				164183FCB0BFF98C3FB7C7801B901299 /* FetchedResultsController-dummy.m in Sources */,
-				C796F04268D8EC000005B17DDD62AD0E /* FetchedResultsController.swift in Sources */,
-				BF64B868761488374B55DE6024C48D06 /* FetchedResultsControllerChangeTracking.swift in Sources */,
-				64E9269248370DE6FD94E03249FF9669 /* FetchedResultsControllerDelegate.swift in Sources */,
-				5DFB6BBDC4D6F6260D168E73D2F90EBA /* FetchedResultsControllerError.swift in Sources */,
-				A43088C8ACB02CA18115C17ED8653830 /* FetchedResultsDifference.swift in Sources */,
-				D4BFE985E3AA8A82CDCEBE7B8A920FC3 /* FetchedResultsSection.swift in Sources */,
-				41FD2DC71DD9A77B002F578A0C24D51C /* FetchRequest.swift in Sources */,
-				8D6747EF3A556E614F8CF156B2466C4E /* StoreConnector.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		37773C80819B475C0240CA48200C5222 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -739,44 +734,67 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FE08CA1DD0E530C751B20D653408010A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2FFFCB5D159E77A02089B260254E4F1 /* Array+InsertionIndex.swift in Sources */,
+				49FD38BD46A6B34F9689C648045A1BCF /* Batch.swift in Sources */,
+				E58A9A2824AD94F4A8EECD0A48C308B1 /* BatchQueue.swift in Sources */,
+				1EA7F9CBD1C9D4E3448A50D9A81BD1E8 /* CRUDStoreConnector.swift in Sources */,
+				948DAB212F58DFDA326E03816CA5D4BE /* DiffStep+Inserted.swift in Sources */,
+				E0A4FBCFEF8155CE9AD70E11358F1682 /* FetchedResults.swift in Sources */,
+				83CD8C0440C854D2FE7C1716E1A80A80 /* FetchedResultsController-dummy.m in Sources */,
+				A7142607E7742FC36F44E975356789D4 /* FetchedResultsController.swift in Sources */,
+				CBCC3766A3574A0962B1AB882B8D57E0 /* FetchedResultsControllerChangeTracking.swift in Sources */,
+				A9D1210E254ABA7B49590B0CFE7F0980 /* FetchedResultsControllerDelegate.swift in Sources */,
+				244FA7F77C51FD3A8863BFBD1C0AE9B4 /* FetchedResultsControllerError.swift in Sources */,
+				8A2DE289A09228DA5F2DAD099DBE2549 /* FetchedResultsDifference.swift in Sources */,
+				ED2C4317E5E53F0C35EF36A43998602E /* FetchedResultsSection.swift in Sources */,
+				37DCC18588043946F0B41258B799E91F /* FetchRequest.swift in Sources */,
+				A76CCEE7FBF333A378B3670C7A4C3FA5 /* ObserverQuery.swift in Sources */,
+				2D413B6F9B4C66909DC5EBBA123479F1 /* StoreConnector.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		434769878988DC11EA8A87F4B0E0CD95 /* PBXTargetDependency */ = {
+		32FFC8A1EC2E202DAB40AEBDF3B42955 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = FetchedResultsController;
 			target = 66B3D61B50E90D7CF2923155A6832674 /* FetchedResultsController */;
-			targetProxy = 86EF1986599E4131AB01AF141D5DD460 /* PBXContainerItemProxy */;
+			targetProxy = FF1DAD606B2A76658845567D0A4E4A38 /* PBXContainerItemProxy */;
 		};
-		6B48CD0D76ECE957E121D54299160F0D /* PBXTargetDependency */ = {
+		8A26930ACD5AAB64CC0F38E520C01146 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Dwifft;
 			target = 4255A53C9FC46E2A6605D689307219F6 /* Dwifft */;
-			targetProxy = 2D1F4DE2E1EF36DCFEBE3EB4BFA1AF58 /* PBXContainerItemProxy */;
+			targetProxy = 6C04099ED41B090367533453CF6BBA12 /* PBXContainerItemProxy */;
 		};
-		BCC30DAE537723DF316F18F4F3E109EF /* PBXTargetDependency */ = {
+		96F927C7CD5FA8D072B9E49341DECA7B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Dwifft;
+			target = 4255A53C9FC46E2A6605D689307219F6 /* Dwifft */;
+			targetProxy = FE833C7B6764DEEE036680587A724750 /* PBXContainerItemProxy */;
+		};
+		C15B76096BCDF0B436C6AF8ACD50299D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Debounce;
+			target = 24620D5DA74B95BA8E31F927F62F4B02 /* Debounce */;
+			targetProxy = E487B1EE19DC2F30D06B9DA8E3114352 /* PBXContainerItemProxy */;
+		};
+		DD87120A8AF89A7072FEC07C28524B5E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Debounce;
+			target = 24620D5DA74B95BA8E31F927F62F4B02 /* Debounce */;
+			targetProxy = DB00E7DA5D8EB7AEEB6A1D51FCE3A503 /* PBXContainerItemProxy */;
+		};
+		FA011FB0E8553D949993619BAB9CB79D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "Pods-FetchedResultsController_Example";
 			target = 133A7309CC548CF6D5FFFCB7B77B76C2 /* Pods-FetchedResultsController_Example */;
-			targetProxy = 33B47BABED81E7EA6014E8C9F965E0A8 /* PBXContainerItemProxy */;
-		};
-		C10E353C92C32FF873F4089F37B04E3A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Dwifft;
-			target = 4255A53C9FC46E2A6605D689307219F6 /* Dwifft */;
-			targetProxy = FB13043369AB4B41AC548DB7C645F809 /* PBXContainerItemProxy */;
-		};
-		C95F7BB0E2E26BC9FE5C0F82A7EE2C03 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Debounce;
-			target = 24620D5DA74B95BA8E31F927F62F4B02 /* Debounce */;
-			targetProxy = AA79D5FAD01ACFAE5E2039921BE1BCA4 /* PBXContainerItemProxy */;
-		};
-		FBC4C92197AF81F0F2844F26DB3753BA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Debounce;
-			target = 24620D5DA74B95BA8E31F927F62F4B02 /* Debounce */;
-			targetProxy = E2C8F35480FB22C800E4975C2C5ABBCE /* PBXContainerItemProxy */;
+			targetProxy = 10C714C87AF159BD0B9F8391C3FDEF3E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -882,7 +900,7 @@
 		};
 		44A1651100D3647F4D3E6BE8DFD0BC22 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B1D4EF3E09DA5E18E873C40D4948D3EB /* FetchedResultsController.debug.xcconfig */;
+			baseConfigurationReference = 9D33B2F7A8CB820A31FC976A87997905 /* FetchedResultsController.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -1209,7 +1227,7 @@
 		};
 		E24357C16AD070E959B8057FF4E5F05E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D4F20FA2049CD7718E9DDCDEB3BB2088 /* FetchedResultsController.release.xcconfig */;
+			baseConfigurationReference = 0DB2532FC886BA45C00E92272D4BF175 /* FetchedResultsController.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_WEAK = NO;

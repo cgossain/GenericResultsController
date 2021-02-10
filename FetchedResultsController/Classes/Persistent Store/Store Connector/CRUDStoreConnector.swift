@@ -38,18 +38,25 @@ import Foundation
 ///
 /// - Note: The results controller does not call any of these methods itself.
 open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>>: StoreConnector<ResultType, RequestType> {
+    
+    // MARK: - Private Properties
+    
     /// The draft batch.
-    private var draft = Batch<ResultType>()
+    private var draft = Batch<ResultType>(id: UUID().uuidString)
     
     
     // MARK: - StoreConnector
     
-    open override func execute(_ request: RequestType) {
-        super.execute(request)
-        // a new fetch means current results should be invalidated
-        // which includes draft objects, so just replace the old
-        // draft with a new empty batch instance
-        draft = Batch<ResultType>()
+    public override init(title: String = "") {
+        super.init(title: title)
+        
+    }
+    
+    open override func execute(_ query: ObserverQuery<ResultType, RequestType>) {
+        super.execute(query)
+        
+        // reset the draft on execution of a new query
+        draft = Batch<ResultType>(id: UUID().uuidString)
     }
     
     
@@ -78,7 +85,13 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
     /// Call `commit()` to commit the changes to the underlying store.
     open func insertDraft(_ obj: ResultType) {
         draft.insert(obj)
-        self.enqueue(inserted: obj)
+        
+        // a CRUD operation would affect all
+        // active queries; the filter and sort
+        // configuration on the fetch request
+        // will take care of correctly showing
+        // this object (or not) in the UI
+        queryByID.values.forEach { self.enqueue(inserted: obj, for: $0) }
     }
     
     /// Adds the object to the stores' results but tracks it as a draft update (i.e. does not commit to the underlying store).
@@ -86,7 +99,13 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
     /// Call `commit()` to commit the changes to the underlying store.
     open func updateDraft(_ obj: ResultType) {
         draft.update(obj)
-        self.enqueue(updated: obj)
+        
+        // a CRUD operation would affect all
+        // active queries; the filter and sort
+        // configuration on the fetch request
+        // will take care of correctly showing
+        // this object (or not) in the UI
+        queryByID.values.forEach { self.enqueue(updated: obj, for: $0) }
     }
     
     /// Adds the object to the stores' results but tracks it as a draft delete (i.e. does not commit to the underlying store).
@@ -94,7 +113,13 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
     /// Call `commit()` to commit the changes to the underlying store.
     open func deleteDraft(_ obj: ResultType) {
         draft.delete(obj)
-        self.enqueue(removed: obj)
+        
+        // a CRUD operation would affect all
+        // active queries; the filter and sort
+        // configuration on the fetch request
+        // will take care of correctly showing
+        // this object (or not) in the UI
+        queryByID.values.forEach { self.enqueue(deleted: obj, for: $0) }
     }
     
     /// Commits draft objects to the underlying store.
@@ -104,28 +129,31 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
     /// - Parameters:
     ///     - recursively: Indicates if the commit should propagate through to child CRUD stores.
     open func commit(recursively: Bool = false) {
-        // call `commit()` on each child CRUD stores (if commiting recursively)
+        // call `commit()` on each child store (if commiting recursively)
         if recursively {
             children.forEach { $0.commit(recursively: true) }
         }
         
         // deduplicate draft objects for our level
-        let result = draft.flush()
+        let digest = draft.flush()
         
         // commit draft insertions
-        for food in Array(result.inserted.values) {
+        for food in digest.inserted {
             insert(food)
         }
         
         // commit draft updates
-        for food in Array(result.updated.values) {
+        for food in digest.updated {
             update(food)
         }
         
         // commit draft deletions
-        for food in Array(result.deleted.values) {
+        for food in digest.deleted {
             delete(food)
         }
+        
+        // reset the draft after commiting
+        draft = Batch<ResultType>(id: UUID().uuidString)
     }
     
     

@@ -56,6 +56,13 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
     /// The current fetched results.
     private var currentFetchedResults: FetchedResults<ResultType>?
     
+    /// A reference to the more recently executed query.
+    private var currentQuery: ObserverQuery<ResultType, RequestType>?
+    
+    /// Indicates that a new fetch was started and that the current results object should be rebuilt
+    /// instead of adding changes incrementally to the current results.
+    private var shouldRebuildFetchedResults = false
+    
     
     // MARK: - Lifecycle
     
@@ -72,56 +79,67 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
         self.sectionNameProvider = sectionNameProvider
     }
     
+    deinit {
+        // cleanup by removing any currently
+        // running queries
+        if let currentQuery = currentQuery {
+            storeConnector.stop(currentQuery)
+        }
+    }
+    
     /// Executes the current store request against the store connector.
     ///
     /// - Important: Calling this method effectively invalidates any previous results.
     public func performFetch() {
-        // TODO: Should we send a delegate callback at this point to allow a UITableView to clear our its
-        //       contents? Since calling `performFetch()` would technically invalidate any existing results.
-        //       for example we could add a separate delegate method when a perform fetch is completed or a
-        //       flag which hints to the table view that it needs to call its `reloadData()` method to reset
-        //       its content
-        
-        // since we're starting a new fetch we'll wipe out our current
-        // results and start fresh with an empty fetched results object
-        currentFetchedResults = FetchedResults(isIncluded: storeRequest.isIncluded,
-                                               areInIncreasingOrder: storeRequest.areInIncreasingOrder,
-                                               sectionNameProvider: sectionNameProvider)
+        shouldRebuildFetchedResults = true
         
         // notify delegate
         delegate.controllerWillChangeContent?(self)
         
-        // attach callbacks to the store connectors' batch controller
-        storeConnector.batchController.delegate.controllerWillBeginBatchingChanges = { [unowned self] (controller) in
-            self.delegate.controllerWillChangeContent?(self)
+        // cleanup by removing any currently
+        // running queries
+        if let currentQuery = currentQuery {
+            storeConnector.stop(currentQuery)
         }
         
-        storeConnector.batchController.delegate.controllerDidFinishBatchingChanges = { [unowned self] (controller, inserted, updated, deleted) in
-            // keep track of the current results (before applying the changes)
-            let oldFetchedResults: FetchedResults<ResultType>! = self.currentFetchedResults
+        // execute the new query
+        let query = ObserverQuery(fetchRequest: storeRequest) { [unowned self] (digest) in
+            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(isIncluded: storeRequest.isIncluded,
+                                                                                 areInIncreasingOrder: storeRequest.areInIncreasingOrder,
+                                                                                 sectionNameProvider: sectionNameProvider)
             
-            // starting from the current resuts, apply the changes to a new fetched results
-            // object; note that force unwraping the current fetched results here is safe
-            // since we've creating it at the start of the `performFetch()` method
-            let newFetchedResults = FetchedResults(fetchedResults: self.currentFetchedResults!)
-            newFetchedResults.apply(inserted: Array(inserted), changed: Array(updated), deleted: Array(deleted))
+            var newFetchedResults: FetchedResults<ResultType>!
+            if self.shouldRebuildFetchedResults {
+                // add incremental changes starting from an empty results object
+                newFetchedResults = FetchedResults(isIncluded: storeRequest.isIncluded,
+                                                   areInIncreasingOrder: storeRequest.areInIncreasingOrder,
+                                                   sectionNameProvider: sectionNameProvider)
+                newFetchedResults.apply(inserted: Array(digest.inserted), changed: Array(digest.updated), deleted: Array(digest.deleted))
+                
+                // results rebuilt
+                self.shouldRebuildFetchedResults = false
+            }
+            else {
+                // add incremental changes starting from the current results
+                newFetchedResults = FetchedResults(fetchedResults: oldFetchedResults)
+                newFetchedResults.apply(inserted: Array(digest.inserted), changed: Array(digest.updated), deleted: Array(digest.deleted))
+            }
             
             // update the current results
             self.currentFetchedResults = newFetchedResults
-            
+
             // compute the difference if the change tracker is configured
             if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
                 // compute the difference
-                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: Array(updated))
+                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: Array(digest.updated))
                 controllerDidChangeResults(self, diff)
             }
             
             // notify the delegate
             self.delegate.controllerDidChangeContent?(self)
         }
-        
-        // execute the fetch
-        storeConnector.execute(storeRequest)
+        currentQuery = query
+        storeConnector.execute(query)
     }
     
     /// Returns the snapshot at a given indexPath.

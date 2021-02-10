@@ -1,7 +1,7 @@
 //
-//  CoreDataStoreRequest.swift
+//  ObserverQuery.swift
 //
-//  Copyright (c) 2017-2020 Christian Gossain
+//  Copyright (c) 2021 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,21 @@
 //
 
 import Foundation
-import FetchedResultsController
-import CoreData
 
-final class CoreDataStoreRequest<EntityType: NSManagedObject>: FetchRequest<EntityType> {
-    let managedObjectContext: NSManagedObjectContext
+/// A long-running query that monitors the store and updates your results whenever the matching objects are added, updated, or deleted.
+public class ObserverQuery<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
+    /// The underlying fetch request that describes the search criteria.
+    public let fetchRequest: RequestType
     
-    let nsFetchRequest: NSFetchRequest<EntityType>
+    /// A block that is called when a matching results are inserted, updated, or deleted from the store.
+    public let updateHandler: (Batch<ResultType>.Digest) -> Void
     
-    init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<EntityType>) {
-        self.managedObjectContext = managedObjectContext
-        self.nsFetchRequest = fetchRequest
-        super.init()
+    /// Instantiates and returns a query.
+    public init(fetchRequest: RequestType, updateHandler: @escaping (Batch<ResultType>.Digest) -> Void) {
+        self.fetchRequest = fetchRequest
+        self.updateHandler = updateHandler
     }
+    
 }
+
+extension ObserverQuery: Identifiable {}
