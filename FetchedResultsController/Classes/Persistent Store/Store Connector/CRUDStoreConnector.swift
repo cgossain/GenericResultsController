@@ -24,19 +24,18 @@
 
 import Foundation
 
-/// CRUDStoreConnector is an abstract superclass that adds insert, update, and delete
-/// methods to the base store connector.
+/// CRUDStoreConnector is an abstract superclass that adds some convenient features to the
+/// base store connector.
 ///
-/// It also adds a mechanism for tracking draft changes, and managing parent-child relationships
-/// between store connectors (which is used to recursively commit draft changes, but could
-/// be used for other purposes too).
+/// In particular, it defines an API for insert, update, and delete operations. It also adds a
+/// mechanism for tracking draft changes (shows in the UI but not commited to the store),
+/// and finally it also a mechanism for managing parent-child relationships between store
+/// connectors (which is used to recursively commit draft changes, but could be used for
+/// other purposes too).
 ///
-/// This class is provided for convenience. Given that the base store connector should already understand the
-/// particulars of fetching data from the underlying store (i.e. `func execute(_ request: RequestType)`),
-/// it follows that if one wanted to also perform CRUD operations on that same store (or specific location in that store)
-/// this would be the logical place to do it.
-///
-/// - Note: The results controller does not call any of these methods itself.
+/// Given that the base store connector should already understand the particulars of fetching
+/// data from the underlying store, it follows that if one wanted to also perform CRUD operations
+/// on that same store (or specific location in that store) this would be the logical place to do it.
 open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>>: StoreConnector<ResultType, RequestType> {
     
     // MARK: - Private Properties
