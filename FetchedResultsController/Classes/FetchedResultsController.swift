@@ -33,7 +33,7 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
     public let storeConnector: StoreConnector<ResultType, RequestType>
     
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
-    public let storeRequest: RequestType
+    public let fetchRequest: RequestType
     
     /// A block that is run against fetched objects used to determine the section they belong to.
     public let sectionNameProvider: SectionNameProvider<ResultType>?
@@ -69,13 +69,12 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
     /// Returns a fetch request controller initialized using the given arguments.
     ///
     /// - Parameters:
+    ///   - fetchRequest: The fetch request that will be executed against the store connector.
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The fetch request is executed against this connector instance.
-    ///   - storeRequest: The fetch request that will be executed against the store connector.
-    ///   - sectionNameKeyPath: A key path on result objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
-    ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
-    public init(storeConnector: StoreConnector<ResultType, RequestType>, storeRequest: RequestType, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
+    ///   - sectionNameProvider: A block that is run against fetched objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
+    public init(fetchRequest: RequestType, storeConnector: StoreConnector<ResultType, RequestType>, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
+        self.fetchRequest = fetchRequest
         self.storeConnector = storeConnector
-        self.storeRequest = storeRequest
         self.sectionNameProvider = sectionNameProvider
     }
     
@@ -103,16 +102,16 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
         }
         
         // execute the new query
-        let query = ObserverQuery(fetchRequest: storeRequest) { [unowned self] (digest) in
-            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(isIncluded: storeRequest.isIncluded,
-                                                                                 areInIncreasingOrder: storeRequest.areInIncreasingOrder,
+        let query = ObserverQuery(fetchRequest: fetchRequest) { [unowned self] (digest) in
+            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(isIncluded: fetchRequest.isIncluded,
+                                                                                 areInIncreasingOrder: fetchRequest.areInIncreasingOrder,
                                                                                  sectionNameProvider: sectionNameProvider)
             
             var newFetchedResults: FetchedResults<ResultType>!
             if self.shouldRebuildFetchedResults {
                 // add incremental changes starting from an empty results object
-                newFetchedResults = FetchedResults(isIncluded: storeRequest.isIncluded,
-                                                   areInIncreasingOrder: storeRequest.areInIncreasingOrder,
+                newFetchedResults = FetchedResults(isIncluded: fetchRequest.isIncluded,
+                                                   areInIncreasingOrder: fetchRequest.areInIncreasingOrder,
                                                    sectionNameProvider: sectionNameProvider)
                 newFetchedResults.apply(inserted: Array(digest.inserted), changed: Array(digest.updated), deleted: Array(digest.deleted))
                 
