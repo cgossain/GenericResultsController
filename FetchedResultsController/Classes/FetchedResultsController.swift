@@ -101,18 +101,22 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
             storeConnector.stop(currentQuery)
         }
         
-        // cement the fetch parameters for
-        // this fetch by making a copy
-        let fetchRequestCopy = fetchRequest.copy() as! RequestType
+        // make a copy of the fetch request at the
+        // time `performFetch()` is called to ensure
+        // incremental changes are applyed against a
+        // stable fetch request; the expectation is that
+        // if the fetch parameters are changed, `performFetch()`
+        // will be called again
+        let frozenFetchRequest = fetchRequest.copy() as! RequestType
         
         // execute the new query
-        let query = ObserverQuery(fetchRequest: fetchRequestCopy) { [unowned self] (digest) in
-            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(fetchRequest: fetchRequestCopy, sectionNameProvider: sectionNameProvider)
+        let query = ObserverQuery(fetchRequest: frozenFetchRequest) { [unowned self] (digest) in
+            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(fetchRequest: frozenFetchRequest, sectionNameProvider: sectionNameProvider)
             
             var newFetchedResults: FetchedResults<ResultType>!
             if self.shouldRebuildFetchedResults {
                 // add incremental changes starting from an empty results object
-                newFetchedResults = FetchedResults(fetchRequest: fetchRequestCopy, sectionNameProvider: sectionNameProvider)
+                newFetchedResults = FetchedResults(fetchRequest: frozenFetchRequest, sectionNameProvider: sectionNameProvider)
                 newFetchedResults.apply(digest: digest)
                 
                 // results rebuilt
