@@ -24,7 +24,7 @@
 
 import Foundation
 
-/// A long-running query that monitors the store and updates your results whenever the matching objects are added, updated, or deleted.
+/// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
 public class ObserverQuery<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
     /// The underlying fetch request that describes the search criteria.
     public let fetchRequest: RequestType

@@ -29,11 +29,8 @@ let nilSectionName = ""
 
 /// FetchedResults manages the entire set of results of a fetched results controller.
 class FetchedResults<ResultType: FetchRequestResult> {
-    /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
-    let isIncluded: ((ResultType) -> Bool)?
-    
-    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
-    let areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
+    /// The search criteria used to retrieve data from a persistent store.
+    let fetchRequest: FetchRequest<ResultType>
     
     /// A block that is run against fetched objects used to determine the section they belong to.
     let sectionNameProvider: SectionNameProvider<ResultType>?
@@ -90,7 +87,7 @@ class FetchedResults<ResultType: FetchRequestResult> {
             }
             
             // 2. if section names are the same, sort using the section sorting logic
-            if let areInIncreasingOrder = self.areInIncreasingOrder {
+            if let areInIncreasingOrder = self.fetchRequest.areInIncreasingOrder {
                 return areInIncreasingOrder(left, right)
             }
             
@@ -102,19 +99,16 @@ class FetchedResults<ResultType: FetchRequestResult> {
     
     // MARK: - Lifecycle
     
-    /// Initializes a new fetched results objects with the given arguments.
+    /// Creates and returns a new fetched results objects with the given arguments.
     ///
     /// - Parameters:
-    ///   - isIncluded: A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
-    ///   - areInIncreasingOrder: A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    ///   - fetchRequest: The search criteria used to retrieve data from a persistent store.
     ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
     ///   - fetchedResults: The fetch result whose contents should be added to the receiver.
-    init(isIncluded: ((ResultType) -> Bool)?,
-         areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?,
+    init(fetchRequest: FetchRequest<ResultType>,
          sectionNameProvider: SectionNameProvider<ResultType>? = nil,
          fetchedResults: FetchedResults? = nil) {
-        self.isIncluded = isIncluded
-        self.areInIncreasingOrder = areInIncreasingOrder
+        self.fetchRequest = fetchRequest
         self.sectionNameProvider = sectionNameProvider
         
         // configure the initial state with the contents of a previous fetch result if provided
@@ -138,13 +132,11 @@ class FetchedResults<ResultType: FetchRequestResult> {
         }
     }
     
-    /// Initializes a new fetched results objects using the contents of an existing fetched results objects.
+    /// Creates and returns a new fetched results objects with the contents of an existing fetched results objects.
     convenience init(fetchedResults: FetchedResults) {
-        self.init(
-            isIncluded: fetchedResults.isIncluded,
-            areInIncreasingOrder: fetchedResults.areInIncreasingOrder,
-            sectionNameProvider: fetchedResults.sectionNameProvider,
-            fetchedResults: fetchedResults)
+        self.init(fetchRequest: fetchedResults.fetchRequest,
+                  sectionNameProvider: fetchedResults.sectionNameProvider,
+                  fetchedResults: fetchedResults)
     }
 }
 
@@ -163,20 +155,35 @@ extension FetchedResults {
 
 extension FetchedResults {
     /// Applies the given changes to the current results.
-    func apply(inserted: [ResultType], changed: [ResultType], deleted: [ResultType]) {
-        // apply inserted
-        for obj in inserted {
+    func apply(digest: Batch<ResultType>.Digest) {
+        // apply inserted objects
+        for obj in digest.inserted {
             insert(obj: obj)
         }
         
-        // apply changed
-        for obj in changed {
+        // apply updated objects
+        for obj in digest.updated {
             update(obj: obj)
         }
         
-        // apply deleted
-        for obj in deleted {
+        // apply deleted objects
+        for obj in digest.deleted {
             delete(obj: obj)
+        }
+        
+        // discard objects above the fetch limit;
+        // note that it's expected the store connector
+        // should be efficient and respect the fetch
+        // limit, however this may not always be the case
+        // therefore as a safeguard the following code
+        // will discard any objects above the fetch limit
+        if fetchRequest.fetchLimit > 0, results.count > fetchRequest.fetchLimit {
+            let min = fetchRequest.fetchLimit
+            let max = results.count - 1
+            let objectsToDiscard = results[min...max]
+            for obj in objectsToDiscard {
+                delete(obj: obj)
+            }
         }
         
         // reset internal state since the contents have changed
@@ -245,7 +252,7 @@ extension FetchedResults {
         
         // create or update the section
         let sectionKeyValue = self.sectionName(for: obj)
-        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: areInIncreasingOrder)
+        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: fetchRequest.areInIncreasingOrder)
         section.insert(obj: obj)
         sectionsBySectionKeyValue[sectionKeyValue] = section
     }
@@ -298,7 +305,7 @@ extension FetchedResults {
 extension FetchedResults {
     /// Indicates if the given object should be included in the data set.
     private func canInclude(obj: ResultType) -> Bool {
-        return self.isIncluded?(obj) ?? true
+        return fetchRequest.isIncluded?(obj) ?? true
     }
     
     /// Returns the section key value for the given object.

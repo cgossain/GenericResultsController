@@ -35,7 +35,19 @@ public typealias FetchRequestResult = Identifiable & Hashable
 /// The idea is that this fetch request is executed against a concrete instance of a store connector,
 /// therefore you can subclass this to create a more specific fetch request with additional paramters
 /// that your store connector understands.
-open class FetchRequest<ResultType: FetchRequestResult> {
+///
+/// - Subclassing Notes:
+///     - The results controller makes a copy of the fetch request just before the fetch is executed. So you are
+///       required to override `copy(with zone: NSZone? = nil)` to make sure your subclass is properly
+///       copied when performing a fetch.
+open class FetchRequest<ResultType: FetchRequestResult>: NSCopying {
+    /// The fetch limit of the fetch request.
+    ///
+    /// The fetch limit specifies the maximum number of objects that a request should return when executed.
+    ///
+    /// A value of 0 indicates no maximum limit.
+    open var fetchLimit: Int = 0
+    
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
     open var isIncluded: ((ResultType) -> Bool)?
     
@@ -43,5 +55,18 @@ open class FetchRequest<ResultType: FetchRequestResult> {
     open var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
     
     /// Creates and initializes a new fetch request.
-    public init() {}
+    public required init() {
+        
+    }
+    
+    
+    // MARK: - NSCopying
+    
+    open func copy(with zone: NSZone? = nil) -> Any {
+        let copy = type(of: self).init()
+        copy.fetchLimit = fetchLimit
+        copy.isIncluded = isIncluded
+        copy.areInIncreasingOrder = areInIncreasingOrder
+        return copy
+    }
 }

@@ -95,25 +95,25 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
         // notify delegate
         delegate.controllerWillChangeContent?(self)
         
-        // cleanup by removing any currently
-        // running queries
+        // cleanup by stopping the currently
+        // running query if needed
         if let currentQuery = currentQuery {
             storeConnector.stop(currentQuery)
         }
         
+        // cement the fetch parameters for
+        // this fetch by making a copy
+        let fetchRequestCopy = fetchRequest.copy() as! RequestType
+        
         // execute the new query
-        let query = ObserverQuery(fetchRequest: fetchRequest) { [unowned self] (digest) in
-            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(isIncluded: fetchRequest.isIncluded,
-                                                                                 areInIncreasingOrder: fetchRequest.areInIncreasingOrder,
-                                                                                 sectionNameProvider: sectionNameProvider)
+        let query = ObserverQuery(fetchRequest: fetchRequestCopy) { [unowned self] (digest) in
+            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(fetchRequest: fetchRequestCopy, sectionNameProvider: sectionNameProvider)
             
             var newFetchedResults: FetchedResults<ResultType>!
             if self.shouldRebuildFetchedResults {
                 // add incremental changes starting from an empty results object
-                newFetchedResults = FetchedResults(isIncluded: fetchRequest.isIncluded,
-                                                   areInIncreasingOrder: fetchRequest.areInIncreasingOrder,
-                                                   sectionNameProvider: sectionNameProvider)
-                newFetchedResults.apply(inserted: Array(digest.inserted), changed: Array(digest.updated), deleted: Array(digest.deleted))
+                newFetchedResults = FetchedResults(fetchRequest: fetchRequestCopy, sectionNameProvider: sectionNameProvider)
+                newFetchedResults.apply(digest: digest)
                 
                 // results rebuilt
                 self.shouldRebuildFetchedResults = false
@@ -121,7 +121,7 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
             else {
                 // add incremental changes starting from the current results
                 newFetchedResults = FetchedResults(fetchedResults: oldFetchedResults)
-                newFetchedResults.apply(inserted: Array(digest.inserted), changed: Array(digest.updated), deleted: Array(digest.deleted))
+                newFetchedResults.apply(digest: digest)
             }
             
             // update the current results

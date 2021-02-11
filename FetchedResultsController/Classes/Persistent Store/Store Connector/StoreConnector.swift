@@ -25,7 +25,7 @@
 import Foundation
 
 /// StoreConnector is an abstract superclass exposing a simple API for interfacing between a
-/// fetched results controller and any data store. It's a stateless adapter to some database.
+/// fetched results controller and any data store. It's an adapter to some underlying store.
 ///
 /// The API is intentionally simple and makes no assumptions about how you manage your connection
 /// to the underlying data store. Your concrete subclass should implement any state and logic needed to
@@ -39,7 +39,7 @@ import Foundation
 /// would provide all your result objects using the "insertion" variant. Otherwise if you have long running observers
 /// you can keep delivering incremental updates using all the variants.
 open class StoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
-    /// A short decriptive title for the data store.
+    /// A short descriptive title for the data store.
     public let title: String
     
     /// Indicates if changes should always be processed as soon as they're enqueued.
@@ -134,9 +134,7 @@ open class StoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequ
     }
 }
 
-extension StoreConnector: Identifiable {}
-
-extension StoreConnector: Equatable {
+extension StoreConnector: Identifiable, Equatable {
     public static func == (lhs: StoreConnector<ResultType, RequestType>, rhs: StoreConnector<ResultType, RequestType>) -> Bool {
         return lhs.id == rhs.id
     }
