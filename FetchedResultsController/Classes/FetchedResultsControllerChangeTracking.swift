@@ -24,8 +24,8 @@
 
 import Foundation
 
-public class FetchedResultsControllerChangeTracking<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
-    public typealias DidChangeResultsHandler = (_ controller: FetchedResultsController<ResultType, RequestType>, _ difference: FetchedResultsDifference<ResultType>) -> Void
+public class FetchedResultsControllerChangeTracking<RequestType: FetchRequest> {
+    public typealias DidChangeResultsHandler = (_ controller: FetchedResultsController<RequestType>, _ difference: FetchedResultsDifference<RequestType>) -> Void
     
     /// Notifies the change tracker that the controller has changed its results.
     ///

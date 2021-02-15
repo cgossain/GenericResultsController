@@ -27,7 +27,7 @@ import FetchedResultsController
 import UIKit
 
 class ViewController: UITableViewController {
-    private(set) var fetchedResultsController: FetchedResultsController<Event, CoreDataStoreRequest<Event>>!
+    private(set) var fetchedResultsController: FetchedResultsController<CoreDataStoreRequest<Event>>!
     
     var managedObjectContext: NSManagedObjectContext { return CoreDataManager.shared.persistentContainer.viewContext }
     
@@ -62,15 +62,17 @@ class ViewController: UITableViewController {
     }
     
     private func configureResultsController() {
-        let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
-        fetchRequest.returnsObjectsAsFaults = false
+        let nsFetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
+        nsFetchRequest.returnsObjectsAsFaults = false
         
-        let storeRequest = CoreDataStoreRequest(managedObjectContext: self.managedObjectContext, fetchRequest: fetchRequest)
+        let storeRequest = CoreDataStoreRequest(nsFetchRequest: nsFetchRequest)
         
-        self.fetchedResultsController = FetchedResultsController(storeConnector: CoreDataStoreConnector(), storeRequest: storeRequest) { $0.category }
+        fetchedResultsController = FetchedResultsController(fetchRequest: storeRequest, storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext)) {
+            $0.category
+        }
         
-        // implement table view row diffing
-        self.fetchedResultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in
+        // table view diffing
+        fetchedResultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in
             self.tableView.performBatchUpdates({
                 // apply section changes
                 difference.enumerateSectionChanges { (section, sectionIndex, type) in
@@ -99,21 +101,25 @@ class ViewController: UITableViewController {
                     }
                 }
             })
-            
+
             self.refreshControl?.endRefreshing()
         }
         
-//        fetchedResultsController.delegate.controllerWillChangeContent = { (controller) in
-//            print("Will change content.")
-//        }
+        fetchedResultsController.delegate.controllerWillChangeContent = { (controller) in
+            print("Will change content.")
+        }
 
         fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
             print("Did change content.")
-//            self.tableView.reloadData()
-//            self.refreshControl?.endRefreshing()
+            self.tableView.reloadData()
+            self.refreshControl?.endRefreshing()
             
-            let context = self.managedObjectContext
-            try! context.save()
+            // the purpose of saving here is to handle the case when an
+            // object is deleted we don't want to save immediately until
+            // the results controller is done processing the change, otherwise
+            // the deleted object is turned into a fault and it's properties
+            // would not be accessible while the results controller is updating
+            CoreDataManager.shared.saveContext()
         }
     }
     
@@ -146,6 +152,12 @@ class ViewController: UITableViewController {
             let obj = try! fetchedResultsController.object(at: indexPath)
             let context = managedObjectContext
             context.delete(obj)
+            
+            // saving here will turn the deleted object into a "fault" which
+            // means that the results controller will get "nil" when trying
+            // to access certain properties of the deleted object (i.e. section name),
+            // so we won't save here
+//            CoreDataManager.shared.saveContext()
         }
     }
 }
@@ -166,16 +178,8 @@ extension ViewController {
             newEvent.category = "Category B"
         }
         
-
         // Save the context.
-        do {
-            try context.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
+        CoreDataManager.shared.saveContext()
     }
 }
 

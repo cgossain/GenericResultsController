@@ -40,33 +40,48 @@ public typealias FetchRequestResult = Identifiable & Hashable
 ///     - The results controller makes a copy of the fetch request just before the fetch is executed. So you are
 ///       required to override `copy(with zone: NSZone? = nil)` to make sure your subclass is properly
 ///       copied when performing a fetch.
-open class FetchRequest<ResultType: FetchRequestResult>: NSCopying {
+public protocol FetchRequest {
+    associatedtype ResultType: FetchRequestResult
+    
     /// The fetch limit of the fetch request.
     ///
     /// The fetch limit specifies the maximum number of objects that a request should return when executed.
     ///
     /// A value of 0 indicates no maximum limit.
-    open var fetchLimit: Int = 0
+    var fetchLimit: Int { get }
     
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
-    open var isIncluded: ((ResultType) -> Bool)?
+    var isIncluded: ((ResultType) -> Bool)? { get }
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
-    open var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
+    var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { get }
     
-    /// Creates and initializes a new fetch request.
-    public required init() {
-        
-    }
+
+//    // MARK: - NSCopying
+//
+//    open func copy(with zone: NSZone? = nil) -> Any {
+//        let copy = type(of: self).init()
+//        copy.fetchLimit = fetchLimit
+//        copy.isIncluded = isIncluded
+//        copy.areInIncreasingOrder = areInIncreasingOrder
+//        return copy
+//    }
+}
+
+//extension FetchRequest where Self : NSObject {
+//    public func copy(with zone: NSZone? = nil) -> Any {
+//        let copy = type(of: self).init()
+////        copy.fetchLimit = fetchLimit
+////        copy.isIncluded = isIncluded
+////        copy.areInIncreasingOrder = areInIncreasingOrder
+//        return copy
+//    }
+//}
+
+public extension FetchRequest {
+    var fetchLimit: Int { return 0 }
     
+    var isIncluded: ((ResultType) -> Bool)? { return nil }
     
-    // MARK: - NSCopying
-    
-    open func copy(with zone: NSZone? = nil) -> Any {
-        let copy = type(of: self).init()
-        copy.fetchLimit = fetchLimit
-        copy.isIncluded = isIncluded
-        copy.areInIncreasingOrder = areInIncreasingOrder
-        return copy
-    }
+    var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { return nil }
 }

@@ -36,12 +36,12 @@ import Foundation
 /// Given that the base store connector should already understand the particulars of fetching
 /// data from the underlying store, it follows that if one wanted to also perform CRUD operations
 /// on that same store (or specific location in that store) this would be the logical place to do it.
-open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>>: StoreConnector<ResultType, RequestType> {
+open class CRUDStoreConnector<RequestType: FetchRequest>: StoreConnector<RequestType> {
     
     // MARK: - Private Properties
     
     /// The draft batch.
-    private var draft = Batch<ResultType>(id: UUID().uuidString)
+    private var draft = Batch<RequestType.ResultType>(id: UUID().uuidString)
     
     
     // MARK: - StoreConnector
@@ -51,28 +51,28 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
         
     }
     
-    open override func execute(_ query: ObserverQuery<ResultType, RequestType>) {
+    open override func execute(_ query: ObserverQuery<RequestType>) {
         super.execute(query)
         
         // reset the draft on execution of a new query
-        draft = Batch<ResultType>(id: UUID().uuidString)
+        draft = Batch<RequestType.ResultType>(id: UUID().uuidString)
     }
     
     
     // MARK: - CRUD
     
     /// Inserts the object into the underlying store.
-    open func insert(_ obj: ResultType) {
+    open func insert(_ obj: RequestType.ResultType) {
         
     }
     
     /// Updates the object in the underlying store.
-    open func update(_ obj: ResultType) {
+    open func update(_ obj: RequestType.ResultType) {
         
     }
     
     /// Deletes the object from the underlying store.
-    open func delete(_ obj: ResultType) {
+    open func delete(_ obj: RequestType.ResultType) {
         
     }
     
@@ -82,7 +82,7 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
     /// Adds the object to the stores' results but tracks it as a draft insertion (i.e. does not commit to the underlying store).
     ///
     /// Call `commit()` to commit the changes to the underlying store.
-    open func insertDraft(_ obj: ResultType) {
+    open func insertDraft(_ obj: RequestType.ResultType) {
         draft.insert(obj)
         
         // a CRUD operation would affect all
@@ -96,7 +96,7 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
     /// Adds the object to the stores' results but tracks it as a draft update (i.e. does not commit to the underlying store).
     ///
     /// Call `commit()` to commit the changes to the underlying store.
-    open func updateDraft(_ obj: ResultType) {
+    open func updateDraft(_ obj: RequestType.ResultType) {
         draft.update(obj)
         
         // a CRUD operation would affect all
@@ -110,7 +110,7 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
     /// Adds the object to the stores' results but tracks it as a draft delete (i.e. does not commit to the underlying store).
     ///
     /// Call `commit()` to commit the changes to the underlying store.
-    open func deleteDraft(_ obj: ResultType) {
+    open func deleteDraft(_ obj: RequestType.ResultType) {
         draft.delete(obj)
         
         // a CRUD operation would affect all
@@ -152,24 +152,24 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
         }
         
         // reset the draft after commiting
-        draft = Batch<ResultType>(id: UUID().uuidString)
+        draft = Batch<RequestType.ResultType>(id: UUID().uuidString)
     }
     
     
     // MARK: - Managing Parent-Child Relationship
     
     /// The parent store connector of the recipient.
-    public internal(set) weak var parent: CRUDStoreConnector<ResultType, RequestType>?
+    public internal(set) weak var parent: CRUDStoreConnector<RequestType>?
     
     /// An array of store connectors that are children of the current store connector.
-    public internal(set) var children: [CRUDStoreConnector<ResultType, RequestType>] = []
+    public internal(set) var children: [CRUDStoreConnector<RequestType>] = []
     
     /// Adds the specified store connector as a child of the current store connector.
     ///
     /// This method creates a parent-child relationship between the current store connector and the object in the `child` parameter.
     ///
     /// - Note: This method calls `willMoveToParent(_:)` before adding the child, however it is expected that you call didMoveToParentViewController:
-    open func addChild(_ child: CRUDStoreConnector<ResultType, RequestType>) {
+    open func addChild(_ child: CRUDStoreConnector<RequestType>) {
         // remove from existing parent if needed
         if let parent = child.parent {
             parent.removeFromParent()
@@ -187,12 +187,12 @@ open class CRUDStoreConnector<ResultType: FetchRequestResult, RequestType: Fetch
     }
     
     /// Called just before the store connector is added or removed from another store connector.
-    open func willMoveToParent(_ parent: CRUDStoreConnector<ResultType, RequestType>?) {
+    open func willMoveToParent(_ parent: CRUDStoreConnector<RequestType>?) {
         
     }
     
     /// Called after the store connector is added or removed from another store connector.
-    open func didMoveToParent(_ parent: CRUDStoreConnector<ResultType, RequestType>?) {
+    open func didMoveToParent(_ parent: CRUDStoreConnector<RequestType>?) {
         self.parent = parent
     }
 }

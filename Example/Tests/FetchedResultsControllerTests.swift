@@ -17,11 +17,11 @@ struct TestModel: Hashable, Identifiable {
     let category: String?
 }
 
-class TestStoreRequest: FetchRequest<TestModel> {
-    
+class TestStoreRequest: FetchRequest {
+    typealias ResultType = TestModel
 }
 
-class TestStoreConnector: StoreConnector<TestModel, TestStoreRequest> {
+class TestStoreConnector: StoreConnector<TestStoreRequest> {
     private let results = [TestModel(timestamp: Date(timeInterval: -9000, since: Date()), category: "Section A"),
                            TestModel(timestamp: Date(timeInterval: -8500, since: Date()), category: "Section A"),
                            TestModel(timestamp: Date(timeInterval: -8000, since: Date()), category: "Section A"),
@@ -29,7 +29,7 @@ class TestStoreConnector: StoreConnector<TestModel, TestStoreRequest> {
                            TestModel(timestamp: Date(timeInterval: -7000, since: Date()), category: "Section B"),
                            TestModel(timestamp: Date(timeInterval: -6500, since: Date()), category: "Section C")]
     
-    open override func execute(_ request: ObserverQuery<TestModel, TestStoreRequest>) {
+    open override func execute(_ request: ObserverQuery<TestStoreRequest>) {
         // simulate inserting fake results
 //        for result in results {
 //            self.enqueue(inserted: result)
@@ -47,11 +47,11 @@ class FetchedResultsControllerTests: XCTestCase {
     
     let testStoreRequest = TestStoreRequest()
     
-    var fetchedResultsController: FetchedResultsController<TestModel, TestStoreRequest>!
+    var fetchedResultsController: FetchedResultsController<TestStoreRequest>!
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        fetchedResultsController = FetchedResultsController(storeConnector: testStoreConnector, storeRequest: testStoreRequest) { $0.category }
+        fetchedResultsController = FetchedResultsController(fetchRequest: testStoreRequest, storeConnector: testStoreConnector) { $0.category }
         fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
             self.didChangeContentExpectation.fulfill()
         }

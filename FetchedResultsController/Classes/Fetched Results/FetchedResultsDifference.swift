@@ -37,22 +37,22 @@ public enum ResultsChangeType: Int {
 ///
 /// This information is useful for updating UI that lists the contents of a fetched results, such as
 /// the indexes of added, removed, updated, and rearranged objects.
-public struct FetchedResultsDifference<ResultType: FetchRequestResult> {
+public struct FetchedResultsDifference<RequestType: FetchRequest> {
     public struct Section {
         let idx: Int
-        let section: FetchedResultsSection<ResultType>
+        let section: FetchedResultsSection<RequestType.ResultType>
     }
     
     public struct Row {
         let indexPath: IndexPath
-        let value: ResultType
+        let value: RequestType.ResultType
     }
     
     /// The fetched results before applying the changes.
-    let fetchedResultsBeforeChanges: FetchedResults<ResultType>
+    let fetchedResultsBeforeChanges: FetchedResults<RequestType>
     
     /// The fetched results after applying the changes.
-    let fetchedResultsAfterChanges: FetchedResults<ResultType>
+    let fetchedResultsAfterChanges: FetchedResults<RequestType>
     
     /// The indexes of the removed sections, relative to the 'before' state.
     public private(set) var removedSections: [Section]?
@@ -81,7 +81,7 @@ public struct FetchedResultsDifference<ResultType: FetchRequestResult> {
     ///     - from: The fetched results object with the state of objects before the change.
     ///     - to: The fetched results object with the state of objects after the change.
     ///     - changedObjects: The objects in the fetch result whose content has been changed.
-    init(from: FetchedResults<ResultType>, to: FetchedResults<ResultType>, changedObjects: [ResultType]) {
+    init(from: FetchedResults<RequestType>, to: FetchedResults<RequestType>, changedObjects: [RequestType.ResultType]) {
         fetchedResultsBeforeChanges = from
         fetchedResultsAfterChanges = to
         
@@ -102,7 +102,7 @@ public struct FetchedResultsDifference<ResultType: FetchRequestResult> {
         // prep to compute moved rows
         var deletions = rowsDiff.filter({ !$0.isInserted })
         var insertions = rowsDiff.filter({ $0.isInserted })
-        var moves: [(from: DiffStep<ResultType>, to: DiffStep<ResultType>)] = []
+        var moves: [(from: DiffStep<RequestType.ResultType>, to: DiffStep<RequestType.ResultType>)] = []
         
         // A "move" is a special type of change. Specifically, it involves a row being removed from one location, and then being
         // inserted at a new location. The following 2 steps will extract moved row from the inserted and deleted lists.
@@ -222,7 +222,7 @@ public struct FetchedResultsDifference<ResultType: FetchRequestResult> {
 
 extension FetchedResultsDifference {
     /// Convenience method that enumerates all the section changes described by the difference object.
-    public func enumerateSectionChanges(_ body: ((_ section: FetchedResultsSection<ResultType>, _ sectionIndex: Int, _ type: ResultsChangeType) -> Void)) {
+    public func enumerateSectionChanges(_ body: ((_ section: FetchedResultsSection<RequestType.ResultType>, _ sectionIndex: Int, _ type: ResultsChangeType) -> Void)) {
         // removed sections
         if let removedSections = removedSections {
             for section in removedSections {
@@ -239,7 +239,7 @@ extension FetchedResultsDifference {
     }
     
     /// Convenience method that enumerates all the row changes described by the difference object.
-    public func enumerateRowChanges(_ body: ((_ anObject: ResultType, _ indexPath: IndexPath?, _ type: ResultsChangeType, _ newIndexPath: IndexPath?) -> Void)) {
+    public func enumerateRowChanges(_ body: ((_ anObject: RequestType.ResultType, _ indexPath: IndexPath?, _ type: ResultsChangeType, _ newIndexPath: IndexPath?) -> Void)) {
         // changed rows
         if let changedRows = changedRows {
             for row in changedRows {

@@ -38,7 +38,7 @@ import Foundation
 /// You call any of the `enqueue(_:_:)` methods to deliver result objects. If your fetch is short lived then you
 /// would provide all your result objects using the "insertion" variant. Otherwise if you have long running observers
 /// you can keep delivering incremental updates using all the variants.
-open class StoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
+open class StoreConnector<RequestType: FetchRequest> {
     /// A short descriptive title for the data store.
     public let title: String
     
@@ -56,13 +56,13 @@ open class StoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequ
     }
     
     /// The currently running queries.
-    public private(set) var queryByID: [AnyHashable : ObserverQuery<ResultType, RequestType>] = [:]
+    public private(set) var queryByID: [AnyHashable : ObserverQuery<RequestType>] = [:]
     
     
     // MARK: - Private Properties
     
     /// The batch queue.
-    private let queue = BatchQueue<ResultType>()
+    private let queue = BatchQueue<RequestType.ResultType>()
     
     
     // MARK: -  Lifecycle
@@ -94,7 +94,7 @@ open class StoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequ
     ///     - query: The query.
     ///
     /// - Important: Call `super.execute(_:)` as the first step in your implementation.
-    open func execute(_ query: ObserverQuery<ResultType, RequestType>) {
+    open func execute(_ query: ObserverQuery<RequestType>) {
         queryByID[query.id] = query
     }
     
@@ -103,7 +103,7 @@ open class StoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequ
     /// You need to override this method to perform any cleanup relating to stopping the query (e.g. removing database listeners).
     ///
     /// - Note: If the query is not running, this method does nothing.
-    open func stop(_ query: ObserverQuery<ResultType, RequestType>) {
+    open func stop(_ query: ObserverQuery<RequestType>) {
         queryByID[query.id] = nil
         queue.dequeue(batchID: query.id)
     }
@@ -111,7 +111,7 @@ open class StoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequ
     /// Proceses all enqueued changes immediately.
     ///
     /// You should use this method if you've enqueued changes driven by user action (e.g. user deleted an item).
-    open func processPendingChanges(for query: ObserverQuery<ResultType, RequestType>) {
+    open func processPendingChanges(for query: ObserverQuery<RequestType>) {
         queue.processPendingChanges(batchID: query.id)
     }
     
@@ -119,23 +119,23 @@ open class StoreConnector<ResultType: FetchRequestResult, RequestType: FetchRequ
     // MARK: -  Incremental Results
         
     /// Enqueues the object as an insertion.
-    open func enqueue(inserted: ResultType, for query: ObserverQuery<ResultType, RequestType>) {
+    open func enqueue(inserted: RequestType.ResultType, for query: ObserverQuery<RequestType>) {
         queue.enqueue(inserted, as: .insert, batchID: query.id)
     }
 
     /// Enqueues the object as an update.
-    open func enqueue(updated: ResultType, for query: ObserverQuery<ResultType, RequestType>) {
+    open func enqueue(updated: RequestType.ResultType, for query: ObserverQuery<RequestType>) {
         queue.enqueue(updated, as: .update, batchID: query.id)
     }
     
     /// Enqueues the object as an deletion.
-    open func enqueue(deleted: ResultType, for query: ObserverQuery<ResultType, RequestType>) {
+    open func enqueue(deleted: RequestType.ResultType, for query: ObserverQuery<RequestType>) {
         queue.enqueue(deleted, as: .delete, batchID: query.id)
     }
 }
 
 extension StoreConnector: Identifiable, Equatable {
-    public static func == (lhs: StoreConnector<ResultType, RequestType>, rhs: StoreConnector<ResultType, RequestType>) -> Bool {
+    public static func == (lhs: StoreConnector<RequestType>, rhs: StoreConnector<RequestType>) -> Bool {
         return lhs.id == rhs.id
     }
 }

@@ -24,12 +24,10 @@
 
 import Foundation
 
-public class FetchedResultsControllerDelegate<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
-    public typealias Handler = (FetchedResultsController<ResultType, RequestType>) -> Void
+public class FetchedResultsControllerDelegate<RequestType: FetchRequest> {
+    /// Called when the results controller begins receiving changes.
+    public var controllerWillChangeContent: ((FetchedResultsController<RequestType>) -> Void)?
     
     /// Called when the controller has completed processing the all changes.
-    public var controllerDidChangeContent: Handler?
-    
-    /// Called when the results controller begins receiving changes.
-    public var controllerWillChangeContent: Handler?
+    public var controllerDidChangeContent: ((FetchedResultsController<RequestType>) -> Void)?
 }

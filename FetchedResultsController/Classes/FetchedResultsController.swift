@@ -28,40 +28,50 @@ import Foundation
 public typealias SectionNameProvider<T> = (_ obj: T) -> String?
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
+open class FetchedResultsController<RequestType: FetchRequest> {
     /// The store connector instance the controller uses to execute a fetch request against.
-    public let storeConnector: StoreConnector<ResultType, RequestType>
+    public let storeConnector: StoreConnector<RequestType>
     
     /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
     public let fetchRequest: RequestType
     
     /// A block that is run against fetched objects used to determine the section they belong to.
-    public let sectionNameProvider: SectionNameProvider<ResultType>?
+    public let sectionNameProvider: SectionNameProvider<RequestType.ResultType>?
     
     /// The results of the fetch. Returns `nil` if `performFetch()` hasn't yet been called.
-    public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
+    public var fetchedObjects: [RequestType.ResultType] { return currentFetchedResults?.results ?? [] }
 
     /// The sections for the receiver’s fetch results.
-    public var sections: [FetchedResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
+    public var sections: [FetchedResultsSection<RequestType.ResultType>] { return currentFetchedResults?.sections ?? [] }
     
     /// The delegate handling all the results controller delegate callbacks.
-    public var delegate = FetchedResultsControllerDelegate<ResultType, RequestType>()
+    public var delegate = FetchedResultsControllerDelegate<RequestType>()
     
     /// The delegate handling all the results controller delegate callbacks.
-    public var changeTracker = FetchedResultsControllerChangeTracking<ResultType, RequestType>()
+    public var changeTracker = FetchedResultsControllerChangeTracking<RequestType>()
     
     
     // MARK: - Private Properties
     
-    /// The current fetched results.
-    private var currentFetchedResults: FetchedResults<ResultType>?
-    
-    /// A reference to the more recently executed query.
-    private var currentQuery: ObserverQuery<ResultType, RequestType>?
-    
     /// Indicates that a new fetch was started and that the current results object should be rebuilt
     /// instead of adding changes incrementally to the current results.
     private var shouldRebuildFetchedResults = false
+    
+    /// The current fetched results.
+    private var currentFetchedResults: FetchedResults<RequestType>?
+    
+    /// A reference to the most recently executed query, and any subsequent pagination related queries.
+    private var currentQueriesByID: [AnyHashable : ObserverQuery<RequestType>] = [:]
+    
+    /// The pagination cursor that points to the start of the next page.
+    private var currentPaginationCursor: Any?
+    
+    
+    
+    /// A reference to the more recently executed query.
+    private var currentQuery: ObserverQuery<RequestType>?
+    
+    
     
     
     // MARK: - Lifecycle
@@ -72,51 +82,39 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
     ///   - fetchRequest: The fetch request that will be executed against the store connector.
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The fetch request is executed against this connector instance.
     ///   - sectionNameProvider: A block that is run against fetched objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
-    public init(fetchRequest: RequestType, storeConnector: StoreConnector<ResultType, RequestType>, sectionNameProvider: SectionNameProvider<ResultType>? = nil) {
+    public init(fetchRequest: RequestType, storeConnector: StoreConnector<RequestType>, sectionNameProvider: SectionNameProvider<RequestType.ResultType>? = nil) {
         self.fetchRequest = fetchRequest
         self.storeConnector = storeConnector
         self.sectionNameProvider = sectionNameProvider
     }
     
     deinit {
-        // cleanup by removing any currently
+        // cleanup by removing all
         // running queries
-        if let currentQuery = currentQuery {
-            storeConnector.stop(currentQuery)
-        }
+        stopCurrentQueries()
     }
     
-    /// Executes the current store request against the store connector.
+    /// Executes a new query against the store connector.
     ///
-    /// - Important: Calling this method effectively invalidates any previous results.
+    /// - Important: Calling this method invalidates any previous results.
     public func performFetch() {
         shouldRebuildFetchedResults = true
         
         // notify delegate
         delegate.controllerWillChangeContent?(self)
         
-        // cleanup by stopping the currently
-        // running query if needed
-        if let currentQuery = currentQuery {
-            storeConnector.stop(currentQuery)
-        }
-        
-        // make a copy of the fetch request at the
-        // time `performFetch()` is called to ensure
-        // incremental changes are applyed against a
-        // stable fetch request; the expectation is that
-        // if the fetch parameters are changed, `performFetch()`
-        // will be called again
-        let frozenFetchRequest = fetchRequest.copy() as! RequestType
+        // cleanup by removing all
+        // running queries
+        stopCurrentQueries()
         
         // execute the new query
-        let query = ObserverQuery(fetchRequest: frozenFetchRequest) { [unowned self] (digest) in
-            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(fetchRequest: frozenFetchRequest, sectionNameProvider: sectionNameProvider)
+        let query = ObserverQuery<RequestType>(fetchRequest: self.fetchRequest) { [unowned self] (digest) in
+            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(fetchRequest: self.fetchRequest, sectionNameProvider: sectionNameProvider)
             
-            var newFetchedResults: FetchedResults<ResultType>!
+            var newFetchedResults: FetchedResults<RequestType>!
             if self.shouldRebuildFetchedResults {
                 // add incremental changes starting from an empty results object
-                newFetchedResults = FetchedResults(fetchRequest: frozenFetchRequest, sectionNameProvider: sectionNameProvider)
+                newFetchedResults = FetchedResults(fetchRequest: self.fetchRequest, sectionNameProvider: sectionNameProvider)
                 newFetchedResults.apply(digest: digest)
                 
                 // results rebuilt
@@ -141,8 +139,17 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
             // notify the delegate
             self.delegate.controllerDidChangeContent?(self)
         }
-        currentQuery = query
+        currentQueriesByID[query.id] = query
         storeConnector.execute(query)
+    }
+    
+    /// Executes a query for the next page.
+    func fetchNextPage() {
+//        guard let currentPaginationCursor = currentPaginationCursor else {
+//            return
+//        }
+        
+        
     }
     
     /// Returns the snapshot at a given indexPath.
@@ -151,7 +158,7 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
     ///     - indexPath: An index path in the fetch results. If indexPath does not describe a valid index path in the fetch results, an error is thrown.
     ///
     /// - Returns: The object at a given index path in the fetch results.
-    public func object(at indexPath: IndexPath) throws -> ResultType {
+    public func object(at indexPath: IndexPath) throws -> RequestType.ResultType {
         if indexPath.section < sections.count {
             let section = sections[indexPath.section]
             
@@ -169,8 +176,16 @@ open class FetchedResultsController<ResultType: FetchRequestResult, RequestType:
     ///     - obj: An object in the receiver’s fetch results.
     ///
     /// - Returns: The index path of object in the receiver’s fetch results, or nil if object could not be found.
-    public func indexPath(for obj: ResultType) -> IndexPath? {
+    public func indexPath(for obj: RequestType.ResultType) -> IndexPath? {
         return currentFetchedResults?.indexPath(for: obj)
+    }
+}
+
+extension FetchedResultsController {
+    private func stopCurrentQueries() {
+        currentQueriesByID.values.forEach({ storeConnector.stop($0) })
+        currentQueriesByID.removeAll()
+        currentPaginationCursor = nil
     }
 }
 

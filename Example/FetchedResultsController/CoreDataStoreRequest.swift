@@ -26,14 +26,16 @@ import Foundation
 import FetchedResultsController
 import CoreData
 
-final class CoreDataStoreRequest<EntityType: NSManagedObject>: FetchRequest<EntityType> {
-    let managedObjectContext: NSManagedObjectContext
+public final class CoreDataStoreRequest<EntityType: NSManagedObject>: FetchRequest {
+    public typealias ResultType = EntityType
     
+    /// The underlying NSFetchRequest.
     let nsFetchRequest: NSFetchRequest<EntityType>
     
-    init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<EntityType>) {
-        self.managedObjectContext = managedObjectContext
-        self.nsFetchRequest = fetchRequest
-        super.init()
+    
+    // MARK: - Lifecycle
+    
+    init(nsFetchRequest: NSFetchRequest<EntityType>) {
+        self.nsFetchRequest = nsFetchRequest
     }
 }

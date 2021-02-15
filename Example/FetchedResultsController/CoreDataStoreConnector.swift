@@ -27,12 +27,14 @@ import FetchedResultsController
 import CoreData
 
 extension NSManagedObject: Identifiable {
-    public var id: String {
-        return self.objectID.uriRepresentation().absoluteString
-    }
+    public var id: String { return self.objectID.uriRepresentation().absoluteString }
 }
 
-final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStoreConnector<EntityType, CoreDataStoreRequest<EntityType>> {
+final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStoreConnector<CoreDataStoreRequest<EntityType>> {
+    
+    let managedObjectContext: NSManagedObjectContext
+    
+    
     // MARK: - Private Properties
     
     private var managedObjectContextChangeObserver: AnyObject?
@@ -40,9 +42,14 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStoreConnec
     
     // MARK: - StoreConnector
     
-    override func execute(_ query: ObserverQuery<EntityType, CoreDataStoreRequest<EntityType>>) {
+    init(managedObjectContext: NSManagedObjectContext) {
+        self.managedObjectContext = managedObjectContext
+        super.init()
+    }
+    
+    override func execute(_ query: ObserverQuery<CoreDataStoreRequest<EntityType>>) {
         super.execute(query)
-        
+
         // perform the query and then call the appropriate `enqueue` method
         // when data becomes available
         //
@@ -57,12 +64,12 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStoreConnec
 
         // note, realistically you would use NSFetchedResultsController if you're
         // using CoreData.
-        
-        // attach a new observer
+
+        // attach new observer
         managedObjectContextChangeObserver =
             NotificationCenter.default.addObserver(
                 forName: NSNotification.Name.NSManagedObjectContextObjectsDidChange,
-                object: query.fetchRequest.managedObjectContext,
+                object: self.managedObjectContext,
                 queue: nil,
                 using: { [unowned self] (note) in
                     self.handleContextObjectsDidChangeNotification(note, query: query)
@@ -73,39 +80,36 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStoreConnec
             guard let objects = result.finalResult else { return }
             objects.forEach { self.enqueue(inserted: $0, for: query) }
         }
-        
-        try! query.fetchRequest.managedObjectContext.execute(fetch)
+
+        try! managedObjectContext.execute(fetch)
     }
-    
-    override func stop(_ query: ObserverQuery<EntityType, CoreDataStoreRequest<EntityType>>) {
+
+    override func stop(_ query: ObserverQuery<CoreDataStoreRequest<EntityType>>) {
         super.stop(query)
-        
-        // remove the previous observer if attached
+
+        // remove previous observer if attached
         if let managedObjectContextChangeObserver = managedObjectContextChangeObserver {
             NotificationCenter.default.removeObserver(managedObjectContextChangeObserver)
         }
     }
     
-    
-    // MARK: - Private
-    
-    private func handleContextObjectsDidChangeNotification(_ notification: Notification, query: ObserverQuery<EntityType, CoreDataStoreRequest<EntityType>>) {
+}
+
+extension CoreDataStoreConnector {
+    private func handleContextObjectsDidChangeNotification(_ notification: Notification, query: ObserverQuery<CoreDataStoreRequest<EntityType>>) {
         let entityName = query.fetchRequest.nsFetchRequest.entityName!
 
-        // inserted
-        let insertedObjectsSet = notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject> ?? []
-        let filteredInserted = insertedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
-        filteredInserted?.forEach({ self.enqueue(inserted: $0, for: query) })
+        // enqueue insertions of `EntityType`
+        let insertedObjs = notification.userInfo?[NSInsertedObjectsKey] as? Set<EntityType> ?? []
+        insertedObjs.filter({ $0.entity.name == entityName }).forEach({ self.enqueue(inserted: $0, for: query) })
 
-        // updated
-        let updatedObjectsSet = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> ?? []
-        let filteredUpdated = updatedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
-        filteredUpdated?.forEach({ self.enqueue(updated: $0, for: query) })
-
-        // deleted
-        let deletedObjectsSet = notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject> ?? []
-        let filteredDeleted = deletedObjectsSet.filter({ $0.entity.name == entityName }) as? Set<EntityType>
-        filteredDeleted?.forEach({ self.enqueue(deleted: $0, for: query) })
+        // enqueue updates of `EntityType`
+        let updatedObjs = notification.userInfo?[NSUpdatedObjectsKey] as? Set<EntityType> ?? []
+        updatedObjs.filter({ $0.entity.name == entityName }).forEach({ self.enqueue(updated: $0, for: query) })
+        
+        // enqueue deletions of `EntityType`
+        let deletedObjs = notification.userInfo?[NSDeletedObjectsKey] as? Set<EntityType> ?? []
+        deletedObjs.filter({ $0.entity.name == entityName }).forEach({ self.enqueue(deleted: $0, for: query) })
 
         // process immediately
         self.processPendingChanges(for: query)

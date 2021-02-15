@@ -25,19 +25,21 @@
 import Foundation
 
 /// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
-public class ObserverQuery<ResultType: FetchRequestResult, RequestType: FetchRequest<ResultType>> {
+public class ObserverQuery<RequestType: FetchRequest> {
     /// The underlying fetch request that describes the search criteria.
     public let fetchRequest: RequestType
     
     /// A block that is called when a matching results are inserted, updated, or deleted from the store.
-    public let updateHandler: (Batch<ResultType>.Digest) -> Void
+    public let updateHandler: (Batch<RequestType.ResultType>.Digest) -> Void
+    
+    
+    // MARK: - Lifecycle
     
     /// Instantiates and returns a query.
-    public init(fetchRequest: RequestType, updateHandler: @escaping (Batch<ResultType>.Digest) -> Void) {
+    public init(fetchRequest: RequestType, updateHandler: @escaping (Batch<RequestType.ResultType>.Digest) -> Void) {
         self.fetchRequest = fetchRequest
         self.updateHandler = updateHandler
     }
-    
 }
 
 extension ObserverQuery: Identifiable {}
