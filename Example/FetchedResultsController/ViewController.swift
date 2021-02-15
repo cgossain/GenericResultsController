@@ -109,17 +109,10 @@ class ViewController: UITableViewController {
             print("Will change content.")
         }
 
-        fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
+        fetchedResultsController.delegate.controllerDidChangeContent = { (controller) in
             print("Did change content.")
-            self.tableView.reloadData()
-            self.refreshControl?.endRefreshing()
-            
-            // the purpose of saving here is to handle the case when an
-            // object is deleted we don't want to save immediately until
-            // the results controller is done processing the change, otherwise
-            // the deleted object is turned into a fault and it's properties
-            // would not be accessible while the results controller is updating
-            CoreDataManager.shared.saveContext()
+//            self.tableView.reloadData()
+//            self.refreshControl?.endRefreshing()
         }
     }
     
@@ -152,12 +145,7 @@ class ViewController: UITableViewController {
             let obj = try! fetchedResultsController.object(at: indexPath)
             let context = managedObjectContext
             context.delete(obj)
-            
-            // saving here will turn the deleted object into a "fault" which
-            // means that the results controller will get "nil" when trying
-            // to access certain properties of the deleted object (i.e. section name),
-            // so we won't save here
-//            CoreDataManager.shared.saveContext()
+            CoreDataManager.shared.saveContext()
         }
     }
 }

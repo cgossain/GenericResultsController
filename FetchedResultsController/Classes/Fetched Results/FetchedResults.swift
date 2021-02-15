@@ -58,10 +58,17 @@ class FetchedResults<RequestType: FetchRequest> {
     
     // MARK: - Private Properties
     
-    private var _sections: [FetchedResultsSection<RequestType.ResultType>]? // hold the current non-stale sections array
-    
     /// A dictionary that maps a section to its `sectionKeyValue`.
     private var sectionsBySectionKeyValue: [String: FetchedResultsSection<RequestType.ResultType>] = [:]
+    
+    /// A dictionary that maps a result objects `sectionKeyValue` to its ID.
+    private var sectionKeyValuesByID: [AnyHashable: String] = [:]
+    
+    
+    // MARK: - Private Properties (Computed)
+    
+    /// The computed sections array.
+    private var _sections: [FetchedResultsSection<RequestType.ResultType>]? // hold the current non-stale sections array
     
     /// A dictionary that maps a sections' index to its `sectionKeyValue`.
     private var sectionIndicesBySectionKeyValue: [String: Int] = [:]
@@ -120,7 +127,7 @@ class FetchedResults<RequestType: FetchRequest> {
             // append the result objects
             results.append(contentsOf: fetchedResults.results)
             
-            // add new result section instances
+            // copy the result sections
             for (sectionKeyValue, resultsSection) in fetchedResults.sectionsBySectionKeyValue {
                 let newResultsSection = FetchedResultsSection<RequestType.ResultType>(
                     sectionKeyValue: resultsSection.sectionKeyValue,
@@ -129,6 +136,9 @@ class FetchedResults<RequestType: FetchRequest> {
                 
                 sectionsBySectionKeyValue[sectionKeyValue] = newResultsSection
             }
+            
+            // copy the section key value mappings
+            sectionKeyValuesByID = fetchedResults.sectionKeyValuesByID
         }
     }
     
@@ -144,9 +154,7 @@ extension FetchedResults {
     /// Returns the indexPath of the given object; otherwise returns `nil` if not found.
     public func indexPath(for obj: RequestType.ResultType) -> IndexPath? {
         for (sectionIdx, section) in sections.enumerated() {
-            guard let rowIdx = section.index(of: obj) else {
-                continue
-            }
+            guard let rowIdx = section.index(of: obj) else { continue }
             return IndexPath(row: rowIdx, section: sectionIdx)
         }
         return nil
@@ -255,6 +263,7 @@ extension FetchedResults {
         let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: fetchRequest.areInIncreasingOrder)
         section.insert(obj: obj)
         sectionsBySectionKeyValue[sectionKeyValue] = section
+        sectionKeyValuesByID[obj.id] = sectionKeyValue
     }
     
     /// Replaces the current version of the object with the given one.
@@ -299,6 +308,9 @@ extension FetchedResults {
         else {
             sectionsBySectionKeyValue[sectionKeyValue] = section
         }
+        
+        // clear the cached section name
+        sectionKeyValuesByID[obj.id] = nil
     }
 }
 
@@ -310,12 +322,19 @@ extension FetchedResults {
     
     /// Returns the section key value for the given object.
     private func sectionName(for obj: RequestType.ResultType) -> String {
-        guard let sectionNameProvider = sectionNameProvider,
-              let sectionName = sectionNameProvider(obj) else {
-            return nilSectionName
+        // return the cached section name if available
+        if let cachedSectionName = sectionKeyValuesByID[obj.id] {
+            return cachedSectionName
         }
         
-        return sectionName
+        // get the section name from the provider
+        if let sectionNameProvider = sectionNameProvider,
+           let sectionName = sectionNameProvider(obj) {
+            return sectionName
+        }
+        
+        // fallback to the nil section name
+        return nilSectionName
     }
 }
 
