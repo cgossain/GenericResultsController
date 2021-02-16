@@ -38,7 +38,7 @@ import Foundation
 /// You call any of the `enqueue(_:_:)` methods to deliver result objects. If your fetch is short lived then you
 /// would provide all your result objects using the "insertion" variant. Otherwise if you have long running observers
 /// you can keep delivering incremental updates using all the variants.
-open class StoreConnector<RequestType: StoreRequest> {
+open class StoreConnector<RequestType: PersistentStoreRequest> {
     /// A short descriptive title for the data store.
     public let title: String
     

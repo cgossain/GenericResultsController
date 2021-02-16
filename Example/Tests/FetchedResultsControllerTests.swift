@@ -17,27 +17,7 @@ struct TestModel: Hashable, Identifiable {
     let category: String?
 }
 
-class TestStoreRequest: StoreRequest {
-    typealias ResultType = TestModel
-    
-    var fetchLimit: Int = 0
-    
-    var isIncluded: ((TestModel) -> Bool)?
-    
-    var areInIncreasingOrder: ((TestModel, TestModel) -> Bool)?
-    
-    
-    // MARK: - NSCopying
-    
-    func copy(with zone: NSZone? = nil) -> Any {
-        let copy = TestStoreRequest()
-        copy.fetchLimit = fetchLimit
-        copy.isIncluded = isIncluded
-        copy.areInIncreasingOrder = areInIncreasingOrder
-        return copy
-    }
-    
-}
+class TestStoreRequest: StoreRequest<TestModel> {}
 
 class TestStoreConnector: StoreConnector<TestStoreRequest> {
     private let results = [TestModel(timestamp: Date(timeInterval: -9000, since: Date()), category: "Section A"),
@@ -47,11 +27,9 @@ class TestStoreConnector: StoreConnector<TestStoreRequest> {
                            TestModel(timestamp: Date(timeInterval: -7000, since: Date()), category: "Section B"),
                            TestModel(timestamp: Date(timeInterval: -6500, since: Date()), category: "Section C")]
     
-    open override func execute(_ request: ObserverQuery<TestStoreRequest>) {
-        // simulate inserting fake results
-//        for result in results {
-//            self.enqueue(inserted: result)
-//        }
+    open override func execute(_ query: ObserverQuery<TestStoreRequest>) {
+        super.execute(query)
+        results.forEach { self.enqueue(inserted: $0, for: query) }
     }
 }
 

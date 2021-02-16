@@ -28,7 +28,7 @@ import Foundation
 let nilSectionName = ""
 
 /// FetchedResults manages the entire set of results of a fetched results controller.
-class FetchedResults<RequestType: StoreRequest> {
+class FetchedResults<RequestType: PersistentStoreRequest> {
     /// The search criteria used to retrieve data from a persistent store.
     let storeRequest: RequestType
     

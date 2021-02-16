@@ -24,40 +24,39 @@
 
 import Foundation
 
-/// A type that fetched objects must conform to.
-public typealias StoreRequestResult = Identifiable & Hashable
-
-/// A type that provides criteria used to retrieve data from a persistent store.
+/// A type that defines criteria used to retrieve data from a persistent store.
 ///
-/// - Implementaion Notes:
-///     - The results controller makes a copy of the fetch request just before the fetch is executed. Therefore
-///       you must implement `copy(with zone: NSZone? = nil)` to make sure your request is
-///       property copied when performing a fetch.
-public protocol StoreRequest: NSCopying {
-    associatedtype ResultType: StoreRequestResult
-    
+/// This class is provided for convenience. It implements `PersistentStoreRequest` and
+/// can be subclassed or used directly.
+open class StoreRequest<ResultType: PersistentStoreRequestResult>: PersistentStoreRequest {
     /// The fetch limit of the fetch request.
     ///
     /// The fetch limit specifies the maximum number of objects that a request should return when executed.
     ///
     /// A value of 0 indicates no maximum limit.
-    var fetchLimit: Int { get set }
+    open var fetchLimit: Int = 0
     
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
-    var isIncluded: ((ResultType) -> Bool)? { get set }
+    open var isIncluded: ((ResultType) -> Bool)?
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
-    var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { get set }
-}
+    open var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
+    
+    
+    // MARK: - Lifecycle
+    
+    public required init() {
+        
+    }
+    
+    
+    // MARK: - NSCopying
 
-//extension NSCopying where Self : StoreRequest {
-//    // MARK: - NSCopying
-//
-//    public func copy(with zone: NSZone? = nil) -> Any {
-//        let copy = type(of: self).init()
-//        copy.fetchLimit = fetchLimit
-//        copy.isIncluded = isIncluded
-//        copy.areInIncreasingOrder = areInIncreasingOrder
-//        return copy
-//    }
-//}
+    open func copy(with zone: NSZone? = nil) -> Any {
+        let copy = type(of: self).init()
+        copy.fetchLimit = fetchLimit
+        copy.isIncluded = isIncluded
+        copy.areInIncreasingOrder = areInIncreasingOrder
+        return copy
+    }
+}

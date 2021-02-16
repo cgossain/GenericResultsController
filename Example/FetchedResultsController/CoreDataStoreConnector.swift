@@ -49,7 +49,11 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStoreConnec
     
     override func execute(_ query: ObserverQuery<CoreDataStoreRequest<EntityType>>) {
         super.execute(query)
-
+        
+        guard let nsFetchRequest = query.storeRequest.nsFetchRequest else {
+            return
+        }
+        
         // perform the query and then call the appropriate `enqueue` method
         // when data becomes available
         //
@@ -76,7 +80,7 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStoreConnec
                 })
 
         // execute the fetch request
-        let fetch = NSAsynchronousFetchRequest(fetchRequest: query.fetchRequest.nsFetchRequest) { (result) in
+        let fetch = NSAsynchronousFetchRequest(fetchRequest: nsFetchRequest) { (result) in
             guard let objects = result.finalResult else { return }
             objects.forEach { self.enqueue(inserted: $0, for: query) }
         }
@@ -97,7 +101,11 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStoreConnec
 
 extension CoreDataStoreConnector {
     private func handleContextObjectsDidChangeNotification(_ notification: Notification, query: ObserverQuery<CoreDataStoreRequest<EntityType>>) {
-        let entityName = query.fetchRequest.nsFetchRequest.entityName!
+        guard let nsFetchRequest = query.storeRequest.nsFetchRequest else {
+            return
+        }
+        
+        let entityName = nsFetchRequest.entityName!
 
         // enqueue insertions of `EntityType`
         let insertedObjs = notification.userInfo?[NSInsertedObjectsKey] as? Set<EntityType> ?? []

@@ -25,9 +25,9 @@
 import Foundation
 
 /// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
-public class ObserverQuery<RequestType: StoreRequest> {
-    /// The underlying fetch request that describes the search criteria.
-    public let fetchRequest: RequestType
+public class ObserverQuery<RequestType: PersistentStoreRequest> {
+    /// The search criteria used to retrieve data from a persistent store.
+    public let storeRequest: RequestType
     
     /// A block that is called when a matching results are inserted, updated, or deleted from the store.
     public let updateHandler: (Batch<RequestType.ResultType>.Digest) -> Void
@@ -36,8 +36,8 @@ public class ObserverQuery<RequestType: StoreRequest> {
     // MARK: - Lifecycle
     
     /// Instantiates and returns a query.
-    public init(fetchRequest: RequestType, updateHandler: @escaping (Batch<RequestType.ResultType>.Digest) -> Void) {
-        self.fetchRequest = fetchRequest
+    public init(storeRequest: RequestType, updateHandler: @escaping (Batch<RequestType.ResultType>.Digest) -> Void) {
+        self.storeRequest = storeRequest
         self.updateHandler = updateHandler
     }
 }

@@ -28,8 +28,8 @@ import Foundation
 public typealias SectionNameProvider<T> = (_ obj: T) -> String?
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<RequestType: StoreRequest> {
-    /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
+open class FetchedResultsController<RequestType: PersistentStoreRequest> {
+    /// The request that will be executed against the store connector.
     public let storeRequest: RequestType
     
     /// The store connector instance the controller uses to execute a fetch request against.
@@ -77,7 +77,7 @@ open class FetchedResultsController<RequestType: StoreRequest> {
     ///
     /// - Parameters:
     ///   - storeRequest: The request that will be executed against the store connector.
-    ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The fetch request is executed against this connector instance.
+    ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The store request is executed against this connector instance.
     ///   - sectionNameProvider: A block that is run against fetched objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
     public init(storeRequest: RequestType, storeConnector: StoreConnector<RequestType>, sectionNameProvider: SectionNameProvider<RequestType.ResultType>? = nil) {
         self.storeRequest = storeRequest
@@ -112,7 +112,7 @@ open class FetchedResultsController<RequestType: StoreRequest> {
         let frozenStoreRequest = self.storeRequest.copy() as! RequestType
         
         // execute the new query
-        let query = ObserverQuery<RequestType>(fetchRequest: frozenStoreRequest) { [unowned self] (digest) in
+        let query = ObserverQuery<RequestType>(storeRequest: frozenStoreRequest) { [unowned self] (digest) in
             let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: self.storeRequest, sectionNameProvider: sectionNameProvider)
             
             var newFetchedResults: FetchedResults<RequestType>!

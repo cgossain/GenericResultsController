@@ -65,7 +65,8 @@ class ViewController: UITableViewController {
         let nsFetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
         nsFetchRequest.returnsObjectsAsFaults = false
         
-        let storeRequest = CoreDataStoreRequest(nsFetchRequest: nsFetchRequest)
+        let storeRequest = CoreDataStoreRequest<Event>()
+        storeRequest.nsFetchRequest = nsFetchRequest
         
         fetchedResultsController = FetchedResultsController(storeRequest: storeRequest, storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext)) {
             $0.category
