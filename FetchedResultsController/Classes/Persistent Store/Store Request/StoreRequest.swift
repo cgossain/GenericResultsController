@@ -28,6 +28,11 @@ import Foundation
 ///
 /// This class is provided for convenience. It implements `PersistentStoreRequest` and
 /// can be subclassed or used directly.
+///
+/// - Important:
+///     - The results controller makes a copy of the fetch request just before the fetch is executed. Therefore
+///       you must override `copy(with zone: NSZone? = nil)` to ensure that your request properly
+///       copies its own properties on every fetch.
 open class StoreRequest<ResultType: PersistentStoreRequestResult>: PersistentStoreRequest {
     /// The fetch limit of the fetch request.
     ///

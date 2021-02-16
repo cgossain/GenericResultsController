@@ -12,10 +12,10 @@ public typealias PersistentStoreRequestResult = Identifiable & Hashable
 
 /// A type that defines criteria used to retrieve data from a persistent store.
 ///
-/// - Implementaion Notes:
+/// - Important:
 ///     - The results controller makes a copy of the fetch request just before the fetch is executed. Therefore
-///       you must implement `copy(with zone: NSZone? = nil)` to make sure your request is
-///       property copied when performing a fetch.
+///       you must implement `copy(with zone: NSZone? = nil)` to ensure that your request properly
+///       copies its own properties on every fetch.
 public protocol PersistentStoreRequest: NSCopying {
     associatedtype ResultType: PersistentStoreRequestResult
     
