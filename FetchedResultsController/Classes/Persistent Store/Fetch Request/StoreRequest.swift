@@ -27,19 +27,12 @@ import Foundation
 /// A type that fetched objects must conform to.
 public typealias StoreRequestResult = Identifiable & Hashable
 
-/// StoreRequest provides the basic structure of for a fetch request that can be
-/// executed against a StoreConnector.
+/// A type that provides criteria used to retrieve data from a persistent store.
 ///
-/// Just like in Core Data, it provides a description of search criteria used to retrieve data from a persistent store.
-///
-/// The idea is that this fetch request is executed against a concrete instance of a store connector,
-/// therefore you can subclass this to create a more specific fetch request with additional paramters
-/// that your store connector understands.
-///
-/// - Subclassing Notes:
-///     - The results controller makes a copy of the fetch request just before the fetch is executed. So you are
-///       required to override `copy(with zone: NSZone? = nil)` to make sure your subclass is properly
-///       copied when performing a fetch.
+/// - Implementaion Notes:
+///     - The results controller makes a copy of the fetch request just before the fetch is executed. Therefore
+///       you must implement `copy(with zone: NSZone? = nil)` to make sure your request is
+///       property copied when performing a fetch.
 public protocol StoreRequest: NSCopying {
     associatedtype ResultType: StoreRequestResult
     
@@ -48,13 +41,13 @@ public protocol StoreRequest: NSCopying {
     /// The fetch limit specifies the maximum number of objects that a request should return when executed.
     ///
     /// A value of 0 indicates no maximum limit.
-    var fetchLimit: Int { get }
+    var fetchLimit: Int { get set }
     
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
-    var isIncluded: ((ResultType) -> Bool)? { get }
+    var isIncluded: ((ResultType) -> Bool)? { get set }
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
-    var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { get }
+    var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { get set }
 }
 
 //extension NSCopying where Self : StoreRequest {
