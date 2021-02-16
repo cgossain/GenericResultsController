@@ -63,6 +63,10 @@ open class FetchedResultsController<RequestType: FetchRequest> {
     /// A reference to the most recently executed query, and any subsequent pagination related queries.
     private var currentQueriesByID: [AnyHashable : ObserverQuery<RequestType>] = [:]
     
+    
+    
+    
+    
     /// The pagination cursor that points to the start of the next page.
     private var currentPaginationCursor: Any?
     
@@ -107,8 +111,15 @@ open class FetchedResultsController<RequestType: FetchRequest> {
         // running queries
         stopCurrentQueries()
         
+        // making a copy of the fetch request ensures that even
+        // if its properties are changed after `performFetch()`
+        // is called, management of fetch objects remains consistent
+        // internally until the next call to `performFetch()` where
+        // a new snapshot of the fetch request would be taken
+        let frozenFetchRequest = self.fetchRequest.copy() as! RequestType
+        
         // execute the new query
-        let query = ObserverQuery<RequestType>(fetchRequest: self.fetchRequest) { [unowned self] (digest) in
+        let query = ObserverQuery<RequestType>(fetchRequest: frozenFetchRequest) { [unowned self] (digest) in
             let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(fetchRequest: self.fetchRequest, sectionNameProvider: sectionNameProvider)
             
             var newFetchedResults: FetchedResults<RequestType>!

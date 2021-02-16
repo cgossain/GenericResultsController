@@ -40,7 +40,7 @@ public typealias FetchRequestResult = Identifiable & Hashable
 ///     - The results controller makes a copy of the fetch request just before the fetch is executed. So you are
 ///       required to override `copy(with zone: NSZone? = nil)` to make sure your subclass is properly
 ///       copied when performing a fetch.
-public protocol FetchRequest {
+public protocol FetchRequest: NSCopying {
     associatedtype ResultType: FetchRequestResult
     
     /// The fetch limit of the fetch request.
@@ -55,33 +55,16 @@ public protocol FetchRequest {
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { get }
-    
+}
 
+//extension NSCopying where Self : FetchRequest {
 //    // MARK: - NSCopying
 //
-//    open func copy(with zone: NSZone? = nil) -> Any {
+//    public func copy(with zone: NSZone? = nil) -> Any {
 //        let copy = type(of: self).init()
 //        copy.fetchLimit = fetchLimit
 //        copy.isIncluded = isIncluded
 //        copy.areInIncreasingOrder = areInIncreasingOrder
 //        return copy
 //    }
-}
-
-//extension FetchRequest where Self : NSObject {
-//    public func copy(with zone: NSZone? = nil) -> Any {
-//        let copy = type(of: self).init()
-////        copy.fetchLimit = fetchLimit
-////        copy.isIncluded = isIncluded
-////        copy.areInIncreasingOrder = areInIncreasingOrder
-//        return copy
-//    }
 //}
-
-public extension FetchRequest {
-    var fetchLimit: Int { return 0 }
-    
-    var isIncluded: ((ResultType) -> Bool)? { return nil }
-    
-    var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { return nil }
-}

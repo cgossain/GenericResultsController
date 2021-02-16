@@ -19,6 +19,24 @@ struct TestModel: Hashable, Identifiable {
 
 class TestStoreRequest: FetchRequest {
     typealias ResultType = TestModel
+    
+    var fetchLimit: Int = 0
+    
+    var isIncluded: ((TestModel) -> Bool)?
+    
+    var areInIncreasingOrder: ((TestModel, TestModel) -> Bool)?
+    
+    
+    // MARK: - NSCopying
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = TestStoreRequest()
+        copy.fetchLimit = fetchLimit
+        copy.isIncluded = isIncluded
+        copy.areInIncreasingOrder = areInIncreasingOrder
+        return copy
+    }
+    
 }
 
 class TestStoreConnector: StoreConnector<TestStoreRequest> {

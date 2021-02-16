@@ -26,16 +26,43 @@ import Foundation
 import FetchedResultsController
 import CoreData
 
-public final class CoreDataStoreRequest<EntityType: NSManagedObject>: FetchRequest {
+final class CoreDataStoreRequest<EntityType: NSManagedObject>: FetchRequest {
     public typealias ResultType = EntityType
     
     /// The underlying NSFetchRequest.
     let nsFetchRequest: NSFetchRequest<EntityType>
     
     
+    // MARK: - FetchRequest
+    
+    var fetchLimit: Int {
+        get {
+            return nsFetchRequest.fetchLimit
+        }
+        set {
+            nsFetchRequest.fetchLimit = newValue
+        }
+    }
+    
+    var isIncluded: ((EntityType) -> Bool)?
+    
+    var areInIncreasingOrder: ((EntityType, EntityType) -> Bool)?
+    
+    
     // MARK: - Lifecycle
     
     init(nsFetchRequest: NSFetchRequest<EntityType>) {
         self.nsFetchRequest = nsFetchRequest
+    }
+    
+    
+    // MARK: - NSCopying
+    
+    public func copy(with zone: NSZone? = nil) -> Any {
+        let copy = type(of: self).init(nsFetchRequest: self.nsFetchRequest.copy() as! NSFetchRequest<EntityType>)
+        copy.fetchLimit = fetchLimit
+        copy.isIncluded = isIncluded
+        copy.areInIncreasingOrder = areInIncreasingOrder
+        return copy
     }
 }
