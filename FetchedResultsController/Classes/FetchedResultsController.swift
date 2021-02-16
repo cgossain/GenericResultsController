@@ -28,12 +28,12 @@ import Foundation
 public typealias SectionNameProvider<T> = (_ obj: T) -> String?
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<RequestType: FetchRequest> {
+open class FetchedResultsController<RequestType: StoreRequest> {
+    /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
+    public let storeRequest: RequestType
+    
     /// The store connector instance the controller uses to execute a fetch request against.
     public let storeConnector: StoreConnector<RequestType>
-    
-    /// The fetch request instance used to do the fetching. The sort descriptor used in the request groups objects into sections.
-    public let fetchRequest: RequestType
     
     /// A block that is run against fetched objects used to determine the section they belong to.
     public let sectionNameProvider: SectionNameProvider<RequestType.ResultType>?
@@ -63,18 +63,11 @@ open class FetchedResultsController<RequestType: FetchRequest> {
     /// A reference to the most recently executed query, and any subsequent pagination related queries.
     private var currentQueriesByID: [AnyHashable : ObserverQuery<RequestType>] = [:]
     
-    
-    
-    
-    
     /// The pagination cursor that points to the start of the next page.
     private var currentPaginationCursor: Any?
     
-    
-    
     /// A reference to the more recently executed query.
     private var currentQuery: ObserverQuery<RequestType>?
-    
     
     
     
@@ -83,11 +76,11 @@ open class FetchedResultsController<RequestType: FetchRequest> {
     /// Returns a fetch request controller initialized using the given arguments.
     ///
     /// - Parameters:
-    ///   - fetchRequest: The fetch request that will be executed against the store connector.
+    ///   - storeRequest: The request that will be executed against the store connector.
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The fetch request is executed against this connector instance.
     ///   - sectionNameProvider: A block that is run against fetched objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
-    public init(fetchRequest: RequestType, storeConnector: StoreConnector<RequestType>, sectionNameProvider: SectionNameProvider<RequestType.ResultType>? = nil) {
-        self.fetchRequest = fetchRequest
+    public init(storeRequest: RequestType, storeConnector: StoreConnector<RequestType>, sectionNameProvider: SectionNameProvider<RequestType.ResultType>? = nil) {
+        self.storeRequest = storeRequest
         self.storeConnector = storeConnector
         self.sectionNameProvider = sectionNameProvider
     }
@@ -111,21 +104,21 @@ open class FetchedResultsController<RequestType: FetchRequest> {
         // running queries
         stopCurrentQueries()
         
-        // making a copy of the fetch request ensures that even
+        // making a copy of the store request ensures that even
         // if its properties are changed after `performFetch()`
         // is called, management of fetch objects remains consistent
         // internally until the next call to `performFetch()` where
         // a new snapshot of the fetch request would be taken
-        let frozenFetchRequest = self.fetchRequest.copy() as! RequestType
+        let frozenStoreRequest = self.storeRequest.copy() as! RequestType
         
         // execute the new query
-        let query = ObserverQuery<RequestType>(fetchRequest: frozenFetchRequest) { [unowned self] (digest) in
-            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(fetchRequest: self.fetchRequest, sectionNameProvider: sectionNameProvider)
+        let query = ObserverQuery<RequestType>(fetchRequest: frozenStoreRequest) { [unowned self] (digest) in
+            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: self.storeRequest, sectionNameProvider: sectionNameProvider)
             
             var newFetchedResults: FetchedResults<RequestType>!
             if self.shouldRebuildFetchedResults {
                 // add incremental changes starting from an empty results object
-                newFetchedResults = FetchedResults(fetchRequest: self.fetchRequest, sectionNameProvider: sectionNameProvider)
+                newFetchedResults = FetchedResults(storeRequest: self.storeRequest, sectionNameProvider: sectionNameProvider)
                 newFetchedResults.apply(digest: digest)
                 
                 // results rebuilt

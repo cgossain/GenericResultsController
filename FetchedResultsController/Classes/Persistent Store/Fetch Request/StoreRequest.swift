@@ -1,5 +1,5 @@
 //
-//  FetchRequest.swift
+//  StoreRequest.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -25,9 +25,9 @@
 import Foundation
 
 /// A type that fetched objects must conform to.
-public typealias FetchRequestResult = Identifiable & Hashable
+public typealias StoreRequestResult = Identifiable & Hashable
 
-/// FetchRequest provides the basic structure of for a fetch request that can be
+/// StoreRequest provides the basic structure of for a fetch request that can be
 /// executed against a StoreConnector.
 ///
 /// Just like in Core Data, it provides a description of search criteria used to retrieve data from a persistent store.
@@ -40,8 +40,8 @@ public typealias FetchRequestResult = Identifiable & Hashable
 ///     - The results controller makes a copy of the fetch request just before the fetch is executed. So you are
 ///       required to override `copy(with zone: NSZone? = nil)` to make sure your subclass is properly
 ///       copied when performing a fetch.
-public protocol FetchRequest: NSCopying {
-    associatedtype ResultType: FetchRequestResult
+public protocol StoreRequest: NSCopying {
+    associatedtype ResultType: StoreRequestResult
     
     /// The fetch limit of the fetch request.
     ///
@@ -57,7 +57,7 @@ public protocol FetchRequest: NSCopying {
     var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { get }
 }
 
-//extension NSCopying where Self : FetchRequest {
+//extension NSCopying where Self : StoreRequest {
 //    // MARK: - NSCopying
 //
 //    public func copy(with zone: NSZone? = nil) -> Any {

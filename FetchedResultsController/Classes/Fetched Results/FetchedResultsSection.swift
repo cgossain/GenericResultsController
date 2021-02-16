@@ -25,7 +25,7 @@
 import Foundation
 
 /// FetchedResultsSection manages the objects within a single section of the results data.
-public class FetchedResultsSection<ResultType: FetchRequestResult> {
+public class FetchedResultsSection<ResultType: StoreRequestResult> {
     /// Name of the section.
     public var name: String { return sectionKeyValue }
     

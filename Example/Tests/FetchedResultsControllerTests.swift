@@ -17,7 +17,7 @@ struct TestModel: Hashable, Identifiable {
     let category: String?
 }
 
-class TestStoreRequest: FetchRequest {
+class TestStoreRequest: StoreRequest {
     typealias ResultType = TestModel
     
     var fetchLimit: Int = 0

@@ -25,7 +25,7 @@
 import Foundation
 import Debounce
 
-public final class BatchQueueDelegate<ResultType: FetchRequestResult> {
+public final class BatchQueueDelegate<ResultType: StoreRequestResult> {
     /// Called when the controller is about to begin collecting a new batch.
     public var queueWillBeginBatchingChanges: ((_ queue: BatchQueue<ResultType>) -> Void)?
     
@@ -38,7 +38,7 @@ public final class BatchQueueDelegate<ResultType: FetchRequestResult> {
 /// In some cases you may want to process a batch immediatly (e.g. due to a user driven UI interaction), in this
 /// case you can call the `processPendingChanges()` method. If the queue should always process changes
 /// immediatly, set the `processesChangesImmediately` property to `true`.
-public final class BatchQueue<ResultType: FetchRequestResult>: Identifiable {
+public final class BatchQueue<ResultType: StoreRequestResult>: Identifiable {
     /// Set to true if changes should not be batched but rather processed as soon as they are received.
     public var processesChangesImmediately = false
     

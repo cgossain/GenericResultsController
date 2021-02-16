@@ -28,9 +28,9 @@ import Foundation
 let nilSectionName = ""
 
 /// FetchedResults manages the entire set of results of a fetched results controller.
-class FetchedResults<RequestType: FetchRequest> {
+class FetchedResults<RequestType: StoreRequest> {
     /// The search criteria used to retrieve data from a persistent store.
-    let fetchRequest: RequestType
+    let storeRequest: RequestType
     
     /// A block that is run against fetched objects used to determine the section they belong to.
     let sectionNameProvider: SectionNameProvider<RequestType.ResultType>?
@@ -94,7 +94,7 @@ class FetchedResults<RequestType: FetchRequest> {
             }
             
             // 2. if section names are the same, sort using the section sorting logic
-            if let areInIncreasingOrder = self.fetchRequest.areInIncreasingOrder {
+            if let areInIncreasingOrder = self.storeRequest.areInIncreasingOrder {
                 return areInIncreasingOrder(left, right)
             }
             
@@ -109,13 +109,13 @@ class FetchedResults<RequestType: FetchRequest> {
     /// Creates and returns a new fetched results objects with the given arguments.
     ///
     /// - Parameters:
-    ///   - fetchRequest: The search criteria used to retrieve data from a persistent store.
+    ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
     ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
     ///   - fetchedResults: The fetch result whose contents should be added to the receiver.
-    init(fetchRequest: RequestType,
+    init(storeRequest: RequestType,
          sectionNameProvider: SectionNameProvider<RequestType.ResultType>? = nil,
          fetchedResults: FetchedResults? = nil) {
-        self.fetchRequest = fetchRequest
+        self.storeRequest = storeRequest
         self.sectionNameProvider = sectionNameProvider
         
         // configure the initial state with the contents of a previous fetch result if provided
@@ -144,15 +144,13 @@ class FetchedResults<RequestType: FetchRequest> {
     
     /// Creates and returns a new fetched results objects with the contents of an existing fetched results objects.
     convenience init(fetchedResults: FetchedResults) {
-        self.init(fetchRequest: fetchedResults.fetchRequest,
+        self.init(storeRequest: fetchedResults.storeRequest,
                   sectionNameProvider: fetchedResults.sectionNameProvider,
                   fetchedResults: fetchedResults)
     }
-}
-
-extension FetchedResults {
+    
     /// Returns the indexPath of the given object; otherwise returns `nil` if not found.
-    public func indexPath(for obj: RequestType.ResultType) -> IndexPath? {
+    func indexPath(for obj: RequestType.ResultType) -> IndexPath? {
         for (sectionIdx, section) in sections.enumerated() {
             guard let rowIdx = section.index(of: obj) else { continue }
             return IndexPath(row: rowIdx, section: sectionIdx)
@@ -185,8 +183,8 @@ extension FetchedResults {
         // limit, however this may not always be the case
         // therefore as a safeguard the following code
         // will discard any objects above the fetch limit
-        if fetchRequest.fetchLimit > 0, results.count > fetchRequest.fetchLimit {
-            let min = fetchRequest.fetchLimit
+        if storeRequest.fetchLimit > 0, results.count > storeRequest.fetchLimit {
+            let min = storeRequest.fetchLimit
             let max = results.count - 1
             let objectsToDiscard = results[min...max]
             for obj in objectsToDiscard {
@@ -260,7 +258,7 @@ extension FetchedResults {
         
         // create or update the section
         let sectionKeyValue = self.sectionName(for: obj)
-        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: fetchRequest.areInIncreasingOrder)
+        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: storeRequest.areInIncreasingOrder)
         section.insert(obj: obj)
         sectionsBySectionKeyValue[sectionKeyValue] = section
         sectionKeyValuesByID[obj.id] = sectionKeyValue
@@ -317,7 +315,7 @@ extension FetchedResults {
 extension FetchedResults {
     /// Indicates if the given object should be included in the data set.
     private func canInclude(obj: RequestType.ResultType) -> Bool {
-        return fetchRequest.isIncluded?(obj) ?? true
+        return storeRequest.isIncluded?(obj) ?? true
     }
     
     /// Returns the section key value for the given object.

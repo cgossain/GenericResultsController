@@ -24,7 +24,7 @@
 
 import Foundation
 
-public class FetchedResultsControllerDelegate<RequestType: FetchRequest> {
+public class FetchedResultsControllerDelegate<RequestType: StoreRequest> {
     /// Called when the results controller begins receiving changes.
     public var controllerWillChangeContent: ((FetchedResultsController<RequestType>) -> Void)?
     

@@ -27,7 +27,7 @@ import Foundation
 /// A Batch groups a set of changes together such that they can be tracked as a single unit.
 ///
 /// Call `flush()` to get the deduplicated changes out of the batch.
-public final class Batch<ResultType: FetchRequestResult>: Identifiable {
+public final class Batch<ResultType: StoreRequestResult>: Identifiable {
     /// The dedpuplicated set of changes in the batch.
     public struct Digest {
         /// The deduplicated insertions.

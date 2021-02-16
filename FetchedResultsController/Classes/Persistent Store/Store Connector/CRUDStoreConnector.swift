@@ -36,7 +36,7 @@ import Foundation
 /// Given that the base store connector should already understand the particulars of fetching
 /// data from the underlying store, it follows that if one wanted to also perform CRUD operations
 /// on that same store (or specific location in that store) this would be the logical place to do it.
-open class CRUDStoreConnector<RequestType: FetchRequest>: StoreConnector<RequestType> {
+open class CRUDStoreConnector<RequestType: StoreRequest>: StoreConnector<RequestType> {
     
     // MARK: - Private Properties
     
