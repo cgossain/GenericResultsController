@@ -67,7 +67,7 @@ class ViewController: UITableViewController {
         
         let storeRequest = CoreDataStoreRequest(nsFetchRequest: nsFetchRequest)
         
-        fetchedResultsController = FetchedResultsController(fetchRequest: storeRequest, storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext)) {
+        fetchedResultsController = FetchedResultsController(storeRequest: storeRequest, storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext)) {
             $0.category
         }
         
