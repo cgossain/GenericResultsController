@@ -24,31 +24,40 @@
 
 import Foundation
 
-/// The signature for a block that is run against fetched objects used to determine the section they belong to.
-public typealias SectionNameProvider<T> = (_ obj: T) -> String?
+public enum FetchedResultsControllerError: Error {
+    /// An indication that the requested index path is invalid.
+    ///
+    /// The requested row and section indicies are provides as associated values for context.
+    case invalidIndexPath(row: Int, section: Int)
+}
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<RequestType: PersistentStoreRequest> {
-    /// The request that will be executed against the store connector.
+open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest> {
+    public enum QueryMode {
+        case observer
+        case page
+    }
+    
+    /// The search criteria used to retrieve data from a persistent store.
     public let storeRequest: RequestType
     
     /// The store connector instance the controller uses to execute a fetch request against.
-    public let storeConnector: StoreConnector<RequestType>
-    
-    /// A block that is run against fetched objects used to determine the section they belong to.
-    public let sectionNameProvider: SectionNameProvider<RequestType.ResultType>?
+    public let storeConnector: StoreConnector<ResultType, RequestType>
     
     /// The results of the fetch. Returns `nil` if `performFetch()` hasn't yet been called.
-    public var fetchedObjects: [RequestType.ResultType] { return currentFetchedResults?.results ?? [] }
+    public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
 
     /// The sections for the receiver’s fetch results.
-    public var sections: [FetchedResultsSection<RequestType.ResultType>] { return currentFetchedResults?.sections ?? [] }
+    public var sections: [FetchedResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
+    
+    
+    // MARK: - Change Handling
     
     /// The delegate handling all the results controller delegate callbacks.
-    public var delegate = FetchedResultsControllerDelegate<RequestType>()
+    public var delegate = FetchedResultsControllerDelegate<ResultType, RequestType>()
     
     /// The delegate handling all the results controller delegate callbacks.
-    public var changeTracker = FetchedResultsControllerChangeTracking<RequestType>()
+    public var changeTracker = FetchedResultsControllerChangeTracking<ResultType, RequestType>()
     
     
     // MARK: - Private Properties
@@ -57,32 +66,27 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest> {
     /// instead of adding changes incrementally to the current results.
     private var shouldRebuildFetchedResults = false
     
-    /// The current fetched results.
-    private var currentFetchedResults: FetchedResults<RequestType>?
-    
     /// A reference to the most recently executed query, and any subsequent pagination related queries.
-    private var currentQueriesByID: [AnyHashable : ObserverQuery<RequestType>] = [:]
+    private var currentQueriesByID: [AnyHashable : BaseQuery<ResultType, RequestType>] = [:]
     
-    /// The pagination cursor that points to the start of the next page.
-    private var currentPaginationCursor: Any?
+    /// The current fetched results.
+    private var currentFetchedResults: FetchedResults<ResultType, RequestType>?
     
-    /// A reference to the more recently executed query.
-    private var currentQuery: ObserverQuery<RequestType>?
-    
+    /// The most recent page cursor. Only applies when the query mode is set to `page`.
+    private var previousCursor: PageQuery<ResultType, RequestType>.Cursor?
     
     
     // MARK: - Lifecycle
     
-    /// Returns a fetch request controller initialized using the given arguments.
+    /// Returns a fetched results controller initialized using the given arguments.
     ///
     /// - Parameters:
     ///   - storeRequest: The request that will be executed against the store connector.
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The store request is executed against this connector instance.
-    ///   - sectionNameProvider: A block that is run against fetched objects that returns the section name. Pass nil to indicate that the controller should generate a single section.
-    public init(storeRequest: RequestType, storeConnector: StoreConnector<RequestType>, sectionNameProvider: SectionNameProvider<RequestType.ResultType>? = nil) {
+    public init(storeRequest: RequestType,
+                storeConnector: StoreConnector<ResultType, RequestType>) {
         self.storeRequest = storeRequest
         self.storeConnector = storeConnector
-        self.sectionNameProvider = sectionNameProvider
     }
     
     deinit {
@@ -93,8 +97,13 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest> {
     
     /// Executes a new query against the store connector.
     ///
+    /// - Parameters:
+    ///   - queryMode: The type of query performed by the results controller when performing a fetch.
+    ///
     /// - Important: Calling this method invalidates any previous results.
-    public func performFetch() {
+    ///
+    /// - Throws: `StoreConnectorError.unimplementedQueryType` if the query passed to the store has not been implemented.
+    public func performFetch(queryMode: QueryMode = .observer) throws {
         shouldRebuildFetchedResults = true
         
         // notify delegate
@@ -104,56 +113,84 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest> {
         // running queries
         stopCurrentQueries()
         
-        // making a copy of the store request ensures that even
-        // if its properties are changed after `performFetch()`
-        // is called, management of fetch objects remains consistent
-        // internally until the next call to `performFetch()` where
-        // a new snapshot of the fetch request would be taken
-        let frozenStoreRequest = self.storeRequest.copy() as! RequestType
+        // get the results configuration
+        let resultsConfiguration = delegate.controllerResultsConfiguration?(self, self.storeRequest)
         
         // execute the new query
-        let query = ObserverQuery<RequestType>(storeRequest: frozenStoreRequest) { [unowned self] (digest) in
-            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: self.storeRequest, sectionNameProvider: sectionNameProvider)
-            
-            var newFetchedResults: FetchedResults<RequestType>!
-            if self.shouldRebuildFetchedResults {
-                // add incremental changes starting from an empty results object
-                newFetchedResults = FetchedResults(storeRequest: self.storeRequest, sectionNameProvider: sectionNameProvider)
-                newFetchedResults.apply(digest: digest)
+        var query: BaseQuery<ResultType, RequestType>!
+        switch queryMode {
+        case .observer:
+            query = ObserverQuery<ResultType, RequestType>(storeRequest: self.storeRequest) { [unowned self] (inserted, updated, deleted, _) in
+                let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: self.storeRequest, resultsConfiguration: resultsConfiguration)
                 
-                // results rebuilt
-                self.shouldRebuildFetchedResults = false
-            }
-            else {
-                // add incremental changes starting from the current results
-                newFetchedResults = FetchedResults(fetchedResults: oldFetchedResults)
-                newFetchedResults.apply(digest: digest)
-            }
-            
-            // update the current results
-            self.currentFetchedResults = newFetchedResults
+                var newFetchedResults: FetchedResults<ResultType, RequestType>!
+                if self.shouldRebuildFetchedResults {
+                    // add incremental changes starting from an empty results object
+                    newFetchedResults = FetchedResults(storeRequest: self.storeRequest, resultsConfiguration: resultsConfiguration)
+                    newFetchedResults.apply(inserted: inserted, updated: updated, deleted: deleted)
+                    
+                    // results rebuilt
+                    self.shouldRebuildFetchedResults = false
+                }
+                else {
+                    // add incremental changes starting from the current results
+                    newFetchedResults = FetchedResults(fetchedResults: oldFetchedResults)
+                    newFetchedResults.apply(inserted: inserted, updated: updated, deleted: deleted)
+                }
+                
+                // update the current results
+                self.currentFetchedResults = newFetchedResults
 
-            // compute the difference if the change tracker is configured
-            if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
-                // compute the difference
-                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: Array(digest.updated))
-                controllerDidChangeResults(self, diff)
+                // compute the difference if the change tracker is configured
+                if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
+                    // compute the difference
+                    let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: updated)
+                    controllerDidChangeResults(self, diff)
+                }
+                
+                // notify the delegate
+                self.delegate.controllerDidChangeContent?(self)
             }
             
-            // notify the delegate
-            self.delegate.controllerDidChangeContent?(self)
+        case .page:
+            query = PageQuery<ResultType, RequestType>(storeRequest: self.storeRequest, resultsHandler: { (results, cursor, _) in
+                let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: self.storeRequest, resultsConfiguration: resultsConfiguration)
+                
+                var newFetchedResults: FetchedResults<ResultType, RequestType>!
+                if self.shouldRebuildFetchedResults {
+                    // add incremental changes starting from an empty results object
+                    newFetchedResults = FetchedResults(storeRequest: self.storeRequest, resultsConfiguration: resultsConfiguration)
+                    newFetchedResults.apply(inserted: results, updated: nil, deleted: nil)
+                    
+                    // results rebuilt
+                    self.shouldRebuildFetchedResults = false
+                }
+                else {
+                    // add incremental changes starting from the current results
+                    newFetchedResults = FetchedResults(fetchedResults: oldFetchedResults)
+                    newFetchedResults.apply(inserted: results, updated: nil, deleted: nil)
+                }
+                
+                // update the current results
+                self.currentFetchedResults = newFetchedResults
+                
+                // track the page cursor
+                self.previousCursor = cursor
+
+                // compute the difference if the change tracker is configured
+                if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
+                    // compute the difference
+                    let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: nil)
+                    controllerDidChangeResults(self, diff)
+                }
+                
+                // notify the delegate
+                self.delegate.controllerDidChangeContent?(self)
+            })
         }
+        
         currentQueriesByID[query.id] = query
-        storeConnector.execute(query)
-    }
-    
-    /// Executes a query for the next page.
-    func fetchNextPage() {
-//        guard let currentPaginationCursor = currentPaginationCursor else {
-//            return
-//        }
-        
-        
+        try storeConnector.execute(query)
     }
     
     /// Returns the snapshot at a given indexPath.
@@ -162,7 +199,7 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest> {
     ///     - indexPath: An index path in the fetch results. If indexPath does not describe a valid index path in the fetch results, an error is thrown.
     ///
     /// - Returns: The object at a given index path in the fetch results.
-    public func object(at indexPath: IndexPath) throws -> RequestType.ResultType {
+    public func object(at indexPath: IndexPath) throws -> ResultType {
         if indexPath.section < sections.count {
             let section = sections[indexPath.section]
             
@@ -180,7 +217,7 @@ open class FetchedResultsController<RequestType: PersistentStoreRequest> {
     ///     - obj: An object in the receiver’s fetch results.
     ///
     /// - Returns: The index path of object in the receiver’s fetch results, or nil if object could not be found.
-    public func indexPath(for obj: RequestType.ResultType) -> IndexPath? {
+    public func indexPath(for obj: ResultType) -> IndexPath? {
         return currentFetchedResults?.indexPath(for: obj)
     }
 }
@@ -189,7 +226,6 @@ extension FetchedResultsController {
     private func stopCurrentQueries() {
         currentQueriesByID.values.forEach({ storeConnector.stop($0) })
         currentQueriesByID.removeAll()
-        currentPaginationCursor = nil
     }
 }
 

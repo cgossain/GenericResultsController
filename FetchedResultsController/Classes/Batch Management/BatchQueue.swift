@@ -25,12 +25,12 @@
 import Foundation
 import Debounce
 
-public final class BatchQueueDelegate<ResultType: PersistentStoreRequestResult> {
+public final class BatchQueueDelegate<ResultType: StoreResult> {
     /// Called when the controller is about to begin collecting a new batch.
     public var queueWillBeginBatchingChanges: ((_ queue: BatchQueue<ResultType>) -> Void)?
     
     /// Called when the controller has finished processing a batch.
-    public var queueDidFinishBatchingChanges: ((_ queue: BatchQueue<ResultType>, _ digest: Batch<ResultType>) -> Void)?
+    public var queueDidFinishBatchingChanges: ((_ queue: BatchQueue<ResultType>, _ batch: Batch<ResultType>) -> Void)?
 }
 
 /// A queue that regulates the grouping of incremental changes in batches.
@@ -38,7 +38,7 @@ public final class BatchQueueDelegate<ResultType: PersistentStoreRequestResult> 
 /// In some cases you may want to process a batch immediatly (e.g. due to a user driven UI interaction), in this
 /// case you can call the `processPendingChanges()` method. If the queue should always process changes
 /// immediatly, set the `processesChangesImmediately` property to `true`.
-public final class BatchQueue<ResultType: PersistentStoreRequestResult>: Identifiable {
+public final class BatchQueue<ResultType: StoreResult>: Identifiable {
     /// Set to true if changes should not be batched but rather processed as soon as they are received.
     public var processesChangesImmediately = false
     
@@ -118,6 +118,12 @@ extension BatchQueue {
     ///
     /// - Note: This method is not useful if you've already set `processesChangesImmediately` to `true`.
     public func processPendingChanges(batchID: AnyHashable) {
+        // create an empty batch so that the flush call triggers the delegate
+        if batchByID[batchID] == nil {
+            batchByID[batchID] = Batch(id: batchID)
+        }
+        
+        // throttle the flush
         throttler.throttle(fireNow: true) {
             DispatchQueue.main.async {
                 self.flush(batchID: batchID)
@@ -136,9 +142,7 @@ extension BatchQueue {
     ///
     /// - Important: This method is called from the throtter's queue.
     private func flush(batchID: AnyHashable) {
-        guard let batch = batchByID[batchID] else {
-            return
-        }
+        guard let batch = batchByID[batchID] else { return }
         
         // discarding the batch
         batchByID[batchID] = nil

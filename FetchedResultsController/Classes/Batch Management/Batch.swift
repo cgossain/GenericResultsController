@@ -27,17 +27,17 @@ import Foundation
 /// A Batch groups a set of changes together such that they can be tracked as a single unit.
 ///
 /// Call `flush()` to get the deduplicated changes out of the batch.
-public final class Batch<ResultType: PersistentStoreRequestResult>: Identifiable {
+public final class Batch<ResultType: StoreResult>: Identifiable {
     /// The dedpuplicated set of changes in the batch.
     public struct Digest {
         /// The deduplicated insertions.
-        let inserted: Set<ResultType>
+        let inserted: [ResultType]
         
         /// The deduplicated updates.
-        let updated: Set<ResultType>
+        let updated: [ResultType]
         
         /// The deduplicated deletions.
-        let deleted: Set<ResultType>
+        let deleted: [ResultType]
     }
     
     /// The batch ID.
@@ -123,7 +123,7 @@ public final class Batch<ResultType: PersistentStoreRequestResult>: Identifiable
         }
         
         // return the deduplicated batch
-        return Digest(inserted: Set(dedupedIns.values), updated: Set(dedupedUpd.values), deleted: Set(dedupedDel.values))
+        return Digest(inserted: Array(dedupedIns.values), updated: Array(dedupedUpd.values), deleted: Array(dedupedDel.values))
     }
     
     /// Clears all tracked changes.

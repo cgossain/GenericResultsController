@@ -1,5 +1,5 @@
 //
-//  FetchedResultsControllerChangeTracking.swift
+//  FetchedResultsControllerDelegate.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,11 +24,15 @@
 
 import Foundation
 
-public class FetchedResultsControllerChangeTracking<RequestType: PersistentStoreRequest> {
-    public typealias DidChangeResultsHandler = (_ controller: FetchedResultsController<RequestType>, _ difference: FetchedResultsDifference<RequestType>) -> Void
-    
-    /// Notifies the change tracker that the controller has changed its results.
+public class FetchedResultsControllerDelegate<ResultType: StoreResult, RequestType: StoreRequest> {
+    /// Returns the results configuration for the given store request.
     ///
-    /// The change between the previous and new states is provided as a difference object.
-    public var controllerDidChangeResults: DidChangeResultsHandler?
+    /// Called just before the query is executed.
+    public var controllerResultsConfiguration: ((FetchedResultsController<ResultType, RequestType>, RequestType) -> FetchedResultsConfiguration<ResultType>)?
+    
+    /// Called when the results controller begins receiving changes.
+    public var controllerWillChangeContent: ((FetchedResultsController<ResultType, RequestType>) -> Void)?
+    
+    /// Called when the controller has completed processing the all changes.
+    public var controllerDidChangeContent: ((FetchedResultsController<ResultType, RequestType>) -> Void)?
 }

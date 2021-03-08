@@ -24,6 +24,14 @@
 
 import Foundation
 
+/// A type that fetched objects must conform to.
+public typealias StoreResult = Identifiable & Hashable
+
+public enum StoreConnectorError: Error {
+    /// An indication that the type of the query passed to the store connector is unimplemented.
+    case unimplementedQueryType
+}
+
 /// StoreConnector is an abstract superclass exposing a simple API for interfacing between a
 /// fetched results controller and any data store. It's an adapter to some underlying store.
 ///
@@ -38,31 +46,9 @@ import Foundation
 /// You call any of the `enqueue(_:_:)` methods to deliver result objects. If your fetch is short lived then you
 /// would provide all your result objects using the "insertion" variant. Otherwise if you have long running observers
 /// you can keep delivering incremental updates using all the variants.
-open class StoreConnector<RequestType: PersistentStoreRequest> {
+open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest> {
     /// A short descriptive title for the data store.
     public let title: String
-    
-    /// Indicates if changes should always be processed as soon as they're enqueued.
-    ///
-    /// Alternatively, if you only want to process changes in some cases (i.e. due to user initiated action) you
-    /// can call `processPendingChanges()`.
-    public var processesChangesImmediately: Bool {
-        get {
-            return queue.processesChangesImmediately
-        }
-        set {
-            queue.processesChangesImmediately = newValue
-        }
-    }
-    
-    /// The currently running queries.
-    public private(set) var queryByID: [AnyHashable : ObserverQuery<RequestType>] = [:]
-    
-    
-    // MARK: - Private Properties
-    
-    /// The batch queue.
-    private let queue = BatchQueue<RequestType.ResultType>()
     
     
     // MARK: -  Lifecycle
@@ -70,10 +56,6 @@ open class StoreConnector<RequestType: PersistentStoreRequest> {
     /// Initializes a new store connector instance.
     public init(title: String = "") {
         self.title = title
-        self.queue.delegate.queueDidFinishBatchingChanges = { [unowned self] queue, batch in
-            let request = queryByID[batch.id]
-            request?.updateHandler(batch.flush())
-        }
     }
     
     /// Executes the given query.
@@ -93,49 +75,68 @@ open class StoreConnector<RequestType: PersistentStoreRequest> {
     /// - Parameters:
     ///     - query: The query.
     ///
-    /// - Important: Call `super.execute(_:)` as the first step in your implementation.
-    open func execute(_ query: ObserverQuery<RequestType>) {
-        queryByID[query.id] = query
+    /// - Important: The default implementation throws `StoreConnectorError.unimplementedQueryType`, therefore do not call `super.execute(_:)` if you override this method.
+    ///
+    /// - Throws: `StoreConnectorError.unimplementedQueryType` if the query passed to the store has not been implemented.
+    open func execute(_ query: BaseQuery<ResultType, RequestType>) throws {
+        throw StoreConnectorError.unimplementedQueryType
     }
     
-    /// Stops the receiver from gathering further results for the given query.
+    /// Stops a long-running query.
     ///
     /// You need to override this method to perform any cleanup relating to stopping the query (e.g. removing database listeners).
     ///
-    /// - Note: If the query is not running, this method does nothing.
-    open func stop(_ query: ObserverQuery<RequestType>) {
-        queryByID[query.id] = nil
-        queue.dequeue(batchID: query.id)
-    }
-    
-    /// Proceses all enqueued changes immediately.
-    ///
-    /// You should use this method if you've enqueued changes driven by user action (e.g. user deleted an item).
-    open func processPendingChanges(for query: ObserverQuery<RequestType>) {
-        queue.processPendingChanges(batchID: query.id)
-    }
-    
-    
-    // MARK: -  Incremental Results
+    /// - Parameters:
+    ///     - query: The query.
+    open func stop(_ query: BaseQuery<ResultType, RequestType>) {
         
-    /// Enqueues the object as an insertion.
-    open func enqueue(inserted: RequestType.ResultType, for query: ObserverQuery<RequestType>) {
-        queue.enqueue(inserted, as: .insert, batchID: query.id)
-    }
-
-    /// Enqueues the object as an update.
-    open func enqueue(updated: RequestType.ResultType, for query: ObserverQuery<RequestType>) {
-        queue.enqueue(updated, as: .update, batchID: query.id)
     }
     
-    /// Enqueues the object as an deletion.
-    open func enqueue(deleted: RequestType.ResultType, for query: ObserverQuery<RequestType>) {
-        queue.enqueue(deleted, as: .delete, batchID: query.id)
+    
+    // MARK: - Managing Parent-Child Relationship
+    
+    /// The parent store connector of the recipient.
+    public internal(set) weak var parent: StoreConnector<ResultType, RequestType>?
+    
+    /// An array of store connectors that are children of the current store connector.
+    public internal(set) var children: [StoreConnector<ResultType, RequestType>] = []
+    
+    /// Adds the specified store connector as a child of the current store connector.
+    ///
+    /// This method creates a parent-child relationship between the current store connector and the object in the `child` parameter.
+    ///
+    /// - Note: This method calls `willMoveToParent(_:)` before adding the child, however it is expected that you call didMoveToParentViewController:
+    open func addChild(_ child: StoreConnector<ResultType, RequestType>) {
+        // remove from existing parent if needed
+        if let parent = child.parent {
+            parent.removeFromParent()
+        }
+        
+        child.willMoveToParent(self)
+        children.append(child)
     }
+    
+    /// Removes the store connector from its parent.
+    open func removeFromParent() {
+        guard let idx = parent?.children.firstIndex(of: self) else { return }
+        parent?.children.remove(at: idx)
+        didMoveToParent(nil)
+    }
+    
+    /// Called just before the store connector is added or removed from another store connector.
+    open func willMoveToParent(_ parent: StoreConnector<ResultType, RequestType>?) {
+        
+    }
+    
+    /// Called after the store connector is added or removed from another store connector.
+    open func didMoveToParent(_ parent: StoreConnector<ResultType, RequestType>?) {
+        self.parent = parent
+    }
+    
 }
 
 extension StoreConnector: Identifiable, Equatable {
-    public static func == (lhs: StoreConnector<RequestType>, rhs: StoreConnector<RequestType>) -> Bool {
+    public static func == (lhs: StoreConnector<ResultType, RequestType>, rhs: StoreConnector<ResultType, RequestType>) -> Bool {
         return lhs.id == rhs.id
     }
 }

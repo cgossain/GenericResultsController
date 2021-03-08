@@ -25,43 +25,11 @@
 import Foundation
 
 /// A type that defines criteria used to retrieve data from a persistent store.
-///
-/// This class is provided for convenience. It implements `PersistentStoreRequest` and
-/// can be subclassed or used directly.
-///
-/// - Important:
-///     - The results controller makes a copy of the fetch request just before the fetch is executed. Therefore
-///       you must override `copy(with zone: NSZone? = nil)` to ensure that your request properly
-///       copies its own properties on every fetch.
-open class StoreRequest<ResultType: PersistentStoreRequestResult>: PersistentStoreRequest {
+public protocol StoreRequest {
     /// The fetch limit of the fetch request.
     ///
     /// The fetch limit specifies the maximum number of objects that a request should return when executed.
     ///
     /// A value of 0 indicates no maximum limit.
-    open var fetchLimit: Int = 0
-    
-    /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
-    open var isIncluded: ((ResultType) -> Bool)?
-    
-    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
-    open var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
-    
-    
-    // MARK: - Lifecycle
-    
-    public required init() {
-        
-    }
-    
-    
-    // MARK: - NSCopying
-
-    open func copy(with zone: NSZone? = nil) -> Any {
-        let copy = type(of: self).init()
-        copy.fetchLimit = fetchLimit
-        copy.isIncluded = isIncluded
-        copy.areInIncreasingOrder = areInIncreasingOrder
-        return copy
-    }
+    var fetchLimit: Int { get }
 }

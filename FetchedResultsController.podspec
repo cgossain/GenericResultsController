@@ -16,4 +16,5 @@ Pod::Spec.new do |s|
   s.source_files = 'FetchedResultsController/Classes/**/*'
   s.dependency 'Debounce'
   s.dependency 'Dwifft', '0.9'
+  s.dependency 'PromiseKit', '~> 6.8'
 end

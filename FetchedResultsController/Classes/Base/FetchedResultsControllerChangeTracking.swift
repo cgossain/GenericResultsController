@@ -1,5 +1,5 @@
 //
-//  FetchedResultsControllerError.swift
+//  FetchedResultsControllerChangeTracking.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,9 +24,11 @@
 
 import Foundation
 
-public enum FetchedResultsControllerError: Error {
-    /// An indication that the requested index path is invalid.
+public class FetchedResultsControllerChangeTracking<ResultType: StoreResult, RequestType: StoreRequest> {
+    public typealias DidChangeResultsHandler = (_ controller: FetchedResultsController<ResultType, RequestType>, _ difference: FetchedResultsDifference<ResultType, RequestType>) -> Void
+    
+    /// Notifies the change tracker that the controller has changed its results.
     ///
-    /// The requested row and section indicies are provides as associated values for context.
-    case invalidIndexPath(row: Int, section: Int)
+    /// The change between the previous and new states is provided as a difference object.
+    public var controllerDidChangeResults: DidChangeResultsHandler?
 }

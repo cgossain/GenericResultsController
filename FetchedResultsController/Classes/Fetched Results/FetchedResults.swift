@@ -28,15 +28,15 @@ import Foundation
 let nilSectionName = ""
 
 /// FetchedResults manages the entire set of results of a fetched results controller.
-class FetchedResults<RequestType: PersistentStoreRequest> {
+class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     /// The search criteria used to retrieve data from a persistent store.
     let storeRequest: RequestType
     
-    /// A block that is run against fetched objects used to determine the section they belong to.
-    let sectionNameProvider: SectionNameProvider<RequestType.ResultType>?
+    /// The results configuration.
+    let resultsConfiguration: FetchedResultsConfiguration<ResultType>?
     
     /// The current fetch results ordered by section first (if a `sectionNameKeyPath` was provided), then by the fetch request sort descriptors.
-    private(set) var results: [RequestType.ResultType] = []
+    private(set) var results: [ResultType] = []
     
     /// An array containing the name of each section that exists in the results. The order of the items in this list represent the order that the sections should appear.
     ///
@@ -44,7 +44,7 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
     var sectionKeyValues: [String] { return Array(sections.map({ $0.sectionKeyValue })) }
     
     /// The fetch results as arranged sections.
-    var sections: [FetchedResultsSection<RequestType.ResultType>] {
+    var sections: [FetchedResultsSection<ResultType>] {
         if let sections = _sections {
             return sections
         }
@@ -59,7 +59,7 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
     // MARK: - Private Properties
     
     /// A dictionary that maps a section to its `sectionKeyValue`.
-    private var sectionsBySectionKeyValue: [String: FetchedResultsSection<RequestType.ResultType>] = [:]
+    private var sectionsBySectionKeyValue: [String: FetchedResultsSection<ResultType>] = [:]
     
     /// A dictionary that maps a result objects `sectionKeyValue` to its ID.
     private var sectionKeyValuesByID: [AnyHashable: String] = [:]
@@ -68,7 +68,7 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
     // MARK: - Private Properties (Computed)
     
     /// The computed sections array.
-    private var _sections: [FetchedResultsSection<RequestType.ResultType>]? // hold the current non-stale sections array
+    private var _sections: [FetchedResultsSection<ResultType>]? // hold the current non-stale sections array
     
     /// A dictionary that maps a sections' index to its `sectionKeyValue`.
     private var sectionIndicesBySectionKeyValue: [String: Int] = [:]
@@ -79,7 +79,7 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     ///
     /// - Note: This predicate sorts against the section name as its primary key and then falls back to the section specifc sorting logic. It is intended to be used against the entire fetched results and not just a single section.
-    private var fetchedResultsAreInIncreasingOrder: (RequestType.ResultType, RequestType.ResultType) -> Bool {
+    private var fetchedResultsAreInIncreasingOrder: (ResultType, ResultType) -> Bool {
         return { (left, right) -> Bool in
             // 1. sort by sections first
             let leftSectionName = self.sectionName(for: left)
@@ -94,7 +94,7 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
             }
             
             // 2. if section names are the same, sort using the section sorting logic
-            if let areInIncreasingOrder = self.storeRequest.areInIncreasingOrder {
+            if let areInIncreasingOrder = self.resultsConfiguration?.areInIncreasingOrder {
                 return areInIncreasingOrder(left, right)
             }
             
@@ -110,13 +110,13 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
     ///
     /// - Parameters:
     ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
-    ///   - sectionNameProvider: A block that is run against fetched objects used to determine the section they belong to.
+    ///   - resultsConfiguration: The results configuration.
     ///   - fetchedResults: The fetch result whose contents should be added to the receiver.
     init(storeRequest: RequestType,
-         sectionNameProvider: SectionNameProvider<RequestType.ResultType>? = nil,
+         resultsConfiguration: FetchedResultsConfiguration<ResultType>?,
          fetchedResults: FetchedResults? = nil) {
         self.storeRequest = storeRequest
-        self.sectionNameProvider = sectionNameProvider
+        self.resultsConfiguration = resultsConfiguration
         
         // configure the initial state with the contents of a previous fetch result if provided
         if let fetchedResults = fetchedResults {
@@ -129,7 +129,7 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
             
             // copy the result sections
             for (sectionKeyValue, resultsSection) in fetchedResults.sectionsBySectionKeyValue {
-                let newResultsSection = FetchedResultsSection<RequestType.ResultType>(
+                let newResultsSection = FetchedResultsSection<ResultType>(
                     sectionKeyValue: resultsSection.sectionKeyValue,
                     areInIncreasingOrder: resultsSection.areInIncreasingOrder,
                     objects: resultsSection.objects)
@@ -145,12 +145,12 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
     /// Creates and returns a new fetched results objects with the contents of an existing fetched results objects.
     convenience init(fetchedResults: FetchedResults) {
         self.init(storeRequest: fetchedResults.storeRequest,
-                  sectionNameProvider: fetchedResults.sectionNameProvider,
+                  resultsConfiguration: fetchedResults.resultsConfiguration,
                   fetchedResults: fetchedResults)
     }
     
     /// Returns the indexPath of the given object; otherwise returns `nil` if not found.
-    func indexPath(for obj: RequestType.ResultType) -> IndexPath? {
+    func indexPath(for obj: ResultType) -> IndexPath? {
         for (sectionIdx, section) in sections.enumerated() {
             guard let rowIdx = section.index(of: obj) else { continue }
             return IndexPath(row: rowIdx, section: sectionIdx)
@@ -161,21 +161,11 @@ class FetchedResults<RequestType: PersistentStoreRequest> {
 
 extension FetchedResults {
     /// Applies the given changes to the current results.
-    func apply(digest: Batch<RequestType.ResultType>.Digest) {
-        // apply inserted objects
-        for obj in digest.inserted {
-            insert(obj: obj)
-        }
-        
-        // apply updated objects
-        for obj in digest.updated {
-            update(obj: obj)
-        }
-        
-        // apply deleted objects
-        for obj in digest.deleted {
-            delete(obj: obj)
-        }
+    func apply(inserted ins: [ResultType]?, updated upd: [ResultType]?, deleted del: [ResultType]?) {
+        // apply changes
+        ins?.forEach({ insert(obj: $0) })
+        upd?.forEach({ update(obj: $0) })
+        del?.forEach({ delete(obj: $0) })
         
         // discard objects above the fetch limit;
         // note that it's expected the store connector
@@ -199,7 +189,7 @@ extension FetchedResults {
     }
     
     /// Returns the section index the given object belongs to.
-    func sectionIndex(for obj: RequestType.ResultType) -> Int? {
+    func sectionIndex(for obj: ResultType) -> Int? {
         let sectionKeyValue = self.sectionName(for: obj)
         
         // return the already computed index if available
@@ -220,7 +210,7 @@ extension FetchedResults {
     }
     
     /// Returns the index within the overall results array where the given objects section begins.
-    func sectionOffset(for obj: RequestType.ResultType) -> Int? {
+    func sectionOffset(for obj: ResultType) -> Int? {
         let sectionKeyValue = self.sectionName(for: obj)
         
         // return the already computed index if available
@@ -244,7 +234,7 @@ extension FetchedResults {
 extension FetchedResults {
     /// Inserts the given object to the results array at the position that respects
     /// the fetch requests sort order and predicate.
-    private func insert(obj: RequestType.ResultType) {
+    private func insert(obj: ResultType) {
         // ignore this insertion if the object does not evaluate against our predicate
         if !canInclude(obj: obj) {
             return
@@ -258,14 +248,14 @@ extension FetchedResults {
         
         // create or update the section
         let sectionKeyValue = self.sectionName(for: obj)
-        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: storeRequest.areInIncreasingOrder)
+        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: resultsConfiguration?.areInIncreasingOrder)
         section.insert(obj: obj)
         sectionsBySectionKeyValue[sectionKeyValue] = section
         sectionKeyValuesByID[obj.id] = sectionKeyValue
     }
     
     /// Replaces the current version of the object with the given one.
-    private func update(obj new: RequestType.ResultType) {
+    private func update(obj new: ResultType) {
         // since this object has been updated we have to assume its `sectionKeyValue` may
         // have changed which means that in addition to the object being updated, its position
         // in the results array may also completely changed; we can reliably perform this
@@ -284,7 +274,7 @@ extension FetchedResults {
     }
     
     /// Removes the object if it exists in the results.
-    private func delete(obj: RequestType.ResultType) {
+    private func delete(obj: ResultType) {
         // remove the object
         guard let idx = results.firstIndex(where: { $0.id == obj.id }) else { return }
         results.remove(at: idx)
@@ -314,19 +304,19 @@ extension FetchedResults {
 
 extension FetchedResults {
     /// Indicates if the given object should be included in the data set.
-    private func canInclude(obj: RequestType.ResultType) -> Bool {
-        return storeRequest.isIncluded?(obj) ?? true
+    private func canInclude(obj: ResultType) -> Bool {
+        return resultsConfiguration?.isIncluded?(obj) ?? true
     }
     
     /// Returns the section key value for the given object.
-    private func sectionName(for obj: RequestType.ResultType) -> String {
+    private func sectionName(for obj: ResultType) -> String {
         // return the cached section name if available
         if let cachedSectionName = sectionKeyValuesByID[obj.id] {
             return cachedSectionName
         }
         
         // get the section name from the provider
-        if let sectionNameProvider = sectionNameProvider,
+        if let sectionNameProvider = resultsConfiguration?.sectionNameProvider,
            let sectionName = sectionNameProvider(obj) {
             return sectionName
         }

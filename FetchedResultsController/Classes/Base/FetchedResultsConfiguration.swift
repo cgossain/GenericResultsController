@@ -1,5 +1,5 @@
 //
-//  PersistentStoreRequest.swift
+//  FetchedResultsConfiguration.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,28 +24,25 @@
 
 import Foundation
 
-/// A type that fetched objects must conform to.
-public typealias PersistentStoreRequestResult = Identifiable & Hashable
-
-/// A type that defines criteria used to retrieve data from a persistent store.
-///
-/// - Important:
-///     - The results controller makes a copy of the fetch request just before the fetch is executed. Therefore
-///       you must implement `copy(with zone: NSZone? = nil)` to ensure that your request properly
-///       copies its own properties on every fetch.
-public protocol PersistentStoreRequest: NSCopying {
-    associatedtype ResultType: PersistentStoreRequestResult
-    
-    /// The fetch limit of the fetch request.
-    ///
-    /// The fetch limit specifies the maximum number of objects that a request should return when executed.
-    ///
-    /// A value of 0 indicates no maximum limit.
-    var fetchLimit: Int { get set }
+/// Configuration parameters for managing fetched results.
+public struct FetchedResultsConfiguration<ResultType: StoreResult> {
+    /// A block that is run against fetched objects used to determine the section they belong to.
+    public var sectionNameProvider: ((ResultType) -> String?)?
     
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
-    var isIncluded: ((ResultType) -> Bool)? { get set }
+    public var isIncluded: ((ResultType) -> Bool)?
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
-    var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? { get set }
+    public var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
+    
+    /// Returns a results configuration initialized using the given arguments.
+    public init(sectionNameProvider: ((ResultType) -> String?)? = nil,
+                isIncluded: ((ResultType) -> Bool)? = nil,
+                areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? = nil) {
+        self.sectionNameProvider = sectionNameProvider
+        self.isIncluded = isIncluded
+        self.areInIncreasingOrder = areInIncreasingOrder
+    }
 }
+
+
