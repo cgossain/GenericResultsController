@@ -38,17 +38,38 @@ import Foundation
 /// on that same store (or specific location in that store) this would be the logical place to do it.
 open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreConnector<ResultType, RequestType> {
     
-    /// The current queries by ID.
-    public private(set) var queriesByID: [AnyHashable : BaseQuery<ResultType, RequestType>] = [:]
-//    queriesByID[query.id] = query
-//    query.stop()
-//    queriesByID[query.id] = nil
+    /// Active observer queries by ID.
+    private var observerQueriesByID: [AnyHashable : ObserverQuery<ResultType, RequestType>] = [:]
     
     
     // MARK: - Private Properties
     
     /// The draft batch.
     private var draft = Batch<ResultType>(id: UUID().uuidString)
+    
+    
+    // MARK: - StoreConnector
+    
+    /// You must call `super.execute(_:)`. The CRUD store does some internal setup in this method.
+    open override func execute(_ query: BaseQuery<ResultType, RequestType>) throws {
+        draft = Batch<ResultType>(id: UUID().uuidString)
+        
+        if let observerQuery = query as? ObserverQuery<ResultType, RequestType> {
+            observerQueriesByID[observerQuery.id] = observerQuery
+        }
+    }
+    
+    /// Stops a long-running query.
+    ///
+    /// You need to override this method to perform any cleanup relating to stopping the query (e.g. removing database listeners).
+    ///
+    /// - Parameters:
+    ///     - query: The query.
+    ///
+    /// - Note: You must call `super.stop(_:)`. The CRUD store does some internal cleanup in this method.
+    open override func stop(_ query: BaseQuery<ResultType, RequestType>) {
+        observerQueriesByID[query.id] = nil
+    }
     
     
     // MARK: - CRUD
@@ -71,12 +92,8 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     
     // MARK: - CRUD (Draft Mode)
     
-    /// Clears the draft.
-    open func resetDraft() {
-        draft = Batch<ResultType>(id: UUID().uuidString)
-    }
-    
-    /// Adds the object to the stores' results but tracks it as a draft insertion (i.e. does not commit to the underlying store).
+    /// Tracks the insertion in the stores' internal draft, and enqueues it into any running
+    /// observer queries (i.e. does not commit to the underlying store).
     ///
     /// Call `commit()` to commit the changes to the underlying store.
     open func insertDraft(_ obj: ResultType) {
@@ -87,11 +104,11 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
         // configuration on the fetch request
         // will take care of correctly showing
         // this object (or not) in the UI
-//        queriesByID.values.compactMap({ $0 as? PageQuery<ResultType, RequestType> }).forEach({ $0.resolve(results: [obj], cursor: nil) })
-//        queriesByID.values.compactMap({ $0 as? ObserverQuery<ResultType, RequestType> }).forEach({ $0.enqueue(inserted: obj) })
+        observerQueriesByID.values.forEach { $0.enqueue(inserted: obj) }
     }
     
-    /// Adds the object to the stores' results but tracks it as a draft update (i.e. does not commit to the underlying store).
+    /// Tracks the update in the stores' internal draft, and enqueues it into any running
+    /// observer queries (i.e. does not commit to the underlying store).
     ///
     /// Call `commit()` to commit the changes to the underlying store.
     open func updateDraft(_ obj: ResultType) {
@@ -102,10 +119,11 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
         // configuration on the fetch request
         // will take care of correctly showing
         // this object (or not) in the UI
-//        queriesByID.values.forEach { $0.enqueue(updated: obj) }
+        observerQueriesByID.values.forEach { $0.enqueue(updated: obj) }
     }
     
-    /// Adds the object to the stores' results but tracks it as a draft delete (i.e. does not commit to the underlying store).
+    /// Tracks the deletion in the stores' internal draft, and enqueues it into any running
+    /// observer queries (i.e. does not commit to the underlying store).
     ///
     /// Call `commit()` to commit the changes to the underlying store.
     open func deleteDraft(_ obj: ResultType) {
@@ -116,7 +134,7 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
         // configuration on the fetch request
         // will take care of correctly showing
         // this object (or not) in the UI
-//        queriesByID.values.forEach { $0.enqueue(deleted: obj) }
+        observerQueriesByID.values.forEach { $0.enqueue(deleted: obj) }
     }
     
     /// Commits draft objects to the underlying store.
@@ -127,15 +145,13 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     ///     - recursively: Indicates if the commit should propagate through to child CRUD stores.
     open func commit(recursively: Bool = false) {
         // call `commit()` on each child
-        // store (if commiting recursively)
+        // CRUD store (if commiting recursively)
         if recursively {
             children.compactMap({ $0 as? CRUDStore }).forEach { $0.commit(recursively: true) }
         }
         
-        // deduplicate draft objects for our level
+        // commit any deduplicated draft changes
         let digest = draft.flush()
-        
-        // commit draft changes
         digest.inserted.forEach({ self.insert($0) })
         digest.updated.forEach({ self.update($0) })
         digest.deleted.forEach({ self.delete($0) })
