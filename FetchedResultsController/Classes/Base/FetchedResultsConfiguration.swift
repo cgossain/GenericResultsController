@@ -25,6 +25,10 @@
 import Foundation
 
 /// Configuration parameters for managing fetched results.
+///
+/// - Note: The filter and sort closures are provided for convenience and are run locally after data has
+///         been fetched. For efficiency it would be better to try and filter (and possibly sort) when fetching
+///         data in your store connector implementation.
 public struct FetchedResultsConfiguration<ResultType: StoreResult> {
     /// A block that is run against fetched objects used to determine the section they belong to.
     public var sectionNameProvider: ((ResultType) -> String?)?

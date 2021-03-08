@@ -1,5 +1,5 @@
 //
-//  CRUDStoreConnector.swift
+//  CRUDStore.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,7 +24,7 @@
 
 import Foundation
 
-/// CRUDStoreConnector is an abstract superclass that adds some convenient features to the
+/// CRUDStore is an abstract superclass that adds some convenient features to the
 /// base store connector.
 ///
 /// In particular, it defines an API for insert, update, and delete operations. It also adds a
@@ -36,7 +36,7 @@ import Foundation
 /// Given that the base store connector should already understand the particulars of fetching
 /// data from the underlying store, it follows that if one wanted to also perform CRUD operations
 /// on that same store (or specific location in that store) this would be the logical place to do it.
-open class CRUDStoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: StoreConnector<ResultType, RequestType> {
+open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreConnector<ResultType, RequestType> {
     
     /// The current queries by ID.
     public private(set) var queriesByID: [AnyHashable : BaseQuery<ResultType, RequestType>] = [:]
@@ -129,7 +129,7 @@ open class CRUDStoreConnector<ResultType: StoreResult, RequestType: StoreRequest
         // call `commit()` on each child
         // store (if commiting recursively)
         if recursively {
-            children.compactMap({ $0 as? CRUDStoreConnector }).forEach { $0.commit(recursively: true) }
+            children.compactMap({ $0 as? CRUDStore }).forEach { $0.commit(recursively: true) }
         }
         
         // deduplicate draft objects for our level

@@ -114,9 +114,13 @@ extension BatchQueue {
         batchByID[batchID] = nil
     }
     
-    /// By default, the batch controller flushes enqueued changes when it reaches its throttling interval. This method flushes it explicitly.
+    /// Forces the queue to flush the batch associated with the given batchID.
     ///
-    /// - Note: This method is not useful if you've already set `processesChangesImmediately` to `true`.
+    /// By default, the queue automatically flushes enqueued changes when it reaches its throttling interval, this method flushes it explicitly.
+    ///
+    /// If there is no active batch for the given batchID, this method will still create an empty batch in order to trigger the delegate callback.
+    ///
+    /// - Note: This method is not useful if you've set `processesChangesImmediately` to `true`.
     public func processPendingChanges(batchID: AnyHashable) {
         // create an empty batch so that the flush call triggers the delegate
         if batchByID[batchID] == nil {

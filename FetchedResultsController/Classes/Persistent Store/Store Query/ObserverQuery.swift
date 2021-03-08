@@ -73,6 +73,8 @@ extension ObserverQuery {
     /// Proceses all enqueued changes immediately.
     ///
     /// You should use this method if you've enqueued changes driven by user action (e.g. user deleted an item).
+    ///
+    /// - Note: In the event there are no results for the query, you can still use this method to trigger the update handler; it'll just report zero changes.
     public func processPendingChanges() {
         queue.processPendingChanges(batchID: self.id)
     }
