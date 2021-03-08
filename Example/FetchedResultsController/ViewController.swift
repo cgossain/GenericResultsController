@@ -27,7 +27,7 @@ import FetchedResultsController
 import UIKit
 
 class ViewController: UITableViewController {
-    private(set) var fetchedResultsController: FetchedResultsController<CoreDataStoreRequest<Event>>!
+    private(set) var fetchedResultsController: FetchedResultsController<Event, NSFetchRequest<Event>>!
     
     var managedObjectContext: NSManagedObjectContext { return CoreDataManager.shared.persistentContainer.viewContext }
     
@@ -45,31 +45,31 @@ class ViewController: UITableViewController {
             }))
             
             let refreshButton = UIBarButtonItem(systemItem: .refresh, primaryAction: UIAction(handler: { (action) in
-                self.fetchedResultsController.performFetch()
+                try? self.fetchedResultsController.performFetch()
             }))
             navigationItem.rightBarButtonItems = [addButton, refreshButton]
             
             refreshControl = UIRefreshControl()
             refreshControl?.addAction(UIAction(handler: { (action) in
-                self.fetchedResultsController.performFetch()
+                try? self.fetchedResultsController.performFetch()
             }), for: .valueChanged)
         }
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         configureResultsController()
         
-        fetchedResultsController.performFetch()
+        try? fetchedResultsController.performFetch()
     }
     
     private func configureResultsController() {
-        let nsFetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
-        nsFetchRequest.returnsObjectsAsFaults = false
+        let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
+        fetchRequest.returnsObjectsAsFaults = false
         
-        let storeRequest = CoreDataStoreRequest<Event>()
-        storeRequest.nsFetchRequest = nsFetchRequest
+        fetchedResultsController = FetchedResultsController(storeRequest: fetchRequest,
+                                                            storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext))
         
-        fetchedResultsController = FetchedResultsController(storeRequest: storeRequest, storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext)) {
-            $0.category
+        fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
+            return FetchedResultsConfiguration(sectionNameProvider: { return $0.category })
         }
         
         // table view diffing

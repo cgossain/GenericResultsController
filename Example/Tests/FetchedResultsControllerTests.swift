@@ -17,9 +17,15 @@ struct TestModel: Hashable, Identifiable {
     let category: String?
 }
 
-class TestStoreRequest: StoreRequest<TestModel> {}
+class TestStoreRequest {
+    
+}
 
-class TestStoreConnector: StoreConnector<TestStoreRequest> {
+extension TestStoreRequest: StoreRequest {
+    var fetchLimit: Int { return 0 }
+}
+
+class TestStoreConnector: StoreConnector<TestModel, TestStoreRequest> {
     private let results = [TestModel(timestamp: Date(timeInterval: -9000, since: Date()), category: "Section A"),
                            TestModel(timestamp: Date(timeInterval: -8500, since: Date()), category: "Section A"),
                            TestModel(timestamp: Date(timeInterval: -8000, since: Date()), category: "Section A"),
@@ -27,9 +33,17 @@ class TestStoreConnector: StoreConnector<TestStoreRequest> {
                            TestModel(timestamp: Date(timeInterval: -7000, since: Date()), category: "Section B"),
                            TestModel(timestamp: Date(timeInterval: -6500, since: Date()), category: "Section C")]
     
-    open override func execute(_ query: ObserverQuery<TestStoreRequest>) {
-        super.execute(query)
-        results.forEach { self.enqueue(inserted: $0, for: query) }
+    open override func execute(_ query: BaseQuery<TestModel, TestStoreRequest>) throws {
+        switch query {
+        case let query as ObserverQuery<TestModel, TestStoreRequest>:
+            results.forEach { query.enqueue(inserted: $0) }
+        
+        case let query as PageQuery<TestModel, TestStoreRequest>:
+            try query.fulfill(results: results, cursor: nil)
+            
+        default:
+            throw StoreConnectorError.unimplementedQueryType
+        }
     }
 }
 
@@ -43,15 +57,21 @@ class FetchedResultsControllerTests: XCTestCase {
     
     let testStoreRequest = TestStoreRequest()
     
-    var fetchedResultsController: FetchedResultsController<TestStoreRequest>!
+    var fetchedResultsController: FetchedResultsController<TestModel, TestStoreRequest>!
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        fetchedResultsController = FetchedResultsController(storeRequest: testStoreRequest, storeConnector: testStoreConnector) { $0.category }
+        fetchedResultsController = FetchedResultsController(storeRequest: testStoreRequest, storeConnector: testStoreConnector)
+        
+        fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
+            return FetchedResultsConfiguration(sectionNameProvider: { return $0.category })
+        }
+        
         fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
             self.didChangeContentExpectation.fulfill()
         }
-        fetchedResultsController.performFetch()
+        
+        try? fetchedResultsController.performFetch(queryMode: .observer)
         
         wait(for: [didChangeContentExpectation], timeout: 5)
     }
