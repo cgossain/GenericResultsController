@@ -95,7 +95,7 @@ extension PageQuery {
     ///               to initialize a new page query object when you are ready to retrieve the next batch of results.
     ///
     /// - Throws: `PageQueryError.alreadyFulfilled` if the promise already resolved.
-    public func fulfill(results: [ResultType], cursor: PageQuery.Cursor?) throws {
+    public func fulfill(results: [ResultType], cursor: PageQuery.Cursor? = nil) throws {
         if promise.isFulfilled { throw PageQueryError.alreadyFulfilled }
         seal.fulfill((results, cursor))
     }
