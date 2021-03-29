@@ -75,7 +75,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest> {
     /// - Parameters:
     ///     - query: The query.
     ///
-    /// - Important: The default implementation throws `StoreConnectorError.unimplementedQueryType`, therefore if you subclass the base class, do not call `super.execute(_:)`.
+    /// - Important: Do not call `super.execute(_:)`. The default implementation throws `StoreConnectorError.unimplementedQueryType`.
     ///
     /// - Throws: `StoreConnectorError.unimplementedQueryType` if the query passed to the store has not been implemented.
     open func execute(_ query: BaseQuery<ResultType, RequestType>) throws {
