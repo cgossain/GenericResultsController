@@ -24,12 +24,28 @@
 
 import Foundation
 
+public enum QueryMode {
+    case observer
+    case page
+}
+
 /// A type that defines criteria used to retrieve data from a persistent store.
 public protocol StoreRequest {
+    /// The type of query to perform.
+    ///
+    /// Your store connector implementation must implement each query mode you expect to use.
+    var queryMode: QueryMode { get }
+    
     /// The fetch limit of the fetch request.
     ///
     /// The fetch limit specifies the maximum number of objects that a request should return when executed.
     ///
     /// A value of 0 indicates no maximum limit.
     var fetchLimit: Int { get }
+}
+
+extension StoreRequest {
+    public var queryMode: QueryMode { return .observer }
+    
+    public var fetchLimit: Int { return 0 }
 }

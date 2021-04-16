@@ -33,14 +33,6 @@ public enum FetchedResultsControllerError: Error {
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
 open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest> {
-    public enum QueryMode {
-        case observer
-        case page
-    }
-    
-    /// The search criteria used to retrieve data from a persistent store.
-    public let storeRequest: RequestType
-    
     /// The store connector instance the controller uses to execute a fetch request against.
     public let storeConnector: StoreConnector<ResultType, RequestType>
     
@@ -81,11 +73,8 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     /// Returns a fetched results controller initialized using the given arguments.
     ///
     /// - Parameters:
-    ///   - storeRequest: The request that will be executed against the store connector.
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The store request is executed against this connector instance.
-    public init(storeRequest: RequestType,
-                storeConnector: StoreConnector<ResultType, RequestType>) {
-        self.storeRequest = storeRequest
+    public init(storeConnector: StoreConnector<ResultType, RequestType>) {
         self.storeConnector = storeConnector
     }
     
@@ -98,12 +87,12 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     /// Executes a new query against the store connector.
     ///
     /// - Parameters:
-    ///   - queryMode: The type of query performed by the results controller when performing a fetch.
+    ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
     ///
     /// - Important: Calling this method invalidates any previous results.
     ///
     /// - Throws: `StoreConnectorError.unimplementedQueryType` if the query passed to the store has not been implemented.
-    public func performFetch(queryMode: QueryMode = .observer) throws {
+    public func performFetch(storeRequest: RequestType) throws {
         shouldRebuildFetchedResults = true
         
         // notify delegate
@@ -114,19 +103,19 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
         stopCurrentQueries()
         
         // get the results configuration
-        let resultsConfiguration = delegate.controllerResultsConfiguration?(self, self.storeRequest)
+        let resultsConfiguration = delegate.controllerResultsConfiguration?(self, storeRequest)
         
         // execute the new query
         var query: BaseQuery<ResultType, RequestType>!
-        switch queryMode {
+        switch storeRequest.queryMode {
         case .observer:
-            query = ObserverQuery<ResultType, RequestType>(storeRequest: self.storeRequest) { [unowned self] (inserted, updated, deleted, _) in
-                let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: self.storeRequest, resultsConfiguration: resultsConfiguration)
+            query = ObserverQuery<ResultType, RequestType>(storeRequest: storeRequest) { [unowned self] (inserted, updated, deleted, _) in
+                let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
                 
                 var newFetchedResults: FetchedResults<ResultType, RequestType>!
                 if self.shouldRebuildFetchedResults {
                     // add incremental changes starting from an empty results object
-                    newFetchedResults = FetchedResults(storeRequest: self.storeRequest, resultsConfiguration: resultsConfiguration)
+                    newFetchedResults = FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
                     newFetchedResults.apply(inserted: inserted, updated: updated, deleted: deleted)
                     
                     // results rebuilt
@@ -153,13 +142,13 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
             }
             
         case .page:
-            query = PageQuery<ResultType, RequestType>(storeRequest: self.storeRequest, resultsHandler: { (results, cursor, _) in
-                let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: self.storeRequest, resultsConfiguration: resultsConfiguration)
+            query = PageQuery<ResultType, RequestType>(storeRequest: storeRequest, resultsHandler: { (results, cursor, _) in
+                let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
                 
                 var newFetchedResults: FetchedResults<ResultType, RequestType>!
                 if self.shouldRebuildFetchedResults {
                     // add incremental changes starting from an empty results object
-                    newFetchedResults = FetchedResults(storeRequest: self.storeRequest, resultsConfiguration: resultsConfiguration)
+                    newFetchedResults = FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
                     newFetchedResults.apply(inserted: results, updated: nil, deleted: nil)
                     
                     // results rebuilt
