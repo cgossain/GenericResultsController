@@ -33,17 +33,8 @@ class TestStoreConnector: StoreConnector<TestModel, TestStoreRequest> {
                            TestModel(timestamp: Date(timeInterval: -7000, since: Date()), category: "Section B"),
                            TestModel(timestamp: Date(timeInterval: -6500, since: Date()), category: "Section C")]
     
-    open override func execute(_ query: BaseQuery<TestModel, TestStoreRequest>) throws {
-        switch query {
-        case let query as ObserverQuery<TestModel, TestStoreRequest>:
-            results.forEach { query.enqueue(inserted: $0) }
-        
-        case let query as PageQuery<TestModel, TestStoreRequest>:
-            try query.fulfill(results: results, cursor: nil)
-            
-        default:
-            throw StoreConnectorError.unimplementedQueryType
-        }
+    open override func execute(_ query: StoreQuery<TestModel, TestStoreRequest>) throws {
+        results.forEach { query.enqueue(inserted: $0) }
     }
 }
 
@@ -61,7 +52,7 @@ class FetchedResultsControllerTests: XCTestCase {
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        fetchedResultsController = FetchedResultsController(storeRequest: testStoreRequest, storeConnector: testStoreConnector)
+        fetchedResultsController = FetchedResultsController(storeConnector: testStoreConnector)
         
         fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
             return FetchedResultsConfiguration(sectionNameProvider: { return $0.category })
@@ -71,7 +62,7 @@ class FetchedResultsControllerTests: XCTestCase {
             self.didChangeContentExpectation.fulfill()
         }
         
-        try? fetchedResultsController.performFetch(queryMode: .observer)
+        try? fetchedResultsController.performFetch(storeRequest: testStoreRequest)
         
         wait(for: [didChangeContentExpectation], timeout: 5)
     }
@@ -80,7 +71,7 @@ class FetchedResultsControllerTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testNumberOfSections() throws {
+    func testNumberOfSectionsGenerated() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         XCTAssertEqual(fetchedResultsController.sections.count, 3)

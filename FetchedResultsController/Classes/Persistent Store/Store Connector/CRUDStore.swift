@@ -39,7 +39,7 @@ import Foundation
 open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreConnector<ResultType, RequestType> {
     
     /// Active observer queries by ID.
-    private var observerQueriesByID: [AnyHashable : ObserverQuery<ResultType, RequestType>] = [:]
+    private var observerQueriesByID: [AnyHashable : StoreQuery<ResultType, RequestType>] = [:]
     
     
     // MARK: - Private Properties
@@ -51,10 +51,10 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     // MARK: - StoreConnector
     
     /// You must call `super.execute(_:)`. The CRUD store does some internal setup in this method.
-    open override func execute(_ query: BaseQuery<ResultType, RequestType>) throws {
+    open override func execute(_ query: StoreQuery<ResultType, RequestType>) throws {
         draft = Batch<ResultType>(id: UUID().uuidString)
         
-        if let observerQuery = query as? ObserverQuery<ResultType, RequestType> {
+        if let observerQuery = query as? StoreQuery<ResultType, RequestType> {
             observerQueriesByID[observerQuery.id] = observerQuery
         }
     }
@@ -67,7 +67,7 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     ///     - query: The query.
     ///
     /// - Note: You must call `super.stop(_:)`. The CRUD store does some internal cleanup in this method.
-    open override func stop(_ query: BaseQuery<ResultType, RequestType>) {
+    open override func stop(_ query: StoreQuery<ResultType, RequestType>) {
         observerQueriesByID[query.id] = nil
     }
     

@@ -51,7 +51,7 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStore<Entit
         super.init()
     }
     
-    override func execute(_ query: BaseQuery<EntityType, NSFetchRequest<EntityType>>) throws {
+    override func execute(_ query: StoreQuery<EntityType, NSFetchRequest<EntityType>>) throws {
         // perform the query and then call the appropriate `enqueue` method
         // when data becomes available
         //
@@ -67,68 +67,57 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStore<Entit
         // note, realistically you would use NSFetchedResultsController if you're
         // using CoreData.
         
-        switch query {
-        case let query as ObserverQuery<EntityType, NSFetchRequest<EntityType>>:
-            managedObjectContextChangeObserversByQueryID[query.id] = NotificationCenter.default.addObserver(
-                forName: .NSManagedObjectContextObjectsDidChange,
-                object: self.managedObjectContext,
-                queue: nil,
-                using: { [unowned self] (note) in
-                    self.handleContextObjectsDidChangeNotification(note, query: query)
-                })
-            
-            let fetch = NSAsynchronousFetchRequest(fetchRequest: query.storeRequest) { (result) in
-                guard let objects = result.finalResult else { return }
-                objects.forEach { query.enqueue(inserted: $0) }
+        managedObjectContextChangeObserversByQueryID[query.id] = NotificationCenter.default.addObserver(
+            forName: .NSManagedObjectContextObjectsDidChange,
+            object: self.managedObjectContext,
+            queue: nil,
+            using: { [unowned self] (note) in
+                self.handleContextObjectsDidChangeNotification(note, query: query)
+            })
+        
+        let fetch = NSAsynchronousFetchRequest(fetchRequest: query.storeRequest) { (result) in
+            if self.managedObjectContextChangeObserversByQueryID[query.id] == nil {
+                return
             }
-
-            try! managedObjectContext.execute(fetch)
             
-        case let query as PageQuery<EntityType, NSFetchRequest<EntityType>>:
-            let fetch = NSAsynchronousFetchRequest(fetchRequest: query.storeRequest) { (result) in
-                guard let objects = result.finalResult else { return }
-                try? query.fulfill(results: objects, cursor: nil)
-            }
-
-            try! managedObjectContext.execute(fetch)
-            
-        default:
-            throw StoreConnectorError.unimplementedQueryType
+            guard let objects = result.finalResult else { return }
+            objects.forEach { query.enqueue(inserted: $0) }
         }
+
+        try! managedObjectContext.execute(fetch)
     }
 
-    override func stop(_ query: BaseQuery<EntityType, NSFetchRequest<EntityType>>) {
+    override func stop(_ query: StoreQuery<EntityType, NSFetchRequest<EntityType>>) {
         super.stop(query)
         if let observer = managedObjectContextChangeObserversByQueryID[query.id] {
             NotificationCenter.default.removeObserver(observer)
+            managedObjectContextChangeObserversByQueryID[query.id] = nil
         }
     }
     
 }
 
 extension CoreDataStoreConnector {
-    private func handleContextObjectsDidChangeNotification(_ notification: Notification, query: BaseQuery<EntityType, NSFetchRequest<EntityType>>) {
+    private func handleContextObjectsDidChangeNotification(_ notification: Notification, query: StoreQuery<EntityType, NSFetchRequest<EntityType>>) {
+        if managedObjectContextChangeObserversByQueryID[query.id] == nil {
+            return
+        }
+        
         let entityName = query.storeRequest.entityName!
 
-        switch query {
-        case let query as ObserverQuery<EntityType, NSFetchRequest<EntityType>>:
-            // enqueue insertions of `EntityType`
-            let insertedObjs = notification.userInfo?[NSInsertedObjectsKey] as? Set<EntityType> ?? []
-            insertedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue(inserted: $0) })
+        // enqueue insertions of `EntityType`
+        let insertedObjs = notification.userInfo?[NSInsertedObjectsKey] as? Set<EntityType> ?? []
+        insertedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue(inserted: $0) })
 
-            // enqueue updates of `EntityType`
-            let updatedObjs = notification.userInfo?[NSUpdatedObjectsKey] as? Set<EntityType> ?? []
-            updatedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue(updated: $0) })
+        // enqueue updates of `EntityType`
+        let updatedObjs = notification.userInfo?[NSUpdatedObjectsKey] as? Set<EntityType> ?? []
+        updatedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue(updated: $0) })
 
-            // enqueue deletions of `EntityType`
-            let deletedObjs = notification.userInfo?[NSDeletedObjectsKey] as? Set<EntityType> ?? []
-            deletedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue(deleted: $0) })
+        // enqueue deletions of `EntityType`
+        let deletedObjs = notification.userInfo?[NSDeletedObjectsKey] as? Set<EntityType> ?? []
+        deletedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue(deleted: $0) })
 
-            // process immediately
-            query.processPendingChanges()
-            
-        default:
-            fatalError("Undefined of unimplemented query type");
-        }
+        // process immediately
+        query.processPendingChanges()
     }
 }

@@ -27,11 +27,6 @@ import Foundation
 /// A type that fetched objects must conform to.
 public typealias StoreResult = Identifiable & Hashable
 
-public enum StoreConnectorError: Error {
-    /// An indication that the type of the query passed to the store connector is unimplemented.
-    case unimplementedQueryType
-}
-
 /// StoreConnector is an abstract superclass exposing a simple API for interfacing between a
 /// fetched results controller and any data store. It's an adapter to some underlying store.
 ///
@@ -78,8 +73,8 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest> {
     /// - Important: Do not call `super.execute(_:)`. The default implementation throws `StoreConnectorError.unimplementedQueryType`.
     ///
     /// - Throws: `StoreConnectorError.unimplementedQueryType` if the query passed to the store has not been implemented.
-    open func execute(_ query: BaseQuery<ResultType, RequestType>) throws {
-        throw StoreConnectorError.unimplementedQueryType
+    open func execute(_ query: StoreQuery<ResultType, RequestType>) throws {
+        
     }
     
     /// Stops a long-running query.
@@ -88,7 +83,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest> {
     ///
     /// - Parameters:
     ///     - query: The query.
-    open func stop(_ query: BaseQuery<ResultType, RequestType>) {
+    open func stop(_ query: StoreQuery<ResultType, RequestType>) {
         
     }
     

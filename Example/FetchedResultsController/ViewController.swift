@@ -39,34 +39,33 @@ class ViewController: UITableViewController {
         // Do any additional setup after loading the view, typically from a nib.
         navigationItem.leftBarButtonItem = editButtonItem
         
+        let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
+        fetchRequest.returnsObjectsAsFaults = false
+        
         if #available(iOS 14.0, *) {
             let addButton = UIBarButtonItem(systemItem: .add, primaryAction: UIAction(handler: { (action) in
                 self.insertNewObject(action)
             }))
             
             let refreshButton = UIBarButtonItem(systemItem: .refresh, primaryAction: UIAction(handler: { (action) in
-                try? self.fetchedResultsController.performFetch()
+                try? self.fetchedResultsController.performFetch(storeRequest: fetchRequest)
             }))
             navigationItem.rightBarButtonItems = [addButton, refreshButton]
             
             refreshControl = UIRefreshControl()
             refreshControl?.addAction(UIAction(handler: { (action) in
-                try? self.fetchedResultsController.performFetch()
+                try? self.fetchedResultsController.performFetch(storeRequest: fetchRequest)
             }), for: .valueChanged)
         }
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         configureResultsController()
         
-        try? fetchedResultsController.performFetch()
+        try? fetchedResultsController.performFetch(storeRequest: fetchRequest)
     }
     
     private func configureResultsController() {
-        let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
-        fetchRequest.returnsObjectsAsFaults = false
-        
-        fetchedResultsController = FetchedResultsController(storeRequest: fetchRequest,
-                                                            storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext))
+        fetchedResultsController = FetchedResultsController(storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext))
         
         fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
             return FetchedResultsConfiguration(sectionNameProvider: { return $0.category })

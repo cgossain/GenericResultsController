@@ -26,9 +26,6 @@
     ],
     "Dwifft": [
       "0.9"
-    ],
-    "PromiseKit": [
-      "~> 6.8"
     ]
   },
   "swift_version": "5.0"

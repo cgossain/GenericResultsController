@@ -4,16 +4,6 @@ PODS:
   - FetchedResultsController (1.1.0):
     - Debounce
     - Dwifft (= 0.9)
-    - PromiseKit (~> 6.8)
-  - PromiseKit (6.13.1):
-    - PromiseKit/CorePromise (= 6.13.1)
-    - PromiseKit/Foundation (= 6.13.1)
-    - PromiseKit/UIKit (= 6.13.1)
-  - PromiseKit/CorePromise (6.13.1)
-  - PromiseKit/Foundation (6.13.1):
-    - PromiseKit/CorePromise
-  - PromiseKit/UIKit (6.13.1):
-    - PromiseKit/CorePromise
 
 DEPENDENCIES:
   - FetchedResultsController (from `../`)
@@ -22,7 +12,6 @@ SPEC REPOS:
   trunk:
     - Debounce
     - Dwifft
-    - PromiseKit
 
 EXTERNAL SOURCES:
   FetchedResultsController:
@@ -31,8 +20,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Debounce: 9c04cd6b40af7d932c3e66057180d7b884bdb305
   Dwifft: 42912068ed2a8146077d1a1404df18625bd086e1
-  FetchedResultsController: 84a0a9b0b8c1fa03fb68a3f16f71593c5db10679
-  PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
+  FetchedResultsController: 5bed18e65c64a4f5bba06e96c59ee30200287499
 
 PODFILE CHECKSUM: 447bb52ec2877539dda253f7e6c0b9942ad0f415
 

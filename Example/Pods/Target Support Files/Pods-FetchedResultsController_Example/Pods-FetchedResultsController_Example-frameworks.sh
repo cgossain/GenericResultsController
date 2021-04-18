@@ -178,13 +178,11 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Debounce/Debounce.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Dwifft/Dwifft.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FetchedResultsController/FetchedResultsController.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Debounce/Debounce.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Dwifft/Dwifft.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FetchedResultsController/FetchedResultsController.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

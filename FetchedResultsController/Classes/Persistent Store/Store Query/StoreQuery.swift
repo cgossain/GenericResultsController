@@ -1,5 +1,5 @@
 //
-//  ObserverQuery.swift
+//  StoreQuery.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,8 +24,13 @@
 
 import Foundation
 
+extension StoreQuery: Identifiable {}
+
 /// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
-public class ObserverQuery<ResultType: StoreResult, RequestType: StoreRequest>: BaseQuery<ResultType, RequestType> {
+public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest> {
+    /// The search criteria used to retrieve data from a persistent store.
+    public let storeRequest: RequestType
+    
     /// Indicates if changes should always be processed as soon as they're enqueued.
     ///
     /// Alternatively, if you only want to process changes in some cases (i.e. due to user initiated action) you
@@ -53,8 +58,8 @@ public class ObserverQuery<ResultType: StoreResult, RequestType: StoreRequest>: 
     
     /// Instantiates and returns a query.
     public init(storeRequest: RequestType, updateHandler: @escaping (_ inserted: [ResultType]?, _ updated: [ResultType]?, _ deleted: [ResultType]?, _ error: Error?) -> Void) {
+        self.storeRequest = storeRequest
         self.updateHandler = updateHandler
-        super.init(storeRequest: storeRequest)
         self.queue.delegate.queueDidFinishBatchingChanges = { [unowned self] (queue, batch) in
             let digest = batch.flush()
             self.updateHandler(digest.inserted, digest.updated, digest.deleted, nil)
@@ -67,7 +72,7 @@ public class ObserverQuery<ResultType: StoreResult, RequestType: StoreRequest>: 
     
 }
 
-extension ObserverQuery {
+extension StoreQuery {
     // MARK: -  Resolving Observer Query
     
     /// Proceses all enqueued changes immediately.
