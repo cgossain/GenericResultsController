@@ -42,13 +42,18 @@ public class PageQuery<ResultType: StoreResult, RequestType: StoreRequest>: Base
     /// An object that marks the stopping point for a query and the starting point for retrieving the remaining results.
     public struct Cursor {
         /// The fetch limit of the request.
-        let fetchLimit: Int
+//        public let fetchLimit: Int
         
         /// Indicates the position of the first item of the next page.
-        var next: Any?
+        public var next: Any?
         
         /// The total available results in the data set. Calculated from the start of the next page to the end of the results set.
-        var totalResults: Int?
+        public var totalResults: Int?
+        
+        public init(next: Any? = nil, totalResults: Int? = nil) {
+            self.next = next
+            self.totalResults = totalResults
+        }
     }
     
     /// The data cursor to use for continuing the search.

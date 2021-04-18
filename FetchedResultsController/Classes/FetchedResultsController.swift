@@ -32,7 +32,10 @@ public enum FetchedResultsControllerError: Error {
 }
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest> {
+open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest>: Identifiable {
+    
+    // MARK: - Properties
+    
     /// The store connector instance the controller uses to execute a fetch request against.
     public let storeConnector: StoreConnector<ResultType, RequestType>
     
@@ -42,8 +45,11 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     /// The sections for the receiver’s fetch results.
     public var sections: [FetchedResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
     
+    /// The most recent page cursor. Only applies when the query mode is set to `page`.
+    public private(set) var previousCursor: PageQuery<ResultType, RequestType>.Cursor?
     
-    // MARK: - Change Handling
+    
+    // MARK: - Properties (Change Handling)
     
     /// The delegate handling all the results controller delegate callbacks.
     public var delegate = FetchedResultsControllerDelegate<ResultType, RequestType>()
@@ -63,9 +69,6 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     
     /// The current fetched results.
     private var currentFetchedResults: FetchedResults<ResultType, RequestType>?
-    
-    /// The most recent page cursor. Only applies when the query mode is set to `page`.
-    private var previousCursor: PageQuery<ResultType, RequestType>.Cursor?
     
     
     // MARK: - Lifecycle
