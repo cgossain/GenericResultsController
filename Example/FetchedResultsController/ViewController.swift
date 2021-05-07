@@ -26,6 +26,22 @@ import CoreData
 import FetchedResultsController
 import UIKit
 
+extension FetchedResultsConfiguration where ResultType == Event {
+    /// Creates and returns a standard results configuration for Event.
+    static func makeDefaultConfiguration() -> FetchedResultsConfiguration<Event> {
+        var configuration = FetchedResultsConfiguration<Event>()
+        configuration.sectionNameProvider = {
+            return $0.category
+        }
+        
+//        configuration.areInIncreasingOrder = { lhs, rhs in
+//            return lhs.timestamp! < rhs.timestamp!
+//        }
+        
+        return configuration
+    }
+}
+
 class ViewController: UITableViewController {
     private(set) var fetchedResultsController: FetchedResultsController<Event, NSFetchRequest<Event>>!
     
@@ -68,7 +84,7 @@ class ViewController: UITableViewController {
         fetchedResultsController = FetchedResultsController(storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext))
         
         fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
-            return FetchedResultsConfiguration(sectionNameProvider: { return $0.category })
+            return .makeDefaultConfiguration()
         }
         
         // table view diffing
@@ -156,7 +172,9 @@ extension ViewController {
         let newEvent = Event(context: context)
 
         // If appropriate, configure the new managed object.
-        newEvent.timestamp = Date()
+        let now = Date()
+        print("New Event with Date: \(now)")
+        newEvent.timestamp = now
         
         // Set a random category to demonstrate sectionning
         if arc4random_uniform(2) == 0 {

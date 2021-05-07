@@ -17,12 +17,8 @@ struct TestModel: Hashable, Identifiable {
     let category: String?
 }
 
-class TestStoreRequest {
-    
-}
-
-extension TestStoreRequest: StoreRequest {
-    var fetchLimit: Int { return 0 }
+class TestStoreRequest: StoreRequest {
+    var fetchLimit: Int = 0
 }
 
 class TestStoreConnector: StoreConnector<TestModel, TestStoreRequest> {
@@ -55,7 +51,7 @@ class FetchedResultsControllerTests: XCTestCase {
         fetchedResultsController = FetchedResultsController(storeConnector: testStoreConnector)
         
         fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
-            return FetchedResultsConfiguration(sectionNameProvider: { return $0.category })
+            return .makeDefaultConfiguration()
         }
         
         fetchedResultsController.delegate.controllerDidChangeContent = { [unowned self] (controller) in
@@ -76,5 +72,15 @@ class FetchedResultsControllerTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         XCTAssertEqual(fetchedResultsController.sections.count, 3)
     }
+}
 
+extension FetchedResultsConfiguration where ResultType == TestModel {
+    /// Creates and returns a standard results configuration for TestModel.
+    static func makeDefaultConfiguration() -> FetchedResultsConfiguration<TestModel> {
+        var configuration = FetchedResultsConfiguration<TestModel>()
+        configuration.sectionNameProvider = {
+            return $0.category
+        }
+        return configuration
+    }
 }

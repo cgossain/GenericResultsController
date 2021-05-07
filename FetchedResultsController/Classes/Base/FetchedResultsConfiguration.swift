@@ -33,19 +33,20 @@ public struct FetchedResultsConfiguration<ResultType: StoreResult> {
     /// A block that is run against fetched objects used to determine the section they belong to.
     public var sectionNameProvider: ((ResultType) -> String?)?
     
+    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    ///
+    /// By default, sections  are sorted alphabetically.
+    public var sectionNamesAreInIncreasingOrder: ((String, String) -> Bool)?
+    
     /// A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element should be included in the returned array.
     public var isIncluded: ((ResultType) -> Bool)?
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     public var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
     
-    /// Returns a results configuration initialized using the given arguments.
-    public init(sectionNameProvider: ((ResultType) -> String?)? = nil,
-                isIncluded: ((ResultType) -> Bool)? = nil,
-                areInIncreasingOrder: ((ResultType, ResultType) -> Bool)? = nil) {
-        self.sectionNameProvider = sectionNameProvider
-        self.isIncluded = isIncluded
-        self.areInIncreasingOrder = areInIncreasingOrder
+    /// Creates and returns an empty results configuration.
+    public init() {
+        
     }
 }
 

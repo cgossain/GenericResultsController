@@ -50,7 +50,9 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
         }
         
         // compute the sections array
-        let computed = Array(sectionsBySectionKeyValue.values).sorted(by: { $0.sectionKeyValue < $1.sectionKeyValue })
+        let computed = sectionsBySectionKeyValue.values.sorted(by: {
+            return self.sectionNamesAreInIncreasingOrder($0.sectionKeyValue, $1.sectionKeyValue)
+        })
         _sections = computed
         return computed
     }
@@ -78,27 +80,38 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     ///
-    /// - Note: This predicate sorts against the section name as its primary key and then falls back to the section specifc sorting logic. It is intended to be used against the entire fetched results and not just a single section.
+    /// This is used to sort the sections.
+    private var sectionNamesAreInIncreasingOrder: (String, String) -> Bool {
+        guard let sectionNamesAreInIncreasingOrder = resultsConfiguration?.sectionNamesAreInIncreasingOrder else {
+            return { $0 < $1 } // fallback to alphabetical ordering
+        }
+        return sectionNamesAreInIncreasingOrder
+    }
+    
+    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    ///
+    /// This is used to sort the entire set of fetched results. It sorts against the section name first, then falls back to the section specifc sorting logic.
     private var fetchedResultsAreInIncreasingOrder: (ResultType, ResultType) -> Bool {
         return { (left, right) -> Bool in
-            // 1. sort by sections first
             let leftSectionName = self.sectionName(for: left)
             let rightSectionName = self.sectionName(for: right)
             
-            if leftSectionName < rightSectionName {
-                return true
+            // 1. sort by section name
+            if leftSectionName != rightSectionName {
+                if self.sectionNamesAreInIncreasingOrder(leftSectionName, rightSectionName) {
+                    return true
+                }
+                else {
+                    return false
+                }
             }
             
-            if leftSectionName > rightSectionName {
-                return false
-            }
-            
-            // 2. if section names are the same, sort using the section sorting logic
+            // 2. sort within the section
             if let areInIncreasingOrder = self.resultsConfiguration?.areInIncreasingOrder {
                 return areInIncreasingOrder(left, right)
             }
             
-            // 3. fallback to true if needed
+            // 3. fallback to true
             return true
         }
     }
