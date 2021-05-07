@@ -41,15 +41,22 @@ public typealias StoreResult = Identifiable & Hashable
 /// You call any of the `enqueue(_:_:)` methods to deliver result objects. If your fetch is short lived then you
 /// would provide all your result objects using the "insertion" variant. Otherwise if you have long running observers
 /// you can keep delivering incremental updates using all the variants.
-open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest> {
+open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: Identifiable {
+    /// The stable identity of the entity associated with this instance.
+    public let id: String
+    
     /// A short descriptive title for the data store.
     public let title: String
+    
+    /// Currently executing queries.
+    private(set) var queriesByID: [AnyHashable : StoreQuery<ResultType, RequestType>] = [:]
     
     
     // MARK: -  Lifecycle
     
     /// Initializes a new store connector instance.
-    public init(title: String = "") {
+    public init(id: String? = nil, title: String = "") {
+        self.id = id ?? title.lowercased()
         self.title = title
     }
     
@@ -70,11 +77,9 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest> {
     /// - Parameters:
     ///     - query: The query.
     ///
-    /// - Important: Do not call `super.execute(_:)`. The default implementation throws `StoreConnectorError.unimplementedQueryType`.
-    ///
-    /// - Throws: `StoreConnectorError.unimplementedQueryType` if the query passed to the store has not been implemented.
+    /// - Important: You must call `try super.execute(_:)` at some point in your implementation.
     open func execute(_ query: StoreQuery<ResultType, RequestType>) throws {
-        
+        queriesByID[query.id] = query
     }
     
     /// Stops a long-running query.
@@ -83,8 +88,10 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest> {
     ///
     /// - Parameters:
     ///     - query: The query.
+    ///
+    /// - Important: You must call `super.stop(_:)` at some point in your implementation.
     open func stop(_ query: StoreQuery<ResultType, RequestType>) {
-        
+        queriesByID[query.id] = nil
     }
     
     
@@ -130,7 +137,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest> {
     
 }
 
-extension StoreConnector: Identifiable, Equatable {
+extension StoreConnector: Equatable {
     public static func == (lhs: StoreConnector<ResultType, RequestType>, rhs: StoreConnector<ResultType, RequestType>) -> Bool {
         return lhs.id == rhs.id
     }

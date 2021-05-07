@@ -26,15 +26,10 @@ import Foundation
 
 /// A type that defines criteria used to retrieve data from a persistent store.
 public protocol StoreRequest {
-    
     /// The fetch limit of the fetch request.
     ///
     /// The fetch limit specifies the maximum number of objects that a request should return when executed.
     ///
     /// A value of 0 indicates no maximum limit.
-    var fetchLimit: Int { get }
-}
-
-extension StoreRequest {
-    public var fetchLimit: Int { return 0 }
+    var fetchLimit: Int { get set }
 }

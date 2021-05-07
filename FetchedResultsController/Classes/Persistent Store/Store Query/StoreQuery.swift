@@ -57,9 +57,10 @@ public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest> {
     // MARK: - Lifecycle
     
     /// Instantiates and returns a query.
-    public init(storeRequest: RequestType, updateHandler: @escaping (_ inserted: [ResultType]?, _ updated: [ResultType]?, _ deleted: [ResultType]?, _ error: Error?) -> Void) {
+    public init(storeRequest: RequestType, processesChangesImmediately: Bool = false, updateHandler: @escaping (_ inserted: [ResultType]?, _ updated: [ResultType]?, _ deleted: [ResultType]?, _ error: Error?) -> Void) {
         self.storeRequest = storeRequest
         self.updateHandler = updateHandler
+        self.queue.processesChangesImmediately = processesChangesImmediately
         self.queue.delegate.queueDidFinishBatchingChanges = { [unowned self] (queue, batch) in
             let digest = batch.flush()
             self.updateHandler(digest.inserted, digest.updated, digest.deleted, nil)

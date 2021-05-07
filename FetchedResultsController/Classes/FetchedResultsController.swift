@@ -33,6 +33,16 @@ public enum FetchedResultsControllerError: Error {
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
 open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest>: Identifiable {
+    public enum State {
+        /// Initial state. This means `performFetch()` has not yet been called.
+        case initial
+        
+        /// The controller is actively loading data.
+        case loading
+        
+        /// The data has been fetched and sections updated.
+        case loaded
+    }
     
     // MARK: - Properties
     
@@ -44,6 +54,9 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
 
     /// The sections for the receiver’s fetch results.
     public var sections: [FetchedResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
+    
+    /// The receivers' state.
+    public var state: State = .initial
     
     
     // MARK: - Properties (Change Handling)
@@ -93,6 +106,10 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     ///
     /// - Throws: `StoreConnectorError.unimplementedQueryType` if the query passed to the store has not been implemented.
     public func performFetch(storeRequest: RequestType) throws {
+        // update state
+        state = .loading
+        
+        // update flag
         shouldRebuildFetchedResults = true
         
         // notify delegate
@@ -133,6 +150,9 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
                 let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: updated)
                 controllerDidChangeResults(self, diff)
             }
+            
+            // update state
+            self.state = .loaded
             
             // notify the delegate
             self.delegate.controllerDidChangeContent?(self)
