@@ -103,9 +103,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
     ///
     /// - Important: Calling this method invalidates any previous results.
-    ///
-    /// - Throws: `StoreConnectorError.unimplementedQueryType` if the query passed to the store has not been implemented.
-    public func performFetch(storeRequest: RequestType) throws {
+    public func performFetch(storeRequest: RequestType) {
         // update state
         state = .loading
         
@@ -158,7 +156,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
             self.delegate.controllerDidChangeContent?(self)
         }
         currentQueriesByID[query.id] = query
-        try storeConnector.execute(query)
+        storeConnector.execute(query)
     }
     
     /// Returns the snapshot at a given indexPath.

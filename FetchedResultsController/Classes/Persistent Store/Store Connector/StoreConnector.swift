@@ -78,7 +78,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: I
     ///     - query: The query.
     ///
     /// - Important: You must call `try super.execute(_:)` at some point in your implementation.
-    open func execute(_ query: StoreQuery<ResultType, RequestType>) throws {
+    open func execute(_ query: StoreQuery<ResultType, RequestType>) {
         queriesByID[query.id] = query
     }
     

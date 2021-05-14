@@ -64,20 +64,20 @@ class ViewController: UITableViewController {
             }))
             
             let refreshButton = UIBarButtonItem(systemItem: .refresh, primaryAction: UIAction(handler: { (action) in
-                try? self.fetchedResultsController.performFetch(storeRequest: fetchRequest)
+                self.fetchedResultsController.performFetch(storeRequest: fetchRequest)
             }))
             navigationItem.rightBarButtonItems = [addButton, refreshButton]
             
             refreshControl = UIRefreshControl()
             refreshControl?.addAction(UIAction(handler: { (action) in
-                try? self.fetchedResultsController.performFetch(storeRequest: fetchRequest)
+                self.fetchedResultsController.performFetch(storeRequest: fetchRequest)
             }), for: .valueChanged)
         }
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         configureResultsController()
         
-        try? fetchedResultsController.performFetch(storeRequest: fetchRequest)
+        fetchedResultsController.performFetch(storeRequest: fetchRequest)
     }
     
     private func configureResultsController() {

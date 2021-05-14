@@ -29,7 +29,7 @@ class TestStoreConnector: StoreConnector<TestModel, TestStoreRequest> {
                            TestModel(timestamp: Date(timeInterval: -7000, since: Date()), category: "Section B"),
                            TestModel(timestamp: Date(timeInterval: -6500, since: Date()), category: "Section C")]
     
-    open override func execute(_ query: StoreQuery<TestModel, TestStoreRequest>) throws {
+    open override func execute(_ query: StoreQuery<TestModel, TestStoreRequest>) {
         results.forEach { query.enqueue(inserted: $0) }
     }
 }
@@ -58,7 +58,7 @@ class FetchedResultsControllerTests: XCTestCase {
             self.didChangeContentExpectation.fulfill()
         }
         
-        try? fetchedResultsController.performFetch(storeRequest: testStoreRequest)
+        fetchedResultsController.performFetch(storeRequest: testStoreRequest)
         
         wait(for: [didChangeContentExpectation], timeout: 5)
     }

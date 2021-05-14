@@ -45,8 +45,8 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     
     // MARK: - StoreConnector
     
-    open override func execute(_ query: StoreQuery<ResultType, RequestType>) throws {
-        try super.execute(query)
+    open override func execute(_ query: StoreQuery<ResultType, RequestType>) {
+        super.execute(query)
         draft = Batch<ResultType>(id: UUID().uuidString)
     }
     
