@@ -58,16 +58,22 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     // MARK: - CRUD
     
     /// Inserts the object into the underlying store.
+    ///
+    /// - Important: You must call `super.insert(_:)` at some point in your implementation.
     open func insert(_ obj: ResultType) {
         
     }
     
     /// Updates the object in the underlying store.
+    ///
+    /// - Important: You must call `super.update(_:)` at some point in your implementation.
     open func update(_ obj: ResultType) {
         
     }
     
     /// Deletes the object from the underlying store.
+    ///
+    /// - Important: You must call `super.delete(_:)` at some point in your implementation.
     open func delete(_ obj: ResultType) {
         
     }
@@ -78,7 +84,7 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     /// Tracks the insertion in the stores' internal draft, and enqueues it into any
     /// running queries (i.e. does not commit to the underlying store).
     ///
-    /// Call `commit()` to commit the changes to the underlying store.
+    /// Call `commitDraft()` to commit the changes to the underlying store.
     open func insertDraft(_ obj: ResultType) {
         draft.insert(obj)
         
@@ -93,7 +99,7 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     /// Tracks the update in the stores' internal draft, and enqueues it into any
     /// running queries (i.e. does not commit to the underlying store).
     ///
-    /// Call `commit()` to commit the changes to the underlying store.
+    /// Call `commitDraft()` to commit the changes to the underlying store.
     open func updateDraft(_ obj: ResultType) {
         draft.update(obj)
         
@@ -108,7 +114,7 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     /// Tracks the deletion in the stores' internal draft, and enqueues it into any
     /// running queries (i.e. does not commit to the underlying store).
     ///
-    /// Call `commit()` to commit the changes to the underlying store.
+    /// Call `commitDraft()` to commit the changes to the underlying store.
     open func deleteDraft(_ obj: ResultType) {
         draft.delete(obj)
         
@@ -126,11 +132,11 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     ///
     /// - Parameters:
     ///     - recursively: Indicates if the commit should propagate through to child CRUD stores.
-    open func commit(recursively: Bool = false) {
+    open func commitDraft(recursively: Bool = false) {
         // call `commit()` on each child
         // CRUD store (if commiting recursively)
         if recursively {
-            children.compactMap({ $0 as? CRUDStore }).forEach { $0.commit(recursively: true) }
+            children.compactMap({ $0 as? CRUDStore }).forEach { $0.commitDraft(recursively: true) }
         }
         
         // commit any deduplicated draft changes
