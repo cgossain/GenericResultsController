@@ -52,6 +52,8 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStore<Entit
     }
     
     override func execute(_ query: StoreQuery<EntityType, NSFetchRequest<EntityType>>) {
+        super.execute(query)
+        
         // perform the query and then call the appropriate `enqueue` method
         // when data becomes available
         //
