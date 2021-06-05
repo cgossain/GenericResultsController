@@ -141,6 +141,9 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
             
             // update the current results
             self.currentFetchedResults = newFetchedResults
+            
+            // update state
+            self.state = .loaded
 
             // compute the difference if the change tracker is configured
             if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
@@ -148,9 +151,6 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
                 let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: updated)
                 controllerDidChangeResults(self, diff)
             }
-            
-            // update state
-            self.state = .loaded
             
             // notify the delegate
             self.delegate.controllerDidChangeContent?(self)
