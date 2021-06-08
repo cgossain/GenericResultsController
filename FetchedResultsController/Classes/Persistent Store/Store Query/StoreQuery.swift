@@ -24,10 +24,9 @@
 
 import Foundation
 
-extension StoreQuery: Identifiable {}
-
 /// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
-public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest> {
+public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: Identifiable {
+    
     /// The search criteria used to retrieve data from a persistent store.
     public let storeRequest: RequestType
     
@@ -46,6 +45,12 @@ public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest> {
     
     /// A block that is called when a matching results are inserted, updated, or deleted from the store.
     public let updateHandler: (_ inserted: [ResultType]?, _ updated: [ResultType]?, _ deleted: [ResultType]?, _ error: Error?) -> Void
+    
+    
+    // MARK: - Identifiable
+    
+    /// The stable identity of the entity associated with this instance.
+    public var id = UUID().uuidString
     
     
     // MARK: - Internal Properties

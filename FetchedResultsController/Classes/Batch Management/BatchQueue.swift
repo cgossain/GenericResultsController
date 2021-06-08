@@ -38,7 +38,7 @@ public final class BatchQueueDelegate<ResultType: StoreResult> {
 /// In some cases you may want to process a batch immediatly (e.g. due to a user driven UI interaction), in this
 /// case you can call the `processPendingChanges()` method. If the queue should always process changes
 /// immediatly, set the `processesChangesImmediately` property to `true`.
-public final class BatchQueue<ResultType: StoreResult>: Identifiable {
+public final class BatchQueue<ResultType: StoreResult> {
     /// Set to true if changes should not be batched but rather processed as soon as they are received.
     public var processesChangesImmediately = false
     
@@ -52,7 +52,7 @@ public final class BatchQueue<ResultType: StoreResult>: Identifiable {
     // MARK: - Private Properties
     
     /// The currently active batches keyed by the fetch handle they're associated with.
-    private var batchByID: [AnyHashable : Batch<ResultType>] = [:]
+    private var batchByID: [String : Batch<ResultType>] = [:]
     
     /// The throttler.
     private let throttler = Throttler(throttlingInterval: 0.3)
@@ -79,7 +79,7 @@ extension BatchQueue {
     ///     - obj: The object to enqueue into the batch.
     ///     - op: The type of enqueue operation.
     ///     - batchID: An identifier that associates enqueued changes with a particular batch.
-    public func enqueue(_ obj: ResultType, as op: OperationType, batchID: AnyHashable) {
+    public func enqueue(_ obj: ResultType, as op: OperationType, batchID: String) {
         // notify the delegate if we're about to start a new batch
         if !isBatching {
             delegate.queueWillBeginBatchingChanges?(self)
@@ -110,7 +110,7 @@ extension BatchQueue {
     /// Removes the batch matching the given ID.
     ///
     /// If there are no active batches matching the given ID, this method does nothing.
-    public func dequeue(batchID: AnyHashable) {
+    public func dequeue(batchID: String) {
         batchByID[batchID] = nil
     }
     
@@ -121,7 +121,7 @@ extension BatchQueue {
     /// If there is no active batch for the given batchID, this method will still create an empty batch in order to trigger the delegate callback.
     ///
     /// - Note: This method is not useful if you've set `processesChangesImmediately` to `true`.
-    public func processPendingChanges(batchID: AnyHashable) {
+    public func processPendingChanges(batchID: String) {
         // create an empty batch so that the flush call triggers the delegate
         if batchByID[batchID] == nil {
             batchByID[batchID] = Batch(id: batchID)
@@ -145,7 +145,7 @@ extension BatchQueue {
     ///     - batchID: A batch identifier. This is used to track which batch objects are added to.
     ///
     /// - Important: This method is called from the throtter's queue.
-    private func flush(batchID: AnyHashable) {
+    private func flush(batchID: String) {
         guard let batch = batchByID[batchID] else { return }
         
         // discarding the batch

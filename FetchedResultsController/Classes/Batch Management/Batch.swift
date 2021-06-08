@@ -41,7 +41,7 @@ public final class Batch<ResultType: StoreResult>: Identifiable {
     }
     
     /// The batch ID.
-    public let id: AnyHashable
+    public let id: String
     
     
     // MARK: - Private Properties
@@ -58,7 +58,7 @@ public final class Batch<ResultType: StoreResult>: Identifiable {
     
     // MARK: - Lifecycle
     
-    public init(id: AnyHashable) {
+    public init(id: String) {
         self.id = id
     }
     

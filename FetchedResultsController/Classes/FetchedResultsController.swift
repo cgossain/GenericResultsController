@@ -32,7 +32,7 @@ public enum FetchedResultsControllerError: Error {
 }
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest>: Identifiable {
+open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest> {
     public enum State {
         /// Initial state. This means `performFetch()` has not yet been called.
         case initial
@@ -75,7 +75,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     private var shouldRebuildFetchedResults = false
     
     /// A reference to the most recently executed query, and any subsequent pagination related queries.
-    private var currentQueriesByID: [AnyHashable : StoreQuery<ResultType, RequestType>] = [:]
+    private var currentQueriesByID: [String : StoreQuery<ResultType, RequestType>] = [:]
     
     /// The current fetched results.
     private var currentFetchedResults: FetchedResults<ResultType, RequestType>?
