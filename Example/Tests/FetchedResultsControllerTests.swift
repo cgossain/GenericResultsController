@@ -11,7 +11,7 @@ import XCTest
 
 // MAKR: - Mock Classes
 
-struct TestModel: Hashable, Identifiable {
+struct TestModel: Hashable, InstanceIdentifiable {
     let id = UUID().uuidString
     let timestamp: Date?
     let category: String?

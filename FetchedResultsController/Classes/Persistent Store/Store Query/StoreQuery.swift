@@ -25,7 +25,7 @@
 import Foundation
 
 /// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
-public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: Identifiable {
+public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: InstanceIdentifiable {
     
     /// The search criteria used to retrieve data from a persistent store.
     public let storeRequest: RequestType
@@ -47,7 +47,7 @@ public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: Ide
     public let updateHandler: (_ inserted: [ResultType]?, _ updated: [ResultType]?, _ deleted: [ResultType]?, _ error: Error?) -> Void
     
     
-    // MARK: - Identifiable
+    // MARK: - InstanceIdentifiable
     
     /// The stable identity of the entity associated with this instance.
     public var id = UUID().uuidString

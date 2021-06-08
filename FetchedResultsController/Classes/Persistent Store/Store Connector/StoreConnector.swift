@@ -25,7 +25,7 @@
 import Foundation
 
 /// A type that fetched objects must conform to.
-public typealias StoreResult = Identifiable & Hashable
+public typealias StoreResult = InstanceIdentifiable & Hashable
 
 /// StoreConnector is an abstract superclass exposing a simple API for interfacing between a
 /// fetched results controller and any data store. It's an adapter to some underlying store.
@@ -41,12 +41,19 @@ public typealias StoreResult = Identifiable & Hashable
 /// You call any of the `enqueue(_:_:)` methods to deliver result objects. If your fetch is short lived then you
 /// would provide all your result objects using the "insertion" variant. Otherwise if you have long running observers
 /// you can keep delivering incremental updates using all the variants.
-open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: Identifiable {
-    /// The stable identity of the entity associated with this instance.
-    public let id: String
+open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: InstanceIdentifiable {
     
     /// A short descriptive title for the data store.
     public let title: String
+    
+    
+    // MARK: - InstanceIdentifiable
+    
+    /// The stable identity of the entity associated with this instance.
+    public let id: String
+    
+    
+    // MARK: - Internale
     
     /// Currently executing queries.
     private(set) var queriesByID: [AnyHashable : StoreQuery<ResultType, RequestType>] = [:]

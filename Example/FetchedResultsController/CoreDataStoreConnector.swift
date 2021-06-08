@@ -30,7 +30,7 @@ extension NSFetchRequest: StoreRequest {
     
 }
 
-extension NSManagedObject: Identifiable {
+extension NSManagedObject: InstanceIdentifiable {
     public var id: String { return self.objectID.uriRepresentation().absoluteString }
 }
 
