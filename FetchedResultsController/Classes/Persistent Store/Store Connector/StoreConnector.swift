@@ -53,7 +53,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: I
     public let id: String
     
     
-    // MARK: - Internale
+    // MARK: - Internal
     
     /// Currently executing queries.
     private(set) var queriesByID: [AnyHashable : StoreQuery<ResultType, RequestType>] = [:]
