@@ -37,11 +37,6 @@ import Foundation
 /// data from the underlying store, it follows that if one wanted to also perform CRUD operations
 /// on that same store (or specific location in that store) this would be the logical place to do it.
 open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreConnector<ResultType, RequestType> {
-    public enum OperationType {
-        case insert
-        case update
-        case delete
-    }
     
     // MARK: - Private Properties
     
@@ -132,21 +127,6 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
         queriesByID.values.forEach { $0.enqueue(deleted: obj) }
     }
     
-    /// This method is called on every draft insert, update, and delete just before commiting the draft.
-    ///
-    /// This method is intended to be overridden and provides an opportunity for subclasses to modify objects just before they are commited.
-    ///
-    /// Do not call this method directly.
-    ///
-    /// The default implementation just returns the obj with no modifications.
-    ///
-    /// - Parameters:
-    ///     - obj: The object being commited.
-    ///     - op: The operation being applied to the draft object.
-    open func precommitDraft(_ obj: ResultType, as op: OperationType) -> ResultType {
-        return obj
-    }
-    
     /// Commits draft objects to the underlying store.
     ///
     /// This method commits draft changes to the underlying store by calling the respective CRUD methods (i.e. `insert(_:)`, `udpate(_:)`, `delete(_:)`).
@@ -164,9 +144,9 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
         
         // commit any deduplicated draft changes
         let digest = draft.flush()
-        digest.inserted.map({ self.precommitDraft($0, as: .insert) }).forEach({ self.insert($0) })
-        digest.updated.map({ self.precommitDraft($0, as: .update) }).forEach({ self.update($0) })
-        digest.deleted.map({ self.precommitDraft($0, as: .delete) }).forEach({ self.delete($0) })
+        digest.inserted.forEach({ insert($0) })
+        digest.updated.forEach({ update($0) })
+        digest.deleted.forEach({ delete($0) })
         
         // reset the draft after commiting
         draft = Batch<ResultType>(id: UUID().uuidString)
