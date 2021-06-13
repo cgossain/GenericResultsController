@@ -90,7 +90,7 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     ///
-    /// This is used to sort the entire set of fetched results. It sorts against the section name first, then falls back to the section specifc sorting logic.
+    /// This predicate is used to sort the entire set of fetched results. It first sorts by section name, then by the `areInIncreasingOrder` predicate if specified on the results configuration.
     private var fetchedResultsAreInIncreasingOrder: (ResultType, ResultType) -> Bool {
         return { (left, right) -> Bool in
             let leftSectionName = self.sectionName(for: left)
@@ -249,8 +249,13 @@ extension FetchedResults {
     /// the fetch requests sort order and predicate.
     private func insert(obj: ResultType) {
         // ignore this insertion if the object does not evaluate against our predicate
-        if !canInclude(obj: obj) {
-            return
+        if !canInclude(obj: obj) { return }
+        
+        // what if the object already exists in our result set? we can assume we're
+        // inserting a newer version of the object, therefore we replace it
+        if let idx = results.firstIndex(where: { $0.id == obj.id }) {
+            let old = results[idx]
+            delete(obj: old)
         }
         
         // compute the insertion index that maintains the sort order
@@ -269,8 +274,8 @@ extension FetchedResults {
     
     /// Replaces the current version of the object with the given one.
     private func update(obj new: ResultType) {
-        // since this object has been updated we have to assume its `sectionKeyValue` may
-        // have changed which means that in addition to the object being updated, its position
+        // since this object has been updated, we have to assume its `sectionKeyValue` may
+        // have changed which means that, in addition to the object being updated, its position
         // in the results array may also completely changed; we can reliably perform this
         // update by always removing the "old" version of the object from its current position
         // and insert back at its "updated" position; if the object postion is not affected, we'll
@@ -278,9 +283,10 @@ extension FetchedResults {
         // an update
         
         // delete the "old" version
-        guard let idx = results.firstIndex(where: { $0.id == new.id }) else { return }
-        let old = results[idx]
-        delete(obj: old)
+        if let idx = results.firstIndex(where: { $0.id == new.id }) {
+            let old = results[idx]
+            delete(obj: old)
+        }
         
         // insert the "updated" version
         insert(obj: new)
