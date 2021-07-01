@@ -48,6 +48,12 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     
     open override func execute(_ query: StoreQuery<ResultType, RequestType>) {
         super.execute(query)
+        
+        // leaving this as a thought: considering there could be multiple
+        // active queries attached to this store, would it instead make
+        // more sense to insert existing draft changes into any new query
+        // that is added instead of clearing them out? would a subclass
+        // need to be informed of this somehow?
         draft = Batch<ResultType>(id: UUID().uuidString)
     }
     
