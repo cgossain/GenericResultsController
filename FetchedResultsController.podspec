@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'FetchedResultsController'
-  s.version          = '1.1.0'
+  s.version          = '2.1.0'
   s.summary          = 'A generic NSFetchedResultsController replacement for iOS, written in Swift.'
   s.description      = <<-DESC
                         The FetchedResultsController is an NSFetchedResultsController replacement that
