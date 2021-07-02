@@ -123,7 +123,7 @@ open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
     /// - Important: Do not call `super.update(_:)` in your implementation.
     open func commitDraft(recursively: Bool = false) {
         if recursively {
-            children.compactMap({ $0 as? BaseStore }).forEach { $0.commitDraft(recursively: true) }
+            children.forEach { $0.commitDraft(recursively: true) }
         }
         
         // deduplicated draft changes, then commit
