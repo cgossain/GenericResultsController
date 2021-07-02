@@ -103,7 +103,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: B
         // configuration on the fetch request
         // will take care of correctly showing
         // this object (or not) in the UI
-        queriesByID.values.forEach { $0.enqueue(inserted: obj) }
+        queriesByID.values.forEach { $0.enqueue(obj, as: .insert) }
     }
     
     open override func updateDraft(_ obj: ResultType) {
@@ -114,7 +114,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: B
         // configuration on the fetch request
         // will take care of correctly showing
         // this object (or not) in the UI
-        queriesByID.values.forEach { $0.enqueue(updated: obj) }
+        queriesByID.values.forEach { $0.enqueue(obj, as: .update) }
     }
     
     open override func deleteDraft(_ obj: ResultType) {
@@ -125,7 +125,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: B
         // configuration on the fetch request
         // will take care of correctly showing
         // this object (or not) in the UI
-        queriesByID.values.forEach { $0.enqueue(deleted: obj) }
+        queriesByID.values.forEach { $0.enqueue(obj, as: .delete) }
     }
     
 }

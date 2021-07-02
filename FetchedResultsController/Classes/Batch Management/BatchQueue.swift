@@ -25,6 +25,12 @@
 import Foundation
 import Debounce
 
+public enum BatchQueueOperationType {
+    case insert
+    case update
+    case delete
+}
+
 public final class BatchQueueDelegate<ResultType: StoreResult> {
     /// Called when the controller is about to begin collecting a new batch.
     public var queueWillBeginBatchingChanges: ((_ queue: BatchQueue<ResultType>) -> Void)?
@@ -67,19 +73,13 @@ public final class BatchQueue<ResultType: StoreResult> {
 }
 
 extension BatchQueue {
-    public enum OperationType {
-        case insert
-        case update
-        case delete
-    }
-    
     /// Adds the given object to the batch using the specified batch operation.
     ///
     /// - Parameters:
     ///     - obj: The object to enqueue into the batch.
     ///     - op: The type of enqueue operation.
     ///     - batchID: An identifier that associates enqueued changes with a particular batch.
-    public func enqueue(_ obj: ResultType, as op: OperationType, batchID: String) {
+    public func enqueue(_ obj: ResultType, as op: BatchQueueOperationType, batchID: String) {
         // notify the delegate if we're about to start a new batch
         if !isBatching {
             delegate.queueWillBeginBatchingChanges?(self)

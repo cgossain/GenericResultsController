@@ -89,25 +89,9 @@ extension StoreQuery {
     public func processPendingChanges() {
         queue.processPendingChanges(batchID: self.id)
     }
-        
-    /// Enqueues the object as an insertion.
-    public func enqueue(inserted: ResultType) {
-        queue.enqueue(inserted,
-                      as: .insert,
-                      batchID: self.id)
-    }
-
-    /// Enqueues the object as an update.
-    public func enqueue(updated: ResultType) {
-        queue.enqueue(updated,
-                      as: .update,
-                      batchID: self.id)
-    }
     
-    /// Enqueues the object as an deletion.
-    public func enqueue(deleted: ResultType) {
-        queue.enqueue(deleted,
-                      as: .delete,
-                      batchID: self.id)
+    /// Enqueues the object with the given operation type.
+    public func enqueue(_ obj: ResultType, as op: BatchQueueOperationType) {
+        queue.enqueue(obj, as: op, batchID: self.id)
     }
 }

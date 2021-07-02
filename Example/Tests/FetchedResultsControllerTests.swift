@@ -30,7 +30,7 @@ class TestStoreConnector: StoreConnector<TestModel, TestStoreRequest> {
                            TestModel(timestamp: Date(timeInterval: -6500, since: Date()), category: "Section C")]
     
     open override func execute(_ query: StoreQuery<TestModel, TestStoreRequest>) {
-        results.forEach { query.enqueue(inserted: $0) }
+        results.forEach { query.enqueue($0, as: .insert) }
     }
 }
 
