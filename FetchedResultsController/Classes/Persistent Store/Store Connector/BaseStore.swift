@@ -1,5 +1,5 @@
 //
-//  CRUDStore.swift
+//  BaseStore.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,7 +24,10 @@
 
 import Foundation
 
-/// CRUDStore is an abstract superclass that adds some convenient features to the
+/// A type that fetched objects must conform to.
+public typealias StoreResult = InstanceIdentifiable & Hashable
+
+/// BaseStore is an abstract superclass that adds some convenient features to the
 /// base store connector.
 ///
 /// In particular, it defines an API for insert, update, and delete operations. It also adds a
@@ -36,35 +39,31 @@ import Foundation
 /// Given that the base store connector should already understand the particulars of fetching
 /// data from the underlying store, it follows that if one wanted to also perform CRUD operations
 /// on that same store (or specific location in that store) this would be the logical place to do it.
-open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreConnector<ResultType, RequestType> {
+open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
     
-    // MARK: - Private Properties
+    /// The stable identity of the entity associated with this instance.
+    public let id: String
+    
+    /// A short descriptive title for the store.
+    public let title: String
+    
+    
+    // MARK: - Internal
     
     /// The draft batch.
-    private var draft = Batch<ResultType>(id: UUID().uuidString)
+    private(set) var draft = Batch<ResultType>(id: UUID().uuidString)
     
     
-    // MARK: - StoreConnector
+    // MARK: -  Lifecycle
     
-    open override func execute(_ query: StoreQuery<ResultType, RequestType>) {
-        super.execute(query)
-        
-        // leaving this as a thought:
-        //
-        // considering there could be multiple
-        // active queries attached to this store, would it instead make
-        // more sense to insert existing draft changes into any new query
-        // that is added instead of clearing them out? would a subclass
-        // need to be informed of this somehow?
-        draft = Batch<ResultType>(id: UUID().uuidString)
-    }
-    
-    open override func stop(_ query: StoreQuery<ResultType, RequestType>) {
-        super.stop(query)
+    /// Initializes a new store connector instance.
+    public init(id: String? = nil, title: String = "") {
+        self.id = id ?? title.lowercased()
+        self.title = title
     }
     
     
-    // MARK: - CRUD
+    // MARK: - CRUD Operations
     
     /// Inserts the object into the underlying store.
     ///
@@ -88,7 +87,7 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     }
     
     
-    // MARK: - CRUD (Draft/Edit Mode)
+    // MARK: - CRUD Operations (Draft/Edit Mode)
     
     /// Tracks the insertion in the stores' internal draft, and enqueues it into any
     /// running queries (i.e. does not commit to the underlying store).
@@ -96,13 +95,6 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     /// Call `commitDraft()` to commit the changes to the underlying store.
     open func insertDraft(_ obj: ResultType) {
         draft.insert(obj)
-        
-        // a CRUD operation would affect all
-        // active queries; the filter and sort
-        // configuration on the fetch request
-        // will take care of correctly showing
-        // this object (or not) in the UI
-        queriesByID.values.forEach { $0.enqueue(inserted: obj) }
     }
     
     /// Tracks the update in the stores' internal draft, and enqueues it into any
@@ -111,13 +103,6 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     /// Call `commitDraft()` to commit the changes to the underlying store.
     open func updateDraft(_ obj: ResultType) {
         draft.update(obj)
-        
-        // a CRUD operation would affect all
-        // active queries; the filter and sort
-        // configuration on the fetch request
-        // will take care of correctly showing
-        // this object (or not) in the UI
-        queriesByID.values.forEach { $0.enqueue(updated: obj) }
     }
     
     /// Tracks the deletion in the stores' internal draft, and enqueues it into any
@@ -126,13 +111,6 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     /// Call `commitDraft()` to commit the changes to the underlying store.
     open func deleteDraft(_ obj: ResultType) {
         draft.delete(obj)
-        
-        // a CRUD operation would affect all
-        // active queries; the filter and sort
-        // configuration on the fetch request
-        // will take care of correctly showing
-        // this object (or not) in the UI
-        queriesByID.values.forEach { $0.enqueue(deleted: obj) }
     }
     
     /// Commits draft objects to the underlying store.
@@ -144,20 +122,70 @@ open class CRUDStore<ResultType: StoreResult, RequestType: StoreRequest>: StoreC
     ///
     /// - Important: Do not call `super.update(_:)` in your implementation.
     open func commitDraft(recursively: Bool = false) {
-        // call `commit()` on each child
-        // CRUD store (if commiting recursively)
         if recursively {
-            children.compactMap({ $0 as? CRUDStore }).forEach { $0.commitDraft(recursively: true) }
+            children.compactMap({ $0 as? BaseStore }).forEach { $0.commitDraft(recursively: true) }
         }
         
-        // commit any deduplicated draft changes
+        // deduplicated draft changes, then commit
         let digest = draft.flush()
         digest.inserted.forEach({ insert($0) })
         digest.updated.forEach({ update($0) })
         digest.deleted.forEach({ delete($0) })
         
-        // reset the draft after commiting
+        // reset the draft after commiting changes
+        resetDraft()
+    }
+    
+    /// Clears all draft changes without commiting them.
+    open func resetDraft() {
         draft = Batch<ResultType>(id: UUID().uuidString)
     }
     
+    
+    // MARK: - Managing Parent-Child Relationship
+    
+    /// The parent store connector of the recipient.
+    public internal(set) weak var parent: BaseStore<ResultType>?
+    
+    /// An array of store connectors that are children of the current store connector.
+    public internal(set) var children: [BaseStore<ResultType>] = []
+    
+    /// Adds the specified store connector as a child of the current store connector.
+    ///
+    /// This method creates a parent-child relationship between the current store connector and the object in the `child` parameter.
+    ///
+    /// - Note: This method calls `willMoveToParent(_:)` before adding the child, however it is expected that you call didMoveToParentViewController:
+    open func addChild(_ child: BaseStore<ResultType>) {
+        // remove from existing parent if needed
+        if let parent = child.parent {
+            parent.removeFromParent()
+        }
+        
+        child.willMoveToParent(self)
+        children.append(child)
+    }
+    
+    /// Removes the store connector from its parent.
+    open func removeFromParent() {
+        guard let idx = parent?.children.firstIndex(of: self) else { return }
+        parent?.children.remove(at: idx)
+        didMoveToParent(nil)
+    }
+    
+    /// Called just before the store connector is added or removed from another store connector.
+    open func willMoveToParent(_ parent: BaseStore<ResultType>?) {
+        
+    }
+    
+    /// Called after the store connector is added or removed from another store connector.
+    open func didMoveToParent(_ parent: BaseStore<ResultType>?) {
+        self.parent = parent
+    }
+    
+}
+
+extension BaseStore: Equatable {
+    public static func == (lhs: BaseStore<ResultType>, rhs: BaseStore<ResultType>) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

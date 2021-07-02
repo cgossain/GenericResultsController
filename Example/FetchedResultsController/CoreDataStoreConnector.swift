@@ -34,7 +34,7 @@ extension NSManagedObject: InstanceIdentifiable {
     public var id: String { return self.objectID.uriRepresentation().absoluteString }
 }
 
-final class CoreDataStoreConnector<EntityType: NSManagedObject>: CRUDStore<EntityType, NSFetchRequest<EntityType>> {
+final class CoreDataStoreConnector<EntityType: NSManagedObject>: StoreConnector<EntityType, NSFetchRequest<EntityType>> {
     
     let managedObjectContext: NSManagedObjectContext
     

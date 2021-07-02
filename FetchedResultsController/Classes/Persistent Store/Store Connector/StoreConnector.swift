@@ -24,9 +24,6 @@
 
 import Foundation
 
-/// A type that fetched objects must conform to.
-public typealias StoreResult = InstanceIdentifiable & Hashable
-
 /// StoreConnector is an abstract superclass exposing a simple API for interfacing between a
 /// fetched results controller and any data store. It's an adapter to some underlying store.
 ///
@@ -41,31 +38,15 @@ public typealias StoreResult = InstanceIdentifiable & Hashable
 /// You call any of the `enqueue(_:_:)` methods to deliver result objects. If your fetch is short lived then you
 /// would provide all your result objects using the "insertion" variant. Otherwise if you have long running observers
 /// you can keep delivering incremental updates using all the variants.
-open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: InstanceIdentifiable {
-    
-    /// A short descriptive title for the data store.
-    public let title: String
-    
-    
-    // MARK: - InstanceIdentifiable
-    
-    /// The stable identity of the entity associated with this instance.
-    public let id: String
-    
+open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: BaseStore<ResultType> {
     
     // MARK: - Internal
     
-    /// Currently executing queries.
+    /// The currently executing queries.
     private(set) var queriesByID: [AnyHashable : StoreQuery<ResultType, RequestType>] = [:]
     
     
     // MARK: -  Lifecycle
-    
-    /// Initializes a new store connector instance.
-    public init(id: String? = nil, title: String = "") {
-        self.id = id ?? title.lowercased()
-        self.title = title
-    }
     
     /// Executes the given query.
     ///
@@ -87,6 +68,16 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: I
     /// - Important: You must call `super.execute(_:)` at some point in your implementation.
     open func execute(_ query: StoreQuery<ResultType, RequestType>) {
         queriesByID[query.id] = query
+        
+        // leaving this as a thought:
+        //
+        // considering there could be multiple
+        // active queries attached to this store, would it
+        // instead make more sense to insert existing draft
+        // changes into any new query that is added instead
+        // of resetting them? would a subclass need to be
+        // informed of this somehow?
+        resetDraft()
     }
     
     /// Stops a long-running query.
@@ -102,50 +93,39 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: I
     }
     
     
-    // MARK: - Managing Parent-Child Relationship
+    // MARK: - CRUD Operations (Draft/Edit Mode)
     
-    /// The parent store connector of the recipient.
-    public internal(set) weak var parent: StoreConnector<ResultType, RequestType>?
-    
-    /// An array of store connectors that are children of the current store connector.
-    public internal(set) var children: [StoreConnector<ResultType, RequestType>] = []
-    
-    /// Adds the specified store connector as a child of the current store connector.
-    ///
-    /// This method creates a parent-child relationship between the current store connector and the object in the `child` parameter.
-    ///
-    /// - Note: This method calls `willMoveToParent(_:)` before adding the child, however it is expected that you call didMoveToParentViewController:
-    open func addChild(_ child: StoreConnector<ResultType, RequestType>) {
-        // remove from existing parent if needed
-        if let parent = child.parent {
-            parent.removeFromParent()
-        }
+    open override func insertDraft(_ obj: ResultType) {
+        super.insertDraft(obj)
         
-        child.willMoveToParent(self)
-        children.append(child)
+        // a CRUD operation would affect all
+        // active queries; the filter and sort
+        // configuration on the fetch request
+        // will take care of correctly showing
+        // this object (or not) in the UI
+        queriesByID.values.forEach { $0.enqueue(inserted: obj) }
     }
     
-    /// Removes the store connector from its parent.
-    open func removeFromParent() {
-        guard let idx = parent?.children.firstIndex(of: self) else { return }
-        parent?.children.remove(at: idx)
-        didMoveToParent(nil)
-    }
-    
-    /// Called just before the store connector is added or removed from another store connector.
-    open func willMoveToParent(_ parent: StoreConnector<ResultType, RequestType>?) {
+    open override func updateDraft(_ obj: ResultType) {
+        super.updateDraft(obj)
         
+        // a CRUD operation would affect all
+        // active queries; the filter and sort
+        // configuration on the fetch request
+        // will take care of correctly showing
+        // this object (or not) in the UI
+        queriesByID.values.forEach { $0.enqueue(updated: obj) }
     }
     
-    /// Called after the store connector is added or removed from another store connector.
-    open func didMoveToParent(_ parent: StoreConnector<ResultType, RequestType>?) {
-        self.parent = parent
+    open override func deleteDraft(_ obj: ResultType) {
+        super.updateDraft(obj)
+        
+        // a CRUD operation would affect all
+        // active queries; the filter and sort
+        // configuration on the fetch request
+        // will take care of correctly showing
+        // this object (or not) in the UI
+        queriesByID.values.forEach { $0.enqueue(deleted: obj) }
     }
     
-}
-
-extension StoreConnector: Equatable {
-    public static func == (lhs: StoreConnector<ResultType, RequestType>, rhs: StoreConnector<ResultType, RequestType>) -> Bool {
-        return lhs.id == rhs.id
-    }
 }
