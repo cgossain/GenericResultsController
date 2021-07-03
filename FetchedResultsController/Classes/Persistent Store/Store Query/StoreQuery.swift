@@ -26,6 +26,11 @@ import Foundation
 
 /// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
 public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: InstanceIdentifiable {
+    /// The sucessful result type.
+    public typealias Success = (inserted: [ResultType]?, updated: [ResultType]?, deleted: [ResultType]?)
+    
+    /// The update handler signature.
+    public typealias UpdateHandler = (_ result: Swift.Result<Success, Swift.Error>) -> Void
     
     /// The search criteria used to retrieve data from a persistent store.
     public let storeRequest: RequestType
@@ -44,7 +49,7 @@ public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: Ins
     }
     
     /// A block that is called when a matching results are inserted, updated, or deleted from the store.
-    public let updateHandler: (_ inserted: [ResultType]?, _ updated: [ResultType]?, _ deleted: [ResultType]?, _ error: Error?) -> Void
+    public let updateHandler: UpdateHandler
     
     
     // MARK: - InstanceIdentifiable
@@ -62,13 +67,14 @@ public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: Ins
     // MARK: - Lifecycle
     
     /// Instantiates and returns a query.
-    public init(storeRequest: RequestType, processesChangesImmediately: Bool = false, updateHandler: @escaping (_ inserted: [ResultType]?, _ updated: [ResultType]?, _ deleted: [ResultType]?, _ error: Error?) -> Void) {
+    public init(storeRequest: RequestType, processesChangesImmediately: Bool = false, updateHandler: @escaping UpdateHandler) {
         self.storeRequest = storeRequest
         self.updateHandler = updateHandler
         self.queue.processesChangesImmediately = processesChangesImmediately
         self.queue.delegate.queueDidFinishBatchingChanges = { [unowned self] (queue, batch) in
             let digest = batch.flush()
-            self.updateHandler(digest.inserted, digest.updated, digest.deleted, nil)
+            let success = (digest.inserted, digest.updated, digest.deleted)
+            self.updateHandler(.success(success))
         }
     }
     
@@ -93,5 +99,19 @@ extension StoreQuery {
     /// Enqueues the object with the given operation type.
     public func enqueue(_ obj: ResultType, as op: BatchQueueOperationType) {
         queue.enqueue(obj, as: op, batchID: self.id)
+    }
+    
+    /// Rejects the query with the given error.
+    ///
+    /// This will trigger the update handler with a result of `failure`.
+    public func reject(_ error: Error) {
+        // leaving as a thought:
+        //
+        // would it make more sense to wrap this
+        // into a Promise? purpose being that
+        // we should only be able to reject a
+        // query once; if a query has been rejected
+        // it shouldn't receive further updates?
+        updateHandler(.failure(error))
     }
 }

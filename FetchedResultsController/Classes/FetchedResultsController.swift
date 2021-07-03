@@ -121,14 +121,16 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
         let resultsConfiguration = delegate.controllerResultsConfiguration?(self, storeRequest)
         
         // execute the new query
-        let query = StoreQuery<ResultType, RequestType>(storeRequest: storeRequest) { [unowned self] (inserted, updated, deleted, _) in
+        let query = StoreQuery<ResultType, RequestType>(storeRequest: storeRequest) { [unowned self] (result) in
+            guard case let .success(success) = result else { return } // return if failed; content did not change
+            
             let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
             
             var newFetchedResults: FetchedResults<ResultType, RequestType>!
             if self.shouldRebuildFetchedResults {
                 // add incremental changes starting from an empty results object
                 newFetchedResults = FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
-                newFetchedResults.apply(inserted: inserted, updated: updated, deleted: deleted)
+                newFetchedResults.apply(inserted: success.inserted, updated: success.updated, deleted: success.deleted)
                 
                 // results rebuilt
                 self.shouldRebuildFetchedResults = false
@@ -136,7 +138,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
             else {
                 // add incremental changes starting from the current results
                 newFetchedResults = FetchedResults(fetchedResults: oldFetchedResults)
-                newFetchedResults.apply(inserted: inserted, updated: updated, deleted: deleted)
+                newFetchedResults.apply(inserted: success.inserted, updated: success.updated, deleted: success.deleted)
             }
             
             // update the current results
@@ -148,7 +150,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
             // compute the difference if the change tracker is configured
             if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
                 // compute the difference
-                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: updated)
+                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: success.updated)
                 controllerDidChangeResults(self, diff)
             }
             
