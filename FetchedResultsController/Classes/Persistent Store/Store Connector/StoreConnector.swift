@@ -118,7 +118,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: B
     }
     
     open override func deleteDraft(_ obj: ResultType) {
-        super.updateDraft(obj)
+        super.deleteDraft(obj)
         
         // a CRUD operation would affect all
         // active queries; the filter and sort
