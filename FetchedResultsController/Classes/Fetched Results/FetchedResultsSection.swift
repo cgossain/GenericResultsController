@@ -24,7 +24,7 @@
 
 import Foundation
 
-/// FetchedResultsSection manages the objects within a single section of the results data.
+/// A fetched results section manages the results of a single section of the entire results set.
 public class FetchedResultsSection<ResultType: StoreResult> {
     /// Name of the section.
     public var name: String { return sectionKeyValue }
@@ -38,7 +38,7 @@ public class FetchedResultsSection<ResultType: StoreResult> {
     
     // MARK: - Internal
     
-    /// The section key value represented by the receiver.
+    /// The section key value (e.g. the section name).
     let sectionKeyValue: String
     
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
@@ -47,13 +47,12 @@ public class FetchedResultsSection<ResultType: StoreResult> {
     
     // MARK: - Lifecycle
     
-    /// Initializes a section object with the given section key value and sort descriptors.
+    /// Creates and returns a new section object with the given section key value and sort predicate.
     ///
     /// - Parameters:
-    ///     - sectionKeyValue: The value that represents this section.
-    ///     - sortDescriptors: The sort descriptors that describe how items in this sections will be sorted.
-    ///     - objects: The initial set of objects in this section. The objects are assumed to be sorted. Used internally.
-    ///
+    ///     - sectionKeyValue: The section key value (e.g. the section name).
+    ///     - areInIncreasingOrder: A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    ///     - objects: The initial set of objects in the new section. The objects are assumed to be sorted. For internal use.
     init(sectionKeyValue: String, areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?, objects: [ResultType] = []) {
         self.sectionKeyValue = sectionKeyValue
         self.areInIncreasingOrder = areInIncreasingOrder

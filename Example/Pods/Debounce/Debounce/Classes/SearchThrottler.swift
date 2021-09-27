@@ -38,7 +38,7 @@ public final class SearchThrottler: NSObject {
     ///
     /// - Parameters:
     ///     - throttler: The Throttler instance to use to debounce search updates.
-    public init(throttler: Throttler = Throttler(throttlingInterval: 0.25, maxInterval: 0.5, qosClass: .userInitiated)) {
+    public init(throttler: Throttler = Throttler(throttlingInterval: 0.3, maxInterval: 0.6, qosClass: .userInitiated)) {
         self.throttler = throttler
         super.init()
     }

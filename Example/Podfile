@@ -1,4 +1,4 @@
-platform :ios, '12.3'
+platform :ios, '12.4'
 use_frameworks!
 
 target 'FetchedResultsController_Example' do

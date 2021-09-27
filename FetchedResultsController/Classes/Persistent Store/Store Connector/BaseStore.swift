@@ -56,7 +56,11 @@ open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
     
     // MARK: -  Lifecycle
     
-    /// Initializes a new store connector instance.
+    /// Creates and returns a new store instance.
+    ///
+    /// - Parameters:
+    ///     - id: An identifier for this store.
+    ///     - title: A short descriptive title for the store.
     public init(id: String? = nil, title: String = "") {
         self.id = id ?? title.lowercased()
         self.title = title

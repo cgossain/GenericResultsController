@@ -66,7 +66,12 @@ public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: Ins
     
     // MARK: - Lifecycle
     
-    /// Instantiates and returns a query.
+    /// Creates and returns a new store query.
+    ///
+    /// - Parameters:
+    ///     - storeRequest: The criteria used to retrieve data from a persistent store.
+    ///     - processesChangesImmediately: Indicates if changes should always be processed as soon as they're enqueued.
+    ///     - updateHandler: A block that is called when a matching results are inserted, updated, or deleted from the store.
     public init(storeRequest: RequestType, processesChangesImmediately: Bool = false, updateHandler: @escaping UpdateHandler) {
         self.storeRequest = storeRequest
         self.updateHandler = updateHandler
@@ -108,10 +113,10 @@ extension StoreQuery {
         // leaving as a thought:
         //
         // would it make more sense to wrap this
-        // into a Promise? purpose being that
+        // into a Promise? idea being that
         // we should only be able to reject a
         // query once; if a query has been rejected
-        // it shouldn't receive further updates?
+        // should it still receive further updates?
         updateHandler(.failure(error))
     }
 }

@@ -1,7 +1,7 @@
 PODS:
-  - Debounce (1.3.1)
+  - Debounce (1.4.0)
   - Dwifft (0.9)
-  - FetchedResultsController (2.1.0):
+  - FetchedResultsController (2.3.0):
     - Debounce
     - Dwifft (= 0.9)
 
@@ -18,10 +18,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Debounce: 9c04cd6b40af7d932c3e66057180d7b884bdb305
+  Debounce: b6ede9b54dc58daa059233012c7f54d9ddefda05
   Dwifft: 42912068ed2a8146077d1a1404df18625bd086e1
-  FetchedResultsController: 76f2d1b4f29ad2377e36788a980010ab417ca21f
+  FetchedResultsController: 3ab42d126d63115f27fe833c86b24004c8c350ae
 
-PODFILE CHECKSUM: f0eb81797e82cc4e17cb1a4026c56c4afc4b24c5
+PODFILE CHECKSUM: bf4189325c6bcbbdf986c771503d0116d392d10d
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

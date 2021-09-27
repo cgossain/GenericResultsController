@@ -27,8 +27,10 @@ import Foundation
 /// Configuration parameters for managing fetched results.
 ///
 /// - Note: The filter and sort closures are provided for convenience and are run locally after data has
-///         been fetched. For efficiency it would be better to try and filter (and possibly sort) when fetching
-///         data in your store connector implementation.
+///         been fetched. It would be more efficient to make every effort to utilize any filter and sort parameters
+///         defined on a query inside your store connector implementation instead of leaning on the controller to
+///         do this locally on a larger data set that you might fetch. That being said, if your data set is small you
+///         probably don't need to worry about this.
 public struct FetchedResultsConfiguration<ResultType: StoreResult> {
     /// A block that is run against fetched objects used to determine the section they belong to.
     public var sectionNameProvider: ((ResultType) -> String?)?
@@ -44,7 +46,7 @@ public struct FetchedResultsConfiguration<ResultType: StoreResult> {
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     public var areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
     
-    /// Creates and returns an empty results configuration.
+    /// Creates and returns a new empty results configuration.
     public init() {
         
     }

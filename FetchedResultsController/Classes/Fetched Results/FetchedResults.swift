@@ -27,7 +27,7 @@ import Foundation
 /// The name of the `nil` section
 let nilSectionName = ""
 
-/// FetchedResults manages the entire set of results of a fetched results controller.
+/// A fetched results object manages the entire set of results for a fetched results controller instance.
 class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     /// The search criteria used to retrieve data from a persistent store.
     let storeRequest: RequestType
@@ -119,12 +119,12 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     
     // MARK: - Lifecycle
     
-    /// Creates and returns a new fetched results objects with the given arguments.
+    /// Creates and returns a new fetched results objects.
     ///
     /// - Parameters:
     ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
     ///   - resultsConfiguration: The results configuration.
-    ///   - fetchedResults: The fetch result whose contents should be added to the receiver.
+    ///   - fetchedResults: The fetched results whose contents should be added to the receiver.
     init(storeRequest: RequestType,
          resultsConfiguration: FetchedResultsConfiguration<ResultType>?,
          fetchedResults: FetchedResults? = nil) {

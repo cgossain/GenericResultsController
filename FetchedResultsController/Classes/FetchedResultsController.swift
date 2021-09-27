@@ -34,7 +34,10 @@ public enum FetchedResultsControllerError: Error {
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
 open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest> {
     public enum State {
-        /// Initial state. This means `performFetch()` has not yet been called.
+        /// Initial state.
+        ///
+        /// The controller starts off in this state and will remain in this
+        /// state until the `performFetch()` method is called.
         case initial
         
         /// The controller is actively loading data.
@@ -70,8 +73,8 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     
     // MARK: - Private Properties
     
-    /// Indicates that a new fetch was started and that the current results object should be rebuilt
-    /// instead of adding changes incrementally to the current results.
+    /// Indicates that a new fetch was started and that the results object should be
+    /// rebuilt from scratch instead of incrementally adding changes to the current results.
     private var shouldRebuildFetchedResults = false
     
     /// A reference to the most recently executed query, and any subsequent pagination related queries.
@@ -83,7 +86,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     
     // MARK: - Lifecycle
     
-    /// Returns a fetched results controller initialized using the given arguments.
+    /// Creates and returns a new fetched results controller.
     ///
     /// - Parameters:
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The store request is executed against this connector instance.
@@ -120,7 +123,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
         // get the results configuration
         let resultsConfiguration = delegate.controllerResultsConfiguration?(self, storeRequest)
         
-        // execute the new query
+        // build and execute a new store query
         let query = StoreQuery<ResultType, RequestType>(storeRequest: storeRequest) { [unowned self] (result) in
             guard case let .success(success) = result else { return } // return if failed; content did not change
             
@@ -132,7 +135,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
                 newFetchedResults = FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
                 newFetchedResults.apply(inserted: success.inserted, updated: success.updated, deleted: success.deleted)
                 
-                // results rebuilt
+                // fetched results have been rebuilt
                 self.shouldRebuildFetchedResults = false
             }
             else {
@@ -161,7 +164,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
         storeConnector.execute(query)
     }
     
-    /// Returns the snapshot at a given indexPath.
+    /// Returns the object at a given index path.
     ///
     /// - Parameters:
     ///     - indexPath: An index path in the fetch results. If indexPath does not describe a valid index path in the fetch results, an error is thrown.
@@ -179,7 +182,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
         throw FetchedResultsControllerError.invalidIndexPath(row: indexPath.row, section: indexPath.section)
     }
     
-    /// Returns the indexPath of a given object.
+    /// Returns the index path of a given object.
     ///
     /// - Parameters:
     ///     - obj: An object in the receiver’s fetch results.
@@ -200,8 +203,9 @@ extension FetchedResultsController {
 extension FetchedResultsController: CustomStringConvertible {
     public var description: String {
         guard let description = currentFetchedResults?.description else {
-            return "No fetched results. You must call `performFetch()`."
+            return "No fetched results. Call `performFetch()`."
         }
+        
         return description
     }
 }

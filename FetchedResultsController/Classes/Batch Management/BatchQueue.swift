@@ -1,5 +1,5 @@
 //
-//  BatchController.swift
+//  BatchQueue.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -39,11 +39,13 @@ public final class BatchQueueDelegate<ResultType: StoreResult> {
     public var queueDidFinishBatchingChanges: ((_ queue: BatchQueue<ResultType>, _ batch: Batch<ResultType>) -> Void)?
 }
 
-/// A queue that regulates the grouping of incremental changes in batches.
+/// A queue that regulates the grouping of incremental changes into batch objects.
 ///
-/// In some cases you may want to process a batch immediatly (e.g. due to a user driven UI interaction), in this
-/// case you can call the `processPendingChanges()` method. If the queue should always process changes
-/// immediatly, set the `processesChangesImmediately` property to `true`.
+/// In some cases, you may want to process a batch immediatly (e.g. due to a user driven UI interaction), in this
+/// case you can call the `processPendingChanges()` method.
+///
+/// If however you want the queue to always process changes immediatly, set
+/// the `processesChangesImmediately` property to `true`.
 public final class BatchQueue<ResultType: StoreResult> {
     /// Set to true if changes should not be batched but rather processed as soon as they are received.
     public var processesChangesImmediately = false
@@ -66,6 +68,7 @@ public final class BatchQueue<ResultType: StoreResult> {
     
     // MARK: - Lifecycle
     
+    /// Creates and returns a new batch queue.
     public init() {
         
     }

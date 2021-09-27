@@ -32,11 +32,12 @@ public enum ResultsChangeType: Int {
     case update     = 4
 }
 
-/// FetchedResultsDifference provides detailed information about the differences between two
-/// fetched results objects.
+/// An object that computes the difference between two data sets.
 ///
-/// This information is useful for updating UI that lists the contents of a fetched results, such as
-/// the indexes of added, removed, updated, and rearranged objects.
+/// The class will provide a detailed comparison of the two sets (each represented by
+/// a fetched results object) such as, the indexes of added, removed, updated, and
+/// rearranged objects. This information is useful for animating UI changes in
+/// response to new data being fetched.
 public struct FetchedResultsDifference<ResultType: StoreResult, RequestType: StoreRequest> {
     public struct Section {
         let idx: Int
@@ -75,12 +76,12 @@ public struct FetchedResultsDifference<ResultType: StoreResult, RequestType: Sto
     
     // MARK: - Lifecycle
     
-    /// Creates a difference between two fetched results objects.
+    /// Creates and returns an object representing the difference between two given fetched results objects.
     ///
     /// - Parameters:
-    ///     - from: The fetched results object with the state of objects before the change.
-    ///     - to: The fetched results object with the state of objects after the change.
-    ///     - changedObjects: The objects in the fetch result whose content has been changed.
+    ///     - from: A snapshot of the results set before the change.
+    ///     - to: A snapshot of the results set after the change.
+    ///     - changedObjects: The objects in the results set whose content has been changed.
     init(from: FetchedResults<ResultType, RequestType>, to: FetchedResults<ResultType, RequestType>, changedObjects: [ResultType]?) {
         fetchedResultsBeforeChanges = from
         fetchedResultsAfterChanges = to

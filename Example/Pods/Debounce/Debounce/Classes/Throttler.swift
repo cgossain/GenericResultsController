@@ -39,13 +39,61 @@ public final class Throttler {
     
     
     // MARK: - Private
-    private var throttlingInterval: Double // seconds
-    private var maxInterval: Double // seconds; set to zero to always delay firing
-    private var currenWorkItem: DispatchWorkItem?
-    private var lastRun = Date.timeIntervalSinceReferenceDate
+    
+    /// The internal lock queue.
+    private let lockQueue = DispatchQueue(label: "com.debouce.throttler", attributes: .concurrent)
+    
+    /// The throttling interval.
+    private var throttlingInterval: Double
+    
+    /// The maximum time interval to wait before throttling a block regadless of the throttling interval.
+    ///
+    /// Set to 0 to disable the max interval.
+    private var maxInterval: Double
+    
+    /// The underlying storage for the last run timestamp.
+    private var _lastRun = Date.timeIntervalSinceReferenceDate
+    
+    /// The underlying storage for the current work item.
+    private var _currenWorkItem: DispatchWorkItem?
+    
+    /// Thread-safe read/write access to the last run timestamp.
+    private var lastRun: TimeInterval {
+        get {
+            return lockQueue.sync {
+                return _lastRun
+            }
+        }
+        set {
+            lockQueue.sync(flags: [.barrier]) {
+                _lastRun = newValue
+            }
+        }
+    }
+    
+    /// Thread-safe read/write access to the current work item.
+    private var currenWorkItem: DispatchWorkItem? {
+        get {
+            return lockQueue.sync {
+                return _currenWorkItem
+            }
+        }
+        set {
+            lockQueue.sync(flags: [.barrier]) {
+                _currenWorkItem = newValue
+            }
+        }
+    }
     
     
     // MARK: - Lifecycle
+    
+    /// Creates an returns a new throttler instance.
+    ///
+    /// - Parameters:
+    ///     - id: A uniquie identifier for this instance.
+    ///     - throttlingInterval: The time interval at which to throttle blocks.
+    ///     - maxInterval: The maximum time interval to wait before throttling a block. Set to 0 to disable the max interval.
     public init(id: String = UUID().uuidString, throttlingInterval: Double, maxInterval: Double = 0, qosClass: DispatchQoS.QoSClass = .background) {
         self.id = id
         self.throttlingInterval = throttlingInterval
