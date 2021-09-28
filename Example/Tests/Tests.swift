@@ -13,7 +13,7 @@ class TestStoreRequest: StoreRequest {
     var fetchLimit: Int = 0
 }
 
-class TestStoreConnector: StoreConnector<TestModel, TestStoreRequest> {
+class TestStoreConnector: DataStore<TestModel, TestStoreRequest> {
     private let results = [TestModel(timestamp: Date(timeInterval: -9000, since: Date()), category: "Section A"),
                            TestModel(timestamp: Date(timeInterval: -8500, since: Date()), category: "Section A"),
                            TestModel(timestamp: Date(timeInterval: -8000, since: Date()), category: "Section A"),
@@ -36,11 +36,11 @@ class FetchedResultsControllerTests: XCTestCase {
     
     let testStoreRequest = TestStoreRequest()
     
-    var fetchedResultsController: FetchedResultsController<TestModel, TestStoreRequest>!
+    var fetchedResultsController: GenericResultsController<TestModel, TestStoreRequest>!
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        fetchedResultsController = FetchedResultsController(storeConnector: testStoreConnector)
+        fetchedResultsController = GenericResultsController(store: testStoreConnector)
         
         fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
             return .makeDefaultConfiguration()
@@ -66,10 +66,10 @@ class FetchedResultsControllerTests: XCTestCase {
     }
 }
 
-extension FetchedResultsConfiguration where ResultType == TestModel {
+extension GenericResultsControllerConfiguration where ResultType == TestModel {
     /// Creates and returns a standard results configuration for TestModel.
-    static func makeDefaultConfiguration() -> FetchedResultsConfiguration<TestModel> {
-        var configuration = FetchedResultsConfiguration<TestModel>()
+    static func makeDefaultConfiguration() -> GenericResultsControllerConfiguration<TestModel> {
+        var configuration = GenericResultsControllerConfiguration<TestModel>()
         configuration.sectionNameProvider = {
             return $0.category
         }

@@ -42,8 +42,8 @@ open class GenericResultsController<ResultType: DataStoreResult, RequestType: St
     
     // MARK: - Properties
     
-    /// The store connector instance the controller uses to execute a fetch request against.
-    public let storeConnector: DataStore<ResultType, RequestType>
+    /// The store instance the controller uses to execute a fetch request against.
+    public let store: DataStore<ResultType, RequestType>
     
     /// The results of the fetch. Returns `nil` if `performFetch()` hasn't yet been called.
     public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
@@ -82,9 +82,9 @@ open class GenericResultsController<ResultType: DataStoreResult, RequestType: St
     /// Creates and returns a new fetched results controller.
     ///
     /// - Parameters:
-    ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The store request is executed against this connector instance.
-    public init(storeConnector: DataStore<ResultType, RequestType>) {
-        self.storeConnector = storeConnector
+    ///   - store: The store connector instance which forms the connection to the underlying data store. The store request is executed against this connector instance.
+    public init(store: DataStore<ResultType, RequestType>) {
+        self.store = store
     }
     
     deinit {
@@ -154,7 +154,7 @@ open class GenericResultsController<ResultType: DataStoreResult, RequestType: St
             self.delegate.controllerDidChangeContent?(self)
         }
         currentQueriesByID[query.id] = query
-        storeConnector.execute(query)
+        store.execute(query)
     }
     
     /// Returns the object at a given index path.
@@ -188,7 +188,7 @@ open class GenericResultsController<ResultType: DataStoreResult, RequestType: St
 
 extension GenericResultsController {
     private func stopCurrentQueries() {
-        currentQueriesByID.values.forEach({ storeConnector.stop($0) })
+        currentQueriesByID.values.forEach({ store.stop($0) })
         currentQueriesByID.removeAll()
     }
 }

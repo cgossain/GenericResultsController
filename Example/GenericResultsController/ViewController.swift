@@ -26,10 +26,10 @@ import CoreData
 import UIKit
 import GenericResultsController
 
-extension FetchedResultsConfiguration where ResultType == Event {
+extension GenericResultsControllerConfiguration where ResultType == Event {
     /// Creates and returns a standard results configuration for Event.
-    static func makeDefaultConfiguration() -> FetchedResultsConfiguration<Event> {
-        var configuration = FetchedResultsConfiguration<Event>()
+    static func makeDefaultConfiguration() -> GenericResultsControllerConfiguration<Event> {
+        var configuration = GenericResultsControllerConfiguration<Event>()
         configuration.sectionNameProvider = {
             return $0.category
         }
@@ -43,7 +43,7 @@ extension FetchedResultsConfiguration where ResultType == Event {
 }
 
 class ViewController: UITableViewController {
-    private(set) var fetchedResultsController: FetchedResultsController<Event, NSFetchRequest<Event>>!
+    private(set) var fetchedResultsController: GenericResultsController<Event, NSFetchRequest<Event>>!
     
     var managedObjectContext: NSManagedObjectContext { return CoreDataManager.shared.persistentContainer.viewContext }
     
@@ -81,7 +81,7 @@ class ViewController: UITableViewController {
     }
     
     private func configureResultsController() {
-        fetchedResultsController = FetchedResultsController(storeConnector: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext))
+        fetchedResultsController = GenericResultsController(store: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext))
         
         fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
             return .makeDefaultConfiguration()
