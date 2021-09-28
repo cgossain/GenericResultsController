@@ -25,7 +25,7 @@
 import Foundation
 
 /// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
-public class StoreQuery<ResultType: StoreResult, RequestType: StoreRequest>: InstanceIdentifiable {
+public class StoreQuery<ResultType: DataStoreResult, RequestType: StoreRequest>: InstanceIdentifiable {
     /// The sucessful result type.
     public typealias Success = (inserted: [ResultType]?, updated: [ResultType]?, deleted: [ResultType]?)
     

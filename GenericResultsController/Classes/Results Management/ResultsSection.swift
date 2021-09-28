@@ -25,7 +25,7 @@
 import Foundation
 
 /// A fetched results section manages the results of a single section of the entire results set.
-public class ResultsSection<ResultType: StoreResult> {
+public class ResultsSection<ResultType: DataStoreResult> {
     /// Name of the section.
     public var name: String { return sectionKeyValue }
     

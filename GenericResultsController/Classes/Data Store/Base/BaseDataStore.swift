@@ -1,5 +1,5 @@
 //
-//  BaseStore.swift
+//  BaseDataStore.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,22 +24,16 @@
 
 import Foundation
 
-/// A type that fetched objects must conform to.
-public typealias StoreResult = InstanceIdentifiable & Hashable
-
-/// BaseStore is an abstract superclass that adds some convenient features to the
-/// base store connector.
+/// BaseDataStore is a generic abstract superclass that provides a basic definition for a data store.
 ///
-/// In particular, it defines an API for insert, update, and delete operations. It also adds a
-/// mechanism for tracking draft changes (shows in the UI but not commited to the store),
-/// and finally it also a mechanism for managing parent-child relationships between store
-/// connectors (which is used to recursively commit draft changes, but could be used for
-/// other purposes too).
+/// The intention of this base class is to provide a higher level generic definition that contains only
+/// a single generic parameter representing the model object that this store interacts with. This
+/// makes it easier to create type-erased versions of this store where the model type is known, but
+/// the request type can vary (e.g. the same model sourced from different locations such as a
+/// database vs. an API).
 ///
-/// Given that the base store connector should already understand the particulars of fetching
-/// data from the underlying store, it follows that if one wanted to also perform CRUD operations
-/// on that same store (or specific location in that store) this would be the logical place to do it.
-open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
+/// Do not subclass this directly. You should subclass `DataStore` instead.
+open class BaseDataStore<ResultType: DataStoreResult>: InstanceIdentifiable {
     
     /// The stable identity of the entity associated with this instance.
     public let id: String
@@ -67,7 +61,7 @@ open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
     }
     
     
-    // MARK: - CRUD Operations
+    // MARK: - CRUD Operations (see `DataStore` for Read op)
     
     /// Inserts the object into the underlying store.
     ///
@@ -91,7 +85,7 @@ open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
     }
     
     
-    // MARK: - CRUD Operations (Draft/Edit Mode)
+    // MARK: - CRUD Operations (Draft Mode)
     
     /// Tracks the insertion in the stores' internal draft, and enqueues it into any
     /// running queries (i.e. does not commit to the underlying store).
@@ -122,7 +116,7 @@ open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
     /// This method commits draft changes to the underlying store by calling the respective CRUD methods (i.e. `insert(_:)`, `udpate(_:)`, `delete(_:)`).
     ///
     /// - Parameters:
-    ///     - recursively: Indicates if the commit should propagate through to child CRUD stores.
+    ///     - recursively: Indicates if the commit should propagate through to child stores.
     ///
     /// - Important: Do not call `super.update(_:)` in your implementation.
     open func commitDraft(recursively: Bool = false) {
@@ -149,17 +143,17 @@ open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
     // MARK: - Managing Parent-Child Relationship
     
     /// The parent store connector of the recipient.
-    public internal(set) weak var parent: BaseStore<ResultType>?
+    public internal(set) weak var parent: BaseDataStore<ResultType>?
     
     /// An array of store connectors that are children of the current store connector.
-    public internal(set) var children: [BaseStore<ResultType>] = []
+    public internal(set) var children: [BaseDataStore<ResultType>] = []
     
     /// Adds the specified store connector as a child of the current store connector.
     ///
     /// This method creates a parent-child relationship between the current store connector and the object in the `child` parameter.
     ///
-    /// - Note: This method calls `willMoveToParent(_:)` before adding the child, however it is expected that you call didMoveToParentViewController:
-    open func addChild(_ child: BaseStore<ResultType>) {
+    /// - Note: This method calls `willMoveToParent(_:)` before adding the child, however it is expected that you call `didMoveToParent(_:)` when done adding the child.
+    open func addChild(_ child: BaseDataStore<ResultType>) {
         // remove from existing parent if needed
         if let parent = child.parent {
             parent.removeFromParent()
@@ -177,19 +171,19 @@ open class BaseStore<ResultType: StoreResult>: InstanceIdentifiable {
     }
     
     /// Called just before the store connector is added or removed from another store connector.
-    open func willMoveToParent(_ parent: BaseStore<ResultType>?) {
+    open func willMoveToParent(_ parent: BaseDataStore<ResultType>?) {
         
     }
     
     /// Called after the store connector is added or removed from another store connector.
-    open func didMoveToParent(_ parent: BaseStore<ResultType>?) {
+    open func didMoveToParent(_ parent: BaseDataStore<ResultType>?) {
         self.parent = parent
     }
     
 }
 
-extension BaseStore: Equatable {
-    public static func == (lhs: BaseStore<ResultType>, rhs: BaseStore<ResultType>) -> Bool {
+extension BaseDataStore: Equatable {
+    public static func == (lhs: BaseDataStore<ResultType>, rhs: BaseDataStore<ResultType>) -> Bool {
         return lhs.id == rhs.id
     }
 }

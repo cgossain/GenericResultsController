@@ -24,7 +24,7 @@
 
 import Foundation
 
-public class GenericResultsControllerDelegate<ResultType: StoreResult, RequestType: StoreRequest> {
+public class GenericResultsControllerDelegate<ResultType: DataStoreResult, RequestType: StoreRequest> {
     /// Returns the results configuration for the given store request.
     ///
     /// Called just before the query is executed.

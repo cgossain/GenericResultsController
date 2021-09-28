@@ -1,5 +1,5 @@
 //
-//  StoreConnector.swift
+//  DataStore.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,21 +24,32 @@
 
 import Foundation
 
-/// StoreConnector is an abstract superclass exposing a simple API for interfacing between a
-/// fetched results controller and any data store. It's an adapter to some underlying store.
+/// DataStore is a generic abstract superclass that extends the base data store by adding API for querying
+/// the store. It adds an additional generic parameter representing the request type.
 ///
-/// The API is intentionally simple and makes no assumptions about how you manage your connection
-/// to the underlying data store. Your concrete subclass should implement any state and logic needed to
-/// efficiently communicate with your underlying store (i.e. opening connections, attaching observers, closing
-/// connections, cleaning up, caching objects, etc.).
+/// You should subclass DataStore to build a custom connection to your data source. The API is
+/// intentionally simple and makes no assumptions about how you manage your connection to the
+/// underlying data store. Your concrete subclass should implement any state and logic needed to
+/// efficiently communicate with your underlying store (i.e. opening connections, attaching
+/// observers, closing connections, cleaning up, caching objects, etc.).
 ///
-/// Results are delivered to the observer query via a batching mechanism to optimize diffs by computing the
-/// diffs agains the incremental changes rather then the full data set.
+/// Results are delivered to the store query via a batching mechanism which optimizes diffs by
+/// computing the diffs against a block of incremental changes rather than each time a change
+/// is enqueued.
 ///
-/// You call any of the `enqueue(_:_:)` methods to deliver result objects. If your fetch is short lived then you
-/// would provide all your result objects using the "insertion" variant. Otherwise if you have long running observers
-/// you can keep delivering incremental updates using all the variants.
-open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: BaseStore<ResultType> {
+/// To deliver results, you call the `enqueue(_:_:)` method of the executed store query. How
+/// you implement this is up to you. You can treat the query as long running by observing you database
+/// and enqueing any changes into the query as they occur (possibly by capturing a reference to the
+/// query in a closure).
+///
+/// The data store also provides a mechanism to display draft changes in a results controller (defined
+/// in `BaseDataStore`) without commiting them to the underlying store (e.g. until the user taps
+/// a "Save" button). It also provides a mechanism for managing parent-child relationships between
+/// hierarchical data stores (e.g. sub-collections or relationships). This feature is currently used for
+/// recursively commiting draft changes, but could be used for other purposes too).
+///
+/// See the example project for an example implementation using CoreData.
+open class DataStore<ResultType: DataStoreResult, RequestType: StoreRequest>: BaseDataStore<ResultType> {
     
     // MARK: - Internal
     
@@ -93,7 +104,7 @@ open class StoreConnector<ResultType: StoreResult, RequestType: StoreRequest>: B
     }
     
     
-    // MARK: - CRUD Operations (Draft/Edit Mode)
+    // MARK: - CRUD Operations (Overrides)
     
     open override func insertDraft(_ obj: ResultType) {
         super.insertDraft(obj)

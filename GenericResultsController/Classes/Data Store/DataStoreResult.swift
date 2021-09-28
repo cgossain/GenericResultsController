@@ -1,5 +1,5 @@
 //
-//  GenericResultsControllerChangeTracking.swift
+//  DataStoreResult.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,11 +24,5 @@
 
 import Foundation
 
-public class GenericResultsControllerChangeTracking<ResultType: DataStoreResult, RequestType: StoreRequest> {
-    public typealias DidChangeResultsHandler = (_ controller: GenericResultsController<ResultType, RequestType>, _ difference: ResultsDifference<ResultType, RequestType>) -> Void
-    
-    /// Notifies the change tracker that the controller has changed its results.
-    ///
-    /// The change between the previous and new states is provided as a difference object.
-    public var controllerDidChangeResults: DidChangeResultsHandler?
-}
+/// A type that fetched objects must conform to.
+public typealias DataStoreResult = InstanceIdentifiable & Hashable

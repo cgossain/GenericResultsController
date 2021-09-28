@@ -28,7 +28,7 @@ import Foundation
 let nilSectionName = ""
 
 /// A fetched results object manages the entire set of results for a fetched results controller instance.
-class Results<ResultType: StoreResult, RequestType: StoreRequest> {
+class Results<ResultType: DataStoreResult, RequestType: StoreRequest> {
     /// The search criteria used to retrieve data from a persistent store.
     let storeRequest: RequestType
     

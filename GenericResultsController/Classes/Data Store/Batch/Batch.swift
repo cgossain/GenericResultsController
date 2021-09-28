@@ -28,7 +28,7 @@ import Foundation
 ///
 /// You keep adding changes to the batch and then call `flush()` when done to compute the
 /// deduplicated changes out of the batch.
-public final class Batch<ResultType: StoreResult>: InstanceIdentifiable {
+public final class Batch<ResultType: DataStoreResult>: InstanceIdentifiable {
     /// The dedpuplicated set of changes in the batch.
     public struct Digest {
         /// The deduplicated insertions.

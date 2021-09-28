@@ -25,7 +25,7 @@
 import Foundation
 
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class GenericResultsController<ResultType: StoreResult, RequestType: StoreRequest> {
+open class GenericResultsController<ResultType: DataStoreResult, RequestType: StoreRequest> {
     public enum State {
         /// Initial state.
         ///
@@ -43,7 +43,7 @@ open class GenericResultsController<ResultType: StoreResult, RequestType: StoreR
     // MARK: - Properties
     
     /// The store connector instance the controller uses to execute a fetch request against.
-    public let storeConnector: StoreConnector<ResultType, RequestType>
+    public let storeConnector: DataStore<ResultType, RequestType>
     
     /// The results of the fetch. Returns `nil` if `performFetch()` hasn't yet been called.
     public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
@@ -83,7 +83,7 @@ open class GenericResultsController<ResultType: StoreResult, RequestType: StoreR
     ///
     /// - Parameters:
     ///   - storeConnector: The store connector instance which forms the connection to the underlying data store. The store request is executed against this connector instance.
-    public init(storeConnector: StoreConnector<ResultType, RequestType>) {
+    public init(storeConnector: DataStore<ResultType, RequestType>) {
         self.storeConnector = storeConnector
     }
     

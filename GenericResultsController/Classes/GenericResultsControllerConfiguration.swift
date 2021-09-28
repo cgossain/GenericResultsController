@@ -31,7 +31,7 @@ import Foundation
 ///         defined on a query inside your store connector implementation instead of leaning on the controller to
 ///         do this locally on a larger data set that you might fetch. That being said, if your data set is small you
 ///         probably don't need to worry about this.
-public struct GenericResultsControllerConfiguration<ResultType: StoreResult> {
+public struct GenericResultsControllerConfiguration<ResultType: DataStoreResult> {
     /// A block that is run against fetched objects used to determine the section they belong to.
     public var sectionNameProvider: ((ResultType) -> String?)?
     
