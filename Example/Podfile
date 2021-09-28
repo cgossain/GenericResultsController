@@ -1,11 +1,13 @@
-platform :ios, '12.4'
 use_frameworks!
 
-target 'FetchedResultsController_Example' do
-  pod 'FetchedResultsController', :path => '../'
-  
-  target 'FetchedResultsController_Tests' do
+platform :ios, '12.4'
+
+target 'GenericResultsController_Example' do
+  pod 'GenericResultsController', :path => '../'
+
+  target 'GenericResultsController_Tests' do
     inherit! :search_paths
+
     
   end
 end

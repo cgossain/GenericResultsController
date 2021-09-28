@@ -1,0 +1,6 @@
+framework module GenericResultsController {
+  umbrella header "GenericResultsController-umbrella.h"
+
+  export *
+  module * { export * }
+}

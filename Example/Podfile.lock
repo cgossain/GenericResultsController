@@ -1,12 +1,12 @@
 PODS:
   - Debounce (1.4.0)
   - Dwifft (0.9)
-  - FetchedResultsController (2.3.0):
+  - GenericResultsController (2.3.0):
     - Debounce
     - Dwifft (= 0.9)
 
 DEPENDENCIES:
-  - FetchedResultsController (from `../`)
+  - GenericResultsController (from `../`)
 
 SPEC REPOS:
   trunk:
@@ -14,14 +14,14 @@ SPEC REPOS:
     - Dwifft
 
 EXTERNAL SOURCES:
-  FetchedResultsController:
+  GenericResultsController:
     :path: "../"
 
 SPEC CHECKSUMS:
   Debounce: b6ede9b54dc58daa059233012c7f54d9ddefda05
   Dwifft: 42912068ed2a8146077d1a1404df18625bd086e1
-  FetchedResultsController: 3ab42d126d63115f27fe833c86b24004c8c350ae
+  GenericResultsController: 807af837324aa08e8aa61836dbeb883c3cb3394f
 
-PODFILE CHECKSUM: bf4189325c6bcbbdf986c771503d0116d392d10d
+PODFILE CHECKSUM: 0bb4f69a14b19e437cb1d4ff1e985f96e171a4aa
 
 COCOAPODS: 1.11.2
