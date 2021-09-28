@@ -3,8 +3,8 @@ Pod::Spec.new do |s|
   s.version          = '2.3.0'
   s.summary          = 'A generic NSFetchedResultsController replacement for iOS, written in Swift.'
   s.description      = <<-DESC
-  The GenericResultsController is an NSFetchedResultsController replacement for iOS, that is used
-  manage the results of a data fetch from some data store, and to display that data to the user. The
+  The GenericResultsController is an NSFetchedResultsController replacement for iOS, that is used to
+  manage the results of any data fetch from any data store and to display that data to the user. The
   controller provides an abstracted API that is intentionally simple and makes no assumptions
   about how you manage your connection to the underlying data store. The goal of this project is
   to provide a data controller with similar functionality to NSFetchedResultsController but with
