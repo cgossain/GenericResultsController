@@ -1,5 +1,5 @@
 //
-//  FetchedResultsDifference.swift
+//  ResultsDifference.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -38,10 +38,10 @@ public enum ResultsChangeType: Int {
 /// a fetched results object) such as, the indexes of added, removed, updated, and
 /// rearranged objects. This information is useful for animating UI changes in
 /// response to new data being fetched.
-public struct FetchedResultsDifference<ResultType: StoreResult, RequestType: StoreRequest> {
+public struct ResultsDifference<ResultType: StoreResult, RequestType: StoreRequest> {
     public struct Section {
         let idx: Int
-        let section: FetchedResultsSection<ResultType>
+        let section: ResultsSection<ResultType>
     }
     
     public struct Row {
@@ -50,10 +50,10 @@ public struct FetchedResultsDifference<ResultType: StoreResult, RequestType: Sto
     }
     
     /// The fetched results before applying the changes.
-    let fetchedResultsBeforeChanges: FetchedResults<ResultType, RequestType>
+    let fetchedResultsBeforeChanges: Results<ResultType, RequestType>
     
     /// The fetched results after applying the changes.
-    let fetchedResultsAfterChanges: FetchedResults<ResultType, RequestType>
+    let fetchedResultsAfterChanges: Results<ResultType, RequestType>
     
     /// The indexes of the removed sections, relative to the 'before' state.
     public private(set) var removedSections: [Section]?
@@ -82,7 +82,7 @@ public struct FetchedResultsDifference<ResultType: StoreResult, RequestType: Sto
     ///     - from: A snapshot of the results set before the change.
     ///     - to: A snapshot of the results set after the change.
     ///     - changedObjects: The objects in the results set whose content has been changed.
-    init(from: FetchedResults<ResultType, RequestType>, to: FetchedResults<ResultType, RequestType>, changedObjects: [ResultType]?) {
+    init(from: Results<ResultType, RequestType>, to: Results<ResultType, RequestType>, changedObjects: [ResultType]?) {
         fetchedResultsBeforeChanges = from
         fetchedResultsAfterChanges = to
         
@@ -220,9 +220,9 @@ public struct FetchedResultsDifference<ResultType: StoreResult, RequestType: Sto
     }
 }
 
-extension FetchedResultsDifference {
+extension ResultsDifference {
     /// Convenience method that enumerates all the section changes described by the difference object.
-    public func enumerateSectionChanges(_ body: ((_ section: FetchedResultsSection<ResultType>, _ sectionIndex: Int, _ type: ResultsChangeType) -> Void)) {
+    public func enumerateSectionChanges(_ body: ((_ section: ResultsSection<ResultType>, _ sectionIndex: Int, _ type: ResultsChangeType) -> Void)) {
         // removed sections
         if let removedSections = removedSections {
             for section in removedSections {
@@ -270,7 +270,7 @@ extension FetchedResultsDifference {
     }
 }
 
-extension FetchedResultsDifference: CustomStringConvertible {
+extension ResultsDifference: CustomStringConvertible {
     public var description: String {
         var components: [String] = []
         

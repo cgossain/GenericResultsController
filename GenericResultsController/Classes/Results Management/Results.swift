@@ -1,5 +1,5 @@
 //
-//  FetchedResults.swift
+//  Results.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -28,12 +28,12 @@ import Foundation
 let nilSectionName = ""
 
 /// A fetched results object manages the entire set of results for a fetched results controller instance.
-class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
+class Results<ResultType: StoreResult, RequestType: StoreRequest> {
     /// The search criteria used to retrieve data from a persistent store.
     let storeRequest: RequestType
     
     /// The results configuration.
-    let resultsConfiguration: FetchedResultsConfiguration<ResultType>?
+    let resultsConfiguration: GenericResultsControllerConfiguration<ResultType>?
     
     /// The current fetch results ordered by section first (if a `sectionNameKeyPath` was provided), then by the fetch request sort descriptors.
     private(set) var results: [ResultType] = []
@@ -44,7 +44,7 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     var sectionKeyValues: [String] { return Array(sections.map({ $0.sectionKeyValue })) }
     
     /// The fetch results as arranged sections.
-    var sections: [FetchedResultsSection<ResultType>] {
+    var sections: [ResultsSection<ResultType>] {
         if let sections = _sections {
             return sections
         }
@@ -61,7 +61,7 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     // MARK: - Private Properties
     
     /// A dictionary that maps a section to its `sectionKeyValue`.
-    private var sectionsBySectionKeyValue: [String: FetchedResultsSection<ResultType>] = [:]
+    private var sectionsBySectionKeyValue: [String: ResultsSection<ResultType>] = [:]
     
     /// A dictionary that maps a result objects `sectionKeyValue` to its ID.
     private var sectionKeyValuesByID: [AnyHashable: String] = [:]
@@ -70,7 +70,7 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     // MARK: - Private Properties (Computed)
     
     /// The computed sections array.
-    private var _sections: [FetchedResultsSection<ResultType>]? // hold the current non-stale sections array
+    private var _sections: [ResultsSection<ResultType>]? // hold the current non-stale sections array
     
     /// A dictionary that maps a sections' index to its `sectionKeyValue`.
     private var sectionIndicesBySectionKeyValue: [String: Int] = [:]
@@ -126,8 +126,8 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     ///   - resultsConfiguration: The results configuration.
     ///   - fetchedResults: The fetched results whose contents should be added to the receiver.
     init(storeRequest: RequestType,
-         resultsConfiguration: FetchedResultsConfiguration<ResultType>?,
-         fetchedResults: FetchedResults? = nil) {
+         resultsConfiguration: GenericResultsControllerConfiguration<ResultType>?,
+         fetchedResults: Results? = nil) {
         self.storeRequest = storeRequest
         self.resultsConfiguration = resultsConfiguration
         
@@ -142,7 +142,7 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
             
             // copy the result sections
             for (sectionKeyValue, resultsSection) in fetchedResults.sectionsBySectionKeyValue {
-                let newResultsSection = FetchedResultsSection<ResultType>(
+                let newResultsSection = ResultsSection<ResultType>(
                     sectionKeyValue: resultsSection.sectionKeyValue,
                     areInIncreasingOrder: resultsSection.areInIncreasingOrder,
                     objects: resultsSection.objects)
@@ -156,7 +156,7 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     }
     
     /// Creates and returns a new fetched results objects with the contents of an existing fetched results objects.
-    convenience init(fetchedResults: FetchedResults) {
+    convenience init(fetchedResults: Results) {
         self.init(storeRequest: fetchedResults.storeRequest,
                   resultsConfiguration: fetchedResults.resultsConfiguration,
                   fetchedResults: fetchedResults)
@@ -172,7 +172,7 @@ class FetchedResults<ResultType: StoreResult, RequestType: StoreRequest> {
     }
 }
 
-extension FetchedResults {
+extension Results {
     /// Applies the given changes to the current results.
     func apply(inserted ins: [ResultType]?, updated upd: [ResultType]?, deleted del: [ResultType]?) {
         // apply changes
@@ -244,7 +244,7 @@ extension FetchedResults {
     }
 }
 
-extension FetchedResults {
+extension Results {
     /// Inserts the given object to the results array at the position that respects
     /// the fetch requests sort order and predicate.
     private func insert(obj: ResultType) {
@@ -266,7 +266,7 @@ extension FetchedResults {
         
         // create or update the section
         let sectionKeyValue = self.sectionName(for: obj)
-        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? FetchedResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: resultsConfiguration?.areInIncreasingOrder)
+        let section = sectionsBySectionKeyValue[sectionKeyValue] ?? ResultsSection(sectionKeyValue: sectionKeyValue, areInIncreasingOrder: resultsConfiguration?.areInIncreasingOrder)
         section.insert(obj: obj)
         sectionsBySectionKeyValue[sectionKeyValue] = section
         sectionKeyValuesByID[obj.id] = sectionKeyValue
@@ -321,7 +321,7 @@ extension FetchedResults {
     }
 }
 
-extension FetchedResults {
+extension Results {
     /// Indicates if the given object should be included in the data set.
     private func canInclude(obj: ResultType) -> Bool {
         return resultsConfiguration?.isIncluded?(obj) ?? true
@@ -345,7 +345,7 @@ extension FetchedResults {
     }
 }
 
-extension FetchedResults: CustomStringConvertible {
+extension Results: CustomStringConvertible {
     var description: String {
         var components: [String] = []
         let sectionSummaries = sections.map({ return "\($0.sectionKeyValue):\($0.numberOfObjects)" })

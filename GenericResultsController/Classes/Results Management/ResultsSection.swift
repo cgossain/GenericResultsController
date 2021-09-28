@@ -1,5 +1,5 @@
 //
-//  FetchedResultsSection.swift
+//  ResultsSection.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -25,7 +25,7 @@
 import Foundation
 
 /// A fetched results section manages the results of a single section of the entire results set.
-public class FetchedResultsSection<ResultType: StoreResult> {
+public class ResultsSection<ResultType: StoreResult> {
     /// Name of the section.
     public var name: String { return sectionKeyValue }
     
@@ -86,8 +86,8 @@ public class FetchedResultsSection<ResultType: StoreResult> {
     }
 }
 
-extension FetchedResultsSection: Equatable, Hashable {
-    public static func ==(lhs: FetchedResultsSection, rhs: FetchedResultsSection) -> Bool {
+extension ResultsSection: Equatable, Hashable {
+    public static func ==(lhs: ResultsSection, rhs: ResultsSection) -> Bool {
         return lhs.sectionKeyValue == rhs.sectionKeyValue
     }
     
@@ -96,7 +96,7 @@ extension FetchedResultsSection: Equatable, Hashable {
     }
 }
 
-extension FetchedResultsSection: CustomStringConvertible {
+extension ResultsSection: CustomStringConvertible {
     public var description: String {
         return "| Section: \(name), Count: \(numberOfObjects) |"
     }

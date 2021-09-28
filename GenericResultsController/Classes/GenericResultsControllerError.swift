@@ -1,5 +1,5 @@
 //
-//  FetchedResultsControllerDelegate.swift
+//  GenericResultsControllerError.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,15 +24,9 @@
 
 import Foundation
 
-public class FetchedResultsControllerDelegate<ResultType: StoreResult, RequestType: StoreRequest> {
-    /// Returns the results configuration for the given store request.
+public enum GenericResultsControllerError: Error {
+    /// An indication that the requested index path is invalid.
     ///
-    /// Called just before the query is executed.
-    public var controllerResultsConfiguration: ((FetchedResultsController<ResultType, RequestType>, RequestType) -> FetchedResultsConfiguration<ResultType>)?
-    
-    /// Called when the results controller begins receiving changes.
-    public var controllerWillChangeContent: ((FetchedResultsController<ResultType, RequestType>) -> Void)?
-    
-    /// Called when the controller has completed processing the all changes.
-    public var controllerDidChangeContent: ((FetchedResultsController<ResultType, RequestType>) -> Void)?
+    /// The requested row and section indicies are provides as associated values for context.
+    case invalidIndexPath(row: Int, section: Int)
 }

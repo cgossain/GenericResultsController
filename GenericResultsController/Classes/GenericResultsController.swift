@@ -1,5 +1,5 @@
 //
-//  FetchedResultsController.swift
+//  GenericResultsController.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,15 +24,8 @@
 
 import Foundation
 
-public enum FetchedResultsControllerError: Error {
-    /// An indication that the requested index path is invalid.
-    ///
-    /// The requested row and section indicies are provides as associated values for context.
-    case invalidIndexPath(row: Int, section: Int)
-}
-
 /// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreRequest> {
+open class GenericResultsController<ResultType: StoreResult, RequestType: StoreRequest> {
     public enum State {
         /// Initial state.
         ///
@@ -56,7 +49,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
 
     /// The sections for the receiver’s fetch results.
-    public var sections: [FetchedResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
+    public var sections: [ResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
     
     /// The receivers' state.
     public var state: State = .initial
@@ -65,10 +58,10 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     // MARK: - Properties (Change Handling)
     
     /// The delegate handling all the results controller delegate callbacks.
-    public var delegate = FetchedResultsControllerDelegate<ResultType, RequestType>()
+    public var delegate = GenericResultsControllerDelegate<ResultType, RequestType>()
     
     /// The delegate handling all the results controller delegate callbacks.
-    public var changeTracker = FetchedResultsControllerChangeTracking<ResultType, RequestType>()
+    public var changeTracker = GenericResultsControllerChangeTracking<ResultType, RequestType>()
     
     
     // MARK: - Private Properties
@@ -81,7 +74,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     private var currentQueriesByID: [String : StoreQuery<ResultType, RequestType>] = [:]
     
     /// The current fetched results.
-    private var currentFetchedResults: FetchedResults<ResultType, RequestType>?
+    private var currentFetchedResults: Results<ResultType, RequestType>?
     
     
     // MARK: - Lifecycle
@@ -127,12 +120,12 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
         let query = StoreQuery<ResultType, RequestType>(storeRequest: storeRequest) { [unowned self] (result) in
             guard case let .success(success) = result else { return } // return if failed; content did not change
             
-            let oldFetchedResults = self.currentFetchedResults ?? FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
+            let oldFetchedResults = self.currentFetchedResults ?? Results(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
             
-            var newFetchedResults: FetchedResults<ResultType, RequestType>!
+            var newFetchedResults: Results<ResultType, RequestType>!
             if self.shouldRebuildFetchedResults {
                 // add incremental changes starting from an empty results object
-                newFetchedResults = FetchedResults(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
+                newFetchedResults = Results(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
                 newFetchedResults.apply(inserted: success.inserted, updated: success.updated, deleted: success.deleted)
                 
                 // fetched results have been rebuilt
@@ -140,7 +133,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
             }
             else {
                 // add incremental changes starting from the current results
-                newFetchedResults = FetchedResults(fetchedResults: oldFetchedResults)
+                newFetchedResults = Results(fetchedResults: oldFetchedResults)
                 newFetchedResults.apply(inserted: success.inserted, updated: success.updated, deleted: success.deleted)
             }
             
@@ -153,7 +146,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
             // compute the difference if the change tracker is configured
             if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
                 // compute the difference
-                let diff = FetchedResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: success.updated)
+                let diff = ResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: success.updated)
                 controllerDidChangeResults(self, diff)
             }
             
@@ -179,7 +172,7 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
             }
         }
         
-        throw FetchedResultsControllerError.invalidIndexPath(row: indexPath.row, section: indexPath.section)
+        throw GenericResultsControllerError.invalidIndexPath(row: indexPath.row, section: indexPath.section)
     }
     
     /// Returns the index path of a given object.
@@ -193,14 +186,14 @@ open class FetchedResultsController<ResultType: StoreResult, RequestType: StoreR
     }
 }
 
-extension FetchedResultsController {
+extension GenericResultsController {
     private func stopCurrentQueries() {
         currentQueriesByID.values.forEach({ storeConnector.stop($0) })
         currentQueriesByID.removeAll()
     }
 }
 
-extension FetchedResultsController: CustomStringConvertible {
+extension GenericResultsController: CustomStringConvertible {
     public var description: String {
         guard let description = currentFetchedResults?.description else {
             return "No fetched results. Call `performFetch()`."
