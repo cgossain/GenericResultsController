@@ -55,7 +55,10 @@ open class BaseDataStore<ResultType: DataStoreResult>: InstanceIdentifiable {
     /// - Parameters:
     ///     - id: An identifier for this store.
     ///     - title: A short descriptive title for the store.
-    public init(id: String? = nil, title: String = "") {
+    public init(
+        id: String? = nil,
+        title: String = ""
+    ) {
         self.id = id ?? title.lowercased()
         self.title = title
     }

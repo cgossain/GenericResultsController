@@ -27,7 +27,7 @@ import Foundation
 /// The name of the `nil` section
 let nilSectionName = ""
 
-/// A fetched results object manages the entire set of results for a fetched results controller instance.
+/// A results object manages the entire set of results for a results controller instance.
 class Results<ResultType: DataStoreResult, RequestType: StoreRequest> {
     /// The search criteria used to retrieve data from a persistent store.
     let storeRequest: RequestType
@@ -35,12 +35,14 @@ class Results<ResultType: DataStoreResult, RequestType: StoreRequest> {
     /// The results configuration.
     let resultsConfiguration: GenericResultsControllerConfiguration<ResultType>?
     
-    /// The current fetch results ordered by section first (if a `sectionNameKeyPath` was provided), then by the fetch request sort descriptors.
+    /// The entire set of result objects ordered by section first (if a `sectionNameProvider` was specifed in the configuration), then by the `areInIncreasingOrder` predicate (if specified in the configuration).
     private(set) var results: [ResultType] = []
     
-    /// An array containing the name of each section that exists in the results. The order of the items in this list represent the order that the sections should appear.
+    /// An array containing the name of each section that exists in the results set.
     ///
-    /// - note: If the `sectionNameKeyPath` value is `nil`, a single section will be generated.
+    /// The order of the items in this list represent the order that the sections should appear in your UI.
+    ///
+    /// - Note: If a `sectionNameProvider` was not specified in the configuration, a single section will be generated.
     var sectionKeyValues: [String] { return Array(sections.map({ $0.sectionKeyValue })) }
     
     /// The fetch results as arranged sections.
@@ -119,15 +121,17 @@ class Results<ResultType: DataStoreResult, RequestType: StoreRequest> {
     
     // MARK: - Lifecycle
     
-    /// Creates and returns a new fetched results objects.
+    /// Creates and returns a new results objects.
     ///
     /// - Parameters:
     ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
     ///   - resultsConfiguration: The results configuration.
     ///   - fetchedResults: The fetched results whose contents should be added to the receiver.
-    init(storeRequest: RequestType,
-         resultsConfiguration: GenericResultsControllerConfiguration<ResultType>?,
-         fetchedResults: Results? = nil) {
+    init(
+        storeRequest: RequestType,
+        resultsConfiguration: GenericResultsControllerConfiguration<ResultType>?,
+        fetchedResults: Results? = nil
+    ) {
         self.storeRequest = storeRequest
         self.resultsConfiguration = resultsConfiguration
         

@@ -25,17 +25,25 @@
 import Foundation
 import Dwifft
 
+/// The change type.
 public enum ResultsChangeType: Int {
+    /// The type that indicates an insertion.
     case insert     = 1
+    
+    /// The type that indicates a deletion.
     case delete     = 2
+    
+    /// The type that indicates a move.
     case move       = 3
+    
+    /// The type that indicates an update.
     case update     = 4
 }
 
 /// An object that computes the difference between two data sets.
 ///
-/// The class will provide a detailed comparison of the two sets (each represented by
-/// a fetched results object) such as, the indexes of added, removed, updated, and
+/// The class provides a detailed comparison of the two data sets (each represented
+/// by a results object) such as the indexes of added, removed, updated, and
 /// rearranged objects. This information is useful for animating UI changes in
 /// response to new data being fetched.
 public struct ResultsDifference<ResultType: DataStoreResult, RequestType: StoreRequest> {
@@ -49,10 +57,10 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: StoreR
         let value: ResultType
     }
     
-    /// The fetched results before applying the changes.
+    /// A snapshot of the results set before the change.
     let fetchedResultsBeforeChanges: Results<ResultType, RequestType>
     
-    /// The fetched results after applying the changes.
+    /// A snapshot of the results set after the change.
     let fetchedResultsAfterChanges: Results<ResultType, RequestType>
     
     /// The indexes of the removed sections, relative to the 'before' state.
@@ -76,13 +84,17 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: StoreR
     
     // MARK: - Lifecycle
     
-    /// Creates and returns an object representing the difference between two given fetched results objects.
+    /// Creates and returns an object representing the difference between two given results objects.
     ///
     /// - Parameters:
     ///     - from: A snapshot of the results set before the change.
     ///     - to: A snapshot of the results set after the change.
     ///     - changedObjects: The objects in the results set whose content has been changed.
-    init(from: Results<ResultType, RequestType>, to: Results<ResultType, RequestType>, changedObjects: [ResultType]?) {
+    init(
+        from: Results<ResultType, RequestType>,
+        to: Results<ResultType, RequestType>,
+        changedObjects: [ResultType]?
+    ) {
         fetchedResultsBeforeChanges = from
         fetchedResultsAfterChanges = to
         
@@ -221,7 +233,7 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: StoreR
 }
 
 extension ResultsDifference {
-    /// Convenience method that enumerates all the section changes described by the difference object.
+    /// Convenience method that enumerates all the section changes described by the receiver.
     public func enumerateSectionChanges(_ body: ((_ section: ResultsSection<ResultType>, _ sectionIndex: Int, _ type: ResultsChangeType) -> Void)) {
         // removed sections
         if let removedSections = removedSections {
@@ -238,7 +250,7 @@ extension ResultsDifference {
         }
     }
     
-    /// Convenience method that enumerates all the row changes described by the difference object.
+    /// Convenience method that enumerates all the row changes described by the receiver.
     public func enumerateRowChanges(_ body: ((_ anObject: ResultType, _ indexPath: IndexPath?, _ type: ResultsChangeType, _ newIndexPath: IndexPath?) -> Void)) {
         // changed rows
         if let changedRows = changedRows {

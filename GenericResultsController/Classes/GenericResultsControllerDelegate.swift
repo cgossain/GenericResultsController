@@ -24,6 +24,9 @@
 
 import Foundation
 
+/// A generic implementation of the results controller delegate.
+///
+/// In order to support generics, this is defined a class object with closure parameters rather than an actual protocol.
 public class GenericResultsControllerDelegate<ResultType: DataStoreResult, RequestType: StoreRequest> {
     /// Returns the results configuration for the given store request.
     ///

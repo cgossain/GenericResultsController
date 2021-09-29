@@ -72,7 +72,11 @@ public class StoreQuery<ResultType: DataStoreResult, RequestType: StoreRequest>:
     ///     - storeRequest: The criteria used to retrieve data from a persistent store.
     ///     - processesChangesImmediately: Indicates if changes should always be processed as soon as they're enqueued.
     ///     - updateHandler: A block that is called when a matching results are inserted, updated, or deleted from the store.
-    public init(storeRequest: RequestType, processesChangesImmediately: Bool = false, updateHandler: @escaping UpdateHandler) {
+    public init(
+        storeRequest: RequestType,
+        processesChangesImmediately: Bool = false,
+        updateHandler: @escaping UpdateHandler
+    ) {
         self.storeRequest = storeRequest
         self.updateHandler = updateHandler
         self.queue.processesChangesImmediately = processesChangesImmediately

@@ -24,6 +24,9 @@
 
 import Foundation
 
+/// A generic implementation of the results controller change tracking protocol.
+///
+/// In order to support generics, this is defined a class object with closure parameters rather than an actual protocol.
 public class GenericResultsControllerChangeTracking<ResultType: DataStoreResult, RequestType: StoreRequest> {
     public typealias DidChangeResultsHandler = (_ controller: GenericResultsController<ResultType, RequestType>, _ difference: ResultsDifference<ResultType, RequestType>) -> Void
     

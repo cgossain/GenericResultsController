@@ -25,9 +25,18 @@
 import Foundation
 import Debounce
 
+/// The enqueue operation type.
 public enum BatchQueueOperationType {
+    /// The type if the object was
+    /// newly inserted into the results set.
     case insert
+    
+    /// The type if the object was
+    /// updated in the results set.
     case update
+    
+    /// The type if the object was
+    /// deleted from the results set.
     case delete
 }
 

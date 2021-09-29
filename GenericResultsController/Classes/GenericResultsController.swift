@@ -24,8 +24,11 @@
 
 import Foundation
 
-/// A controller that you use to manage the results of a query performed against your database and to display data to the user.
-open class GenericResultsController<ResultType: DataStoreResult, RequestType: StoreRequest> {
+/// A controller that you use to manage the results of a query performed against some data store and to display that data to the user.
+///
+/// The controller provides a diffing mechanism that batches changes together such that the diff is only computed on a larger
+/// single block of changes. To receive diff updates, just configure (or set) the `changeTracker` parameter.
+final public class GenericResultsController<ResultType: DataStoreResult, RequestType: StoreRequest> {
     public enum State {
         /// Initial state.
         ///

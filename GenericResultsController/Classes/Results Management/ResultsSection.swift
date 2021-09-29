@@ -24,7 +24,7 @@
 
 import Foundation
 
-/// A fetched results section manages the results of a single section of the entire results set.
+/// A results section manages the results for a single section of the entire results set.
 public class ResultsSection<ResultType: DataStoreResult> {
     /// Name of the section.
     public var name: String { return sectionKeyValue }
@@ -53,7 +53,11 @@ public class ResultsSection<ResultType: DataStoreResult> {
     ///     - sectionKeyValue: The section key value (e.g. the section name).
     ///     - areInIncreasingOrder: A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     ///     - objects: The initial set of objects in the new section. The objects are assumed to be sorted. For internal use.
-    init(sectionKeyValue: String, areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?, objects: [ResultType] = []) {
+    init(
+        sectionKeyValue: String,
+        areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?,
+        objects: [ResultType] = []
+    ) {
         self.sectionKeyValue = sectionKeyValue
         self.areInIncreasingOrder = areInIncreasingOrder
         self.objects = objects

@@ -24,13 +24,13 @@
 
 import Foundation
 
-/// Configuration parameters for managing fetched results.
+/// The configuration parameters for managing fetched results.
 ///
 /// - Note: The filter and sort closures are provided for convenience and are run locally after data has
 ///         been fetched. It would be more efficient to make every effort to utilize any filter and sort parameters
-///         defined on a query inside your store connector implementation instead of leaning on the controller to
-///         do this locally on a larger data set that you might fetch. That being said, if your data set is small you
-///         probably don't need to worry about this.
+///         defined on your store request within your store connector implementation rather than leaning on the
+///         controller to do this locally on a larger data set that you might fetch. That being said, if your data set
+///         is small, you probably don't need to worry about this.
 public struct GenericResultsControllerConfiguration<ResultType: DataStoreResult> {
     /// A block that is run against fetched objects used to determine the section they belong to.
     public var sectionNameProvider: ((ResultType) -> String?)?
