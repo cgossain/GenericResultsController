@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'GenericResultsController'
-  s.version          = '2.2.7'
+  s.version          = '2.2.8'
   s.summary          = 'A generic NSFetchedResultsController replacement for iOS, written in Swift.'
   s.description      = <<-DESC
   The GenericResultsController is an NSFetchedResultsController replacement for iOS, that is used to
