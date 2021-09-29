@@ -42,10 +42,12 @@ open class GenericResultsController<ResultType: DataStoreResult, RequestType: St
     
     // MARK: - Properties
     
-    /// The store instance the controller uses to execute a fetch request against.
+    /// The data store instance the controller interfaces with.
+    ///
+    /// A new queries is executed against this store instance when `performFetch(_:)` is called.
     public let store: DataStore<ResultType, RequestType>
     
-    /// The results of the fetch. Returns `nil` if `performFetch()` hasn't yet been called.
+    /// The results of the fetch. Returns `nil` if `performFetch(_:)` hasn't yet been called.
     public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
 
     /// The sections for the receiver’s fetch results.
@@ -82,7 +84,7 @@ open class GenericResultsController<ResultType: DataStoreResult, RequestType: St
     /// Creates and returns a new fetched results controller.
     ///
     /// - Parameters:
-    ///   - store: The store connector instance which forms the connection to the underlying data store. The store request is executed against this connector instance.
+    ///   - store: The data store instance the controller interfaces with.
     public init(store: DataStore<ResultType, RequestType>) {
         self.store = store
     }
@@ -93,12 +95,12 @@ open class GenericResultsController<ResultType: DataStoreResult, RequestType: St
         stopCurrentQueries()
     }
     
-    /// Executes a new query against the store connector.
+    /// Executes a new query against the data store.
     ///
     /// - Parameters:
     ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
     ///
-    /// - Important: Calling this method invalidates any previous results.
+    /// - Note: Calling this method stops all queries executed against the store by the receiver and invalidates the current results set.
     public func performFetch(storeRequest: RequestType) {
         // update state
         state = .loading
