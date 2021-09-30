@@ -26,7 +26,7 @@ import Foundation
 import CoreData
 import GenericResultsController
 
-extension NSFetchRequest: StoreRequest {
+extension NSFetchRequest: DataStoreRequest {
     
 }
 
@@ -51,7 +51,7 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: DataStore<Entit
         super.init()
     }
     
-    override func execute(_ query: StoreQuery<EntityType, NSFetchRequest<EntityType>>) {
+    override func execute(_ query: DataStoreQuery<EntityType, NSFetchRequest<EntityType>>) {
         super.execute(query)
         
         // perform the query and then call the appropriate `enqueue` method
@@ -89,7 +89,7 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: DataStore<Entit
         try! managedObjectContext.execute(fetch)
     }
 
-    override func stop(_ query: StoreQuery<EntityType, NSFetchRequest<EntityType>>) {
+    override func stop(_ query: DataStoreQuery<EntityType, NSFetchRequest<EntityType>>) {
         super.stop(query)
         if let observer = managedObjectContextChangeObserversByQueryID[query.id] {
             NotificationCenter.default.removeObserver(observer)
@@ -100,7 +100,7 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: DataStore<Entit
 }
 
 extension CoreDataStoreConnector {
-    private func handleContextObjectsDidChangeNotification(_ notification: Notification, query: StoreQuery<EntityType, NSFetchRequest<EntityType>>) {
+    private func handleContextObjectsDidChangeNotification(_ notification: Notification, query: DataStoreQuery<EntityType, NSFetchRequest<EntityType>>) {
         if managedObjectContextChangeObserversByQueryID[query.id] == nil {
             return
         }

@@ -49,12 +49,12 @@ import Foundation
 /// recursively commiting draft changes, but could be used for other purposes too).
 ///
 /// See the example project for an example implementation using CoreData.
-open class DataStore<ResultType: DataStoreResult, RequestType: StoreRequest>: BaseDataStore<ResultType> {
+open class DataStore<ResultType: DataStoreResult, RequestType: DataStoreRequest>: BaseDataStore<ResultType> {
     
     // MARK: - Internal
     
     /// The currently executing queries.
-    private(set) var queriesByID: [AnyHashable : StoreQuery<ResultType, RequestType>] = [:]
+    private(set) var queriesByID: [AnyHashable : DataStoreQuery<ResultType, RequestType>] = [:]
     
     
     // MARK: -  Lifecycle
@@ -77,7 +77,7 @@ open class DataStore<ResultType: DataStoreResult, RequestType: StoreRequest>: Ba
     ///     - query: The query.
     ///
     /// - Important: You must call `super.execute(_:)` at some point in your implementation.
-    open func execute(_ query: StoreQuery<ResultType, RequestType>) {
+    open func execute(_ query: DataStoreQuery<ResultType, RequestType>) {
         queriesByID[query.id] = query
         
         // leaving this as a thought:
@@ -99,7 +99,7 @@ open class DataStore<ResultType: DataStoreResult, RequestType: StoreRequest>: Ba
     ///     - query: The query.
     ///
     /// - Important: You must call `super.stop(_:)` at some point in your implementation.
-    open func stop(_ query: StoreQuery<ResultType, RequestType>) {
+    open func stop(_ query: DataStoreQuery<ResultType, RequestType>) {
         queriesByID[query.id] = nil
     }
     

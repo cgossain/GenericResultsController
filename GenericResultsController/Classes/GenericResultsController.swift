@@ -28,12 +28,13 @@ import Foundation
 ///
 /// The controller provides a diffing mechanism that batches changes together such that the diff is only computed on a larger
 /// single block of changes. To receive diff updates, just configure (or set) the `changeTracker` parameter.
-final public class GenericResultsController<ResultType: DataStoreResult, RequestType: StoreRequest> {
+public final class GenericResultsController<ResultType: DataStoreResult, RequestType: DataStoreRequest> {
     public enum State {
         /// Initial state.
         ///
-        /// The controller starts off in this state and will remain in this
-        /// state until the `performFetch()` method is called.
+        /// The controller starts off in this state and will 
+        /// remain in this state until the `performFetch(_:)` 
+        /// method is called for the first time.
         case initial
         
         /// The controller is actively loading data.
@@ -45,15 +46,30 @@ final public class GenericResultsController<ResultType: DataStoreResult, Request
     
     // MARK: - Properties
     
-    /// The data store instance the controller interfaces with.
+    /// The data store instance.
     ///
-    /// A new queries is executed against this store instance when `performFetch(_:)` is called.
+    /// The controller queries the data store instance to fetch and receive results which it then
+    /// arranges according to the results configuration specified by your delegate.
+    ///
+    /// A new query is executed against this store instance whenever `performFetch(_:)` is called.
     public let store: DataStore<ResultType, RequestType>
     
-    /// The results of the fetch. Returns `nil` if `performFetch(_:)` hasn't yet been called.
+    /// The results of the fetch.
+    ///
+    /// This is the entire set of result objects ordered into a single array according to the
+    /// results configuration specified by your delegate (e.g. first by section, then by
+    /// the `areInIncreasingOrder` predicate).
+    ///
+    /// Returns `nil` if `performFetch(_:)` hasn't been called yet.
     public var fetchedObjects: [ResultType] { return currentFetchedResults?.results ?? [] }
-
-    /// The sections for the receiver’s fetch results.
+    
+    /// The sections.
+    ///
+    /// When `performFetch(_:)` is called, a new query is executed against the `store` instance. Whenever the
+    /// query returns results (e.g. initial or incremental), the controller will arrange these into 1 or more sections according
+    /// to the results configuration specified by your delegate. This is the property you'll primarily interact with when binding
+    /// to your UI. Your table and collections view data source implementations can query this property to determine the
+    /// number of sections and number of objects in each section.
     public var sections: [ResultsSection<ResultType>] { return currentFetchedResults?.sections ?? [] }
     
     /// The receivers' state.
@@ -62,21 +78,21 @@ final public class GenericResultsController<ResultType: DataStoreResult, Request
     
     // MARK: - Properties (Change Handling)
     
-    /// The delegate handling all the results controller delegate callbacks.
+    /// The delegate object that will receive all delegate callbacks.
     public var delegate = GenericResultsControllerDelegate<ResultType, RequestType>()
     
-    /// The delegate handling all the results controller delegate callbacks.
+    /// The delegate object that will receive all diffing callbacks.
     public var changeTracker = GenericResultsControllerChangeTracking<ResultType, RequestType>()
     
     
     // MARK: - Private Properties
     
-    /// Indicates that a new fetch was started and that the results object should be
+    /// A flag that indicates that a new fetch was started and that the results object should be
     /// rebuilt from scratch instead of incrementally adding changes to the current results.
     private var shouldRebuildFetchedResults = false
     
-    /// A reference to the most recently executed query, and any subsequent pagination related queries.
-    private var currentQueriesByID: [String : StoreQuery<ResultType, RequestType>] = [:]
+    /// A reference to all queries executed by the receiver against the data store.
+    private var currentQueriesByID: [String : DataStoreQuery<ResultType, RequestType>] = [:]
     
     /// The current fetched results.
     private var currentFetchedResults: Results<ResultType, RequestType>?
@@ -87,7 +103,7 @@ final public class GenericResultsController<ResultType: DataStoreResult, Request
     /// Creates and returns a new fetched results controller.
     ///
     /// - Parameters:
-    ///   - store: The data store instance the controller interfaces with.
+    ///   - store: The data store instance.
     public init(store: DataStore<ResultType, RequestType>) {
         self.store = store
     }
@@ -103,7 +119,7 @@ final public class GenericResultsController<ResultType: DataStoreResult, Request
     /// - Parameters:
     ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
     ///
-    /// - Note: Calling this method stops all queries executed against the store by the receiver and invalidates the current results set.
+    /// - Note: Calling this method first stops any and all queries previously executed against the data store by the receiver, and invalidates the current results set.
     public func performFetch(storeRequest: RequestType) {
         // update state
         state = .loading
@@ -122,7 +138,7 @@ final public class GenericResultsController<ResultType: DataStoreResult, Request
         let resultsConfiguration = delegate.controllerResultsConfiguration?(self, storeRequest)
         
         // build and execute a new store query
-        let query = StoreQuery<ResultType, RequestType>(storeRequest: storeRequest) { [unowned self] (result) in
+        let query = DataStoreQuery<ResultType, RequestType>(storeRequest: storeRequest) { [unowned self] (result) in
             guard case let .success(success) = result else { return } // return if failed; content did not change
             
             let oldFetchedResults = self.currentFetchedResults ?? Results(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
@@ -148,7 +164,7 @@ final public class GenericResultsController<ResultType: DataStoreResult, Request
             // update state
             self.state = .loaded
 
-            // compute the difference if the change tracker is configured
+            // compute difference if the change tracker is configured
             if let controllerDidChangeResults = self.changeTracker.controllerDidChangeResults {
                 // compute the difference
                 let diff = ResultsDifference(from: oldFetchedResults, to: newFetchedResults, changedObjects: success.updated)
@@ -201,7 +217,7 @@ extension GenericResultsController {
 extension GenericResultsController: CustomStringConvertible {
     public var description: String {
         guard let description = currentFetchedResults?.description else {
-            return "No fetched results. Call `performFetch()`."
+            return "No fetched results. Call `performFetch(_:)`."
         }
         
         return description

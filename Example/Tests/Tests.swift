@@ -9,7 +9,7 @@ struct TestModel: Hashable, InstanceIdentifiable {
     let category: String?
 }
 
-class TestStoreRequest: StoreRequest {
+class TestStoreRequest: DataStoreRequest {
     var fetchLimit: Int = 0
 }
 
@@ -21,7 +21,7 @@ class TestStoreConnector: DataStore<TestModel, TestStoreRequest> {
                            TestModel(timestamp: Date(timeInterval: -7000, since: Date()), category: "Section B"),
                            TestModel(timestamp: Date(timeInterval: -6500, since: Date()), category: "Section C")]
     
-    open override func execute(_ query: StoreQuery<TestModel, TestStoreRequest>) {
+    open override func execute(_ query: DataStoreQuery<TestModel, TestStoreRequest>) {
         results.forEach { query.enqueue($0, as: .insert) }
     }
 }

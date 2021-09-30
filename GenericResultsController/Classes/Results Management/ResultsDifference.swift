@@ -46,7 +46,7 @@ public enum ResultsChangeType: Int {
 /// by a results object) such as the indexes of added, removed, updated, and
 /// rearranged objects. This information is useful for animating UI changes in
 /// response to new data being fetched.
-public struct ResultsDifference<ResultType: DataStoreResult, RequestType: StoreRequest> {
+public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataStoreRequest> {
     public struct Section {
         let idx: Int
         let section: ResultsSection<ResultType>

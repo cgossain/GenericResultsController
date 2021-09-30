@@ -1,5 +1,5 @@
 //
-//  StoreRequest.swift
+//  DataStoreRequest.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -25,7 +25,7 @@
 import Foundation
 
 /// A type that defines criteria used to retrieve data from a persistent store.
-public protocol StoreRequest {
+public protocol DataStoreRequest {
     /// The fetch limit of the fetch request.
     ///
     /// The fetch limit specifies the maximum number of objects that a request should return when executed.

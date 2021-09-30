@@ -25,7 +25,7 @@
 import Foundation
 
 /// A results section manages the results for a single section of the entire results set.
-public class ResultsSection<ResultType: DataStoreResult> {
+public final class ResultsSection<ResultType: DataStoreResult> {
     /// Name of the section.
     public var name: String { return sectionKeyValue }
     

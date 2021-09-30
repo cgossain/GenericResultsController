@@ -1,5 +1,5 @@
 //
-//  StoreQuery.swift
+//  DataStoreQuery.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -24,8 +24,15 @@
 
 import Foundation
 
-/// A long-running query that monitors the store and updates your results whenever matching objects are added, updated, or deleted.
-public class StoreQuery<ResultType: DataStoreResult, RequestType: StoreRequest>: InstanceIdentifiable {
+/// A query where you enqueue results matching the search criteria of the given store request.
+///
+/// This query can be used as a long-running query or can be short-lived. It's up to you to
+/// decide how to implement it. For a long-running query, you can setup database observers
+/// in you data store implementation and then continually enqueue changes whenever objects
+/// matching the search criteria (specified by your `storeRequest`) are added, updated, or
+/// deleted from the data store. For a short-lived query, don't setup any observers, just enqueue
+/// the results once.
+public final class DataStoreQuery<ResultType: DataStoreResult, RequestType: DataStoreRequest>: InstanceIdentifiable {
     /// The sucessful result type.
     public typealias Success = (inserted: [ResultType]?, updated: [ResultType]?, deleted: [ResultType]?)
     
@@ -93,7 +100,7 @@ public class StoreQuery<ResultType: DataStoreResult, RequestType: StoreRequest>:
     
 }
 
-extension StoreQuery {
+extension DataStoreQuery {
     // MARK: -  Resolving Observer Query
     
     /// Proceses all enqueued changes immediately.
