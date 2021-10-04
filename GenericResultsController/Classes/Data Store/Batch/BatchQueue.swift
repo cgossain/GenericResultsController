@@ -40,6 +40,9 @@ public enum BatchQueueOperationType {
     case delete
 }
 
+/// A generic implementation of the batch queue delegate.
+///
+/// In order to support generics, this protocol is defined as a class object with closure parameters rather than an actual Swift protocol.
 public final class BatchQueueDelegate<ResultType: DataStoreResult> {
     /// Called when the controller is about to begin collecting a new batch.
     public var queueWillBeginBatchingChanges: ((_ queue: BatchQueue<ResultType>) -> Void)?

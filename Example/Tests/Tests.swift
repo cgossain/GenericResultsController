@@ -50,7 +50,7 @@ class FetchedResultsControllerTests: XCTestCase {
             self.didChangeContentExpectation.fulfill()
         }
         
-        fetchedResultsController.performFetch(storeRequest: testStoreRequest)
+        fetchedResultsController.performFetch(request: testStoreRequest)
         
         wait(for: [didChangeContentExpectation], timeout: 5)
     }

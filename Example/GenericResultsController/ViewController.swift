@@ -43,7 +43,7 @@ extension GenericResultsControllerConfiguration where ResultType == Event {
 }
 
 class ViewController: UITableViewController {
-    private(set) var fetchedResultsController: GenericResultsController<Event, NSFetchRequest<Event>>!
+    private(set) var resultsController: GenericResultsController<Event, NSFetchRequest<Event>>!
     
     var managedObjectContext: NSManagedObjectContext { return CoreDataManager.shared.persistentContainer.viewContext }
     
@@ -64,31 +64,31 @@ class ViewController: UITableViewController {
             }))
             
             let refreshButton = UIBarButtonItem(systemItem: .refresh, primaryAction: UIAction(handler: { (action) in
-                self.fetchedResultsController.performFetch(storeRequest: fetchRequest)
+                self.resultsController.performFetch(request: fetchRequest)
             }))
             navigationItem.rightBarButtonItems = [addButton, refreshButton]
             
             refreshControl = UIRefreshControl()
             refreshControl?.addAction(UIAction(handler: { (action) in
-                self.fetchedResultsController.performFetch(storeRequest: fetchRequest)
+                self.resultsController.performFetch(request: fetchRequest)
             }), for: .valueChanged)
         }
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         configureResultsController()
         
-        fetchedResultsController.performFetch(storeRequest: fetchRequest)
+        resultsController.performFetch(request: fetchRequest)
     }
     
     private func configureResultsController() {
-        fetchedResultsController = GenericResultsController(store: CoreDataStoreConnector(managedObjectContext: self.managedObjectContext))
+        resultsController = GenericResultsController(store: CoreDataStore(managedObjectContext: self.managedObjectContext))
         
-        fetchedResultsController.delegate.controllerResultsConfiguration = { (controller, request) in
+        resultsController.delegate.controllerResultsConfiguration = { (controller, request) in
             return .makeDefaultConfiguration()
         }
         
         // table view diffing
-        fetchedResultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in
+        resultsController.changeTracker.controllerDidChangeResults = { [unowned self] (controller, difference) in
             self.tableView.performBatchUpdates({
                 // apply section changes
                 difference.enumerateSectionChanges { (section, sectionIndex, type) in
@@ -121,11 +121,11 @@ class ViewController: UITableViewController {
             self.refreshControl?.endRefreshing()
         }
         
-        fetchedResultsController.delegate.controllerWillChangeContent = { (controller) in
+        resultsController.delegate.controllerWillChangeContent = { (controller) in
             print("Will change content.")
         }
 
-        fetchedResultsController.delegate.controllerDidChangeContent = { (controller) in
+        resultsController.delegate.controllerDidChangeContent = { (controller) in
             print("Did change content.")
 //            self.tableView.reloadData()
 //            self.refreshControl?.endRefreshing()
@@ -138,27 +138,27 @@ class ViewController: UITableViewController {
     let cellIdentifier = "cellIdentifier"
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return fetchedResultsController.sections.count
+        return resultsController.sections.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return fetchedResultsController.sections[section].numberOfObjects
+        return resultsController.sections[section].numberOfObjects
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-        let obj = try! fetchedResultsController.object(at: indexPath)
+        let obj = try! resultsController.object(at: indexPath)
         configureCell(cell, with: obj)
         return cell
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return fetchedResultsController.sections[section].name
+        return resultsController.sections[section].name
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let obj = try! fetchedResultsController.object(at: indexPath)
+            let obj = try! resultsController.object(at: indexPath)
             let context = managedObjectContext
             context.delete(obj)
             CoreDataManager.shared.saveContext()

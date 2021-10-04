@@ -25,11 +25,39 @@
 import Foundation
 
 /// A type that defines criteria used to retrieve data from a persistent store.
+///
+/// This protocol provides a high level type for request objects to conform to.
+///
+/// At this time it only provides a single paramter for a fetch limit, but provides the basis for
+/// expanding the requirements of request types in future versions of this library.
+///
+/// Also, the benefit of defining the request type as a protocol rather than an abstract class is
+/// that since your underlying data store will most likely have its own request type, you could
+/// simply extend the native request type by making it conform to this protocol rather than
+/// creating a redundant wrapper object.
+///
+/// For example, CoreData has its own `NSFetchRequest` which is an object that defines
+/// the search criteria used to retrieve data within the context of CoreData. Therefore instead
+/// of creating a whole new request object, you could simply extend `NSFetchRequest` such
+/// that it conform to `DataStoreRequest`.
+///
+/// In this example, we extend CoreData's native `NSFetchRequest` to conform to
+/// the `DataStoreRequest` protocol which allows us to use it as the request type.
+///
+///     extension NSFetchRequest: DataStoreRequest {
+///
+///     }
+///
+/// If your "data store" interacts with an API, you'll most likely create your own custom request
+/// object that conforms to this protocol.
 public protocol DataStoreRequest {
     /// The fetch limit of the fetch request.
     ///
-    /// The fetch limit specifies the maximum number of objects that a request should return when executed.
+    /// The fetch limit specifies the maximum number of objects that a request should return
+    /// when executed. You should do your best to respect this value when querying your
+    /// underlying data store, however if you don't, then the results controller internally caps
+    /// results at this limit.
     ///
-    /// A value of 0 indicates no maximum limit.
+    /// A value of 0 indicates no maximum limit (provided by the default implementation).
     var fetchLimit: Int { get set }
 }

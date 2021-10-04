@@ -24,10 +24,10 @@
 
 import Foundation
 
-/// A batch groups a set of changes together such that they can be tracked as a single block of changes.
+/// A batch object groups a set of changes together such that they can be tracked as a single block of changes.
 ///
-/// You keep adding changes to the batch and then call `flush()` when done to compute the
-/// deduplicated changes out of the batch.
+/// You keep enqueuing changes into the batch and then eventually when done, you call the `flush()` method
+/// to compute and return the deduplicated changes out of the batch.
 public final class Batch<ResultType: DataStoreResult>: InstanceIdentifiable {
     /// The dedpuplicated set of changes in the batch.
     public struct Digest {

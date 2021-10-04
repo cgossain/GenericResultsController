@@ -26,7 +26,7 @@ import Foundation
 
 /// A generic implementation of the results controller delegate.
 ///
-/// In order to support generics, this is defined a class object with closure parameters rather than an actual protocol.
+/// In order to support generics, this protocol is defined as a class object with closure parameters rather than an actual Swift protocol.
 public final class GenericResultsControllerDelegate<ResultType: DataStoreResult, RequestType: DataStoreRequest> {
     /// Returns the results configuration for the given store request.
     ///

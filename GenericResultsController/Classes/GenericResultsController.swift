@@ -24,10 +24,10 @@
 
 import Foundation
 
-/// A controller that you use to manage the results of a query performed against some data store and to display that data to the user.
+/// A controller that you use to manage the results of a query performed against a data store and to display that data to the user.
 ///
-/// The controller provides a diffing mechanism that batches changes together such that the diff is only computed on a larger
-/// single block of changes. To receive diff updates, just configure (or set) the `changeTracker` parameter.
+/// The results controller provides a diffing mechanism that batches changes together such that the diff is only computed on a
+/// larger blocks of changes. To receive diff updates just configure (or set) the `changeTracker` parameter.
 public final class GenericResultsController<ResultType: DataStoreResult, RequestType: DataStoreRequest> {
     public enum State {
         /// Initial state.
@@ -49,9 +49,9 @@ public final class GenericResultsController<ResultType: DataStoreResult, Request
     /// The data store instance.
     ///
     /// The controller queries the data store instance to fetch and receive results which it then
-    /// arranges according to the results configuration specified by your delegate.
+    /// arranges into sections according to the results configuration specified by your delegate.
     ///
-    /// A new query is executed against this store instance whenever `performFetch(_:)` is called.
+    /// - Note: A new query is executed against this store instance whenever `performFetch(_:)` is called.
     public let store: DataStore<ResultType, RequestType>
     
     /// The results of the fetch.
@@ -117,10 +117,10 @@ public final class GenericResultsController<ResultType: DataStoreResult, Request
     /// Executes a new query against the data store.
     ///
     /// - Parameters:
-    ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
+    ///   - request: The search criteria used to retrieve data from a persistent store.
     ///
     /// - Note: Calling this method first stops any and all queries previously executed against the data store by the receiver, and invalidates the current results set.
-    public func performFetch(storeRequest: RequestType) {
+    public func performFetch(request: RequestType) {
         // update state
         state = .loading
         
@@ -135,18 +135,18 @@ public final class GenericResultsController<ResultType: DataStoreResult, Request
         stopCurrentQueries()
         
         // get the results configuration
-        let resultsConfiguration = delegate.controllerResultsConfiguration?(self, storeRequest)
+        let resultsConfiguration = delegate.controllerResultsConfiguration?(self, request)
         
         // build and execute a new store query
-        let query = DataStoreQuery<ResultType, RequestType>(storeRequest: storeRequest) { [unowned self] (result) in
+        let query = DataStoreQuery<ResultType, RequestType>(storeRequest: request) { [unowned self] (result) in
             guard case let .success(success) = result else { return } // return if failed; content did not change
             
-            let oldFetchedResults = self.currentFetchedResults ?? Results(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
+            let oldFetchedResults = self.currentFetchedResults ?? Results(storeRequest: request, resultsConfiguration: resultsConfiguration)
             
             var newFetchedResults: Results<ResultType, RequestType>!
             if self.shouldRebuildFetchedResults {
                 // add incremental changes starting from an empty results object
-                newFetchedResults = Results(storeRequest: storeRequest, resultsConfiguration: resultsConfiguration)
+                newFetchedResults = Results(storeRequest: request, resultsConfiguration: resultsConfiguration)
                 newFetchedResults.apply(inserted: success.inserted, updated: success.updated, deleted: success.deleted)
                 
                 // fetched results have been rebuilt

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		10006EAF2703A87E004ECF5E /* ExampleModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 10006EAB2703A87E004ECF5E /* ExampleModel.xcdatamodeld */; };
-		10006EB02703A87E004ECF5E /* CoreDataStoreConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10006EAD2703A87E004ECF5E /* CoreDataStoreConnector.swift */; };
+		10006EB02703A87E004ECF5E /* CoreDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10006EAD2703A87E004ECF5E /* CoreDataStore.swift */; };
 		10006EB12703A87E004ECF5E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10006EAE2703A87E004ECF5E /* CoreDataManager.swift */; };
 		10006EB52703A887004ECF5E /* Event+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10006EB32703A887004ECF5E /* Event+CoreDataClass.swift */; };
 		10006EB62703A887004ECF5E /* Event+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10006EB42703A887004ECF5E /* Event+CoreDataProperties.swift */; };
@@ -35,7 +35,7 @@
 /* Begin PBXFileReference section */
 		0698641C05C38EA0B5141931 /* Pods-GenericResultsController_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GenericResultsController_Tests.debug.xcconfig"; path = "Target Support Files/Pods-GenericResultsController_Tests/Pods-GenericResultsController_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		10006EAC2703A87E004ECF5E /* ExampleModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ExampleModel.xcdatamodel; sourceTree = "<group>"; };
-		10006EAD2703A87E004ECF5E /* CoreDataStoreConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStoreConnector.swift; sourceTree = "<group>"; };
+		10006EAD2703A87E004ECF5E /* CoreDataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStore.swift; sourceTree = "<group>"; };
 		10006EAE2703A87E004ECF5E /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		10006EB32703A887004ECF5E /* Event+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataClass.swift"; sourceTree = "<group>"; };
 		10006EB42703A887004ECF5E /* Event+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -124,7 +124,7 @@
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				10006EAE2703A87E004ECF5E /* CoreDataManager.swift */,
-				10006EAD2703A87E004ECF5E /* CoreDataStoreConnector.swift */,
+				10006EAD2703A87E004ECF5E /* CoreDataStore.swift */,
 				10006EB22703A887004ECF5E /* Model */,
 				10006EAB2703A87E004ECF5E /* ExampleModel.xcdatamodeld */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -360,7 +360,7 @@
 			files = (
 				10006EAF2703A87E004ECF5E /* ExampleModel.xcdatamodeld in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
-				10006EB02703A87E004ECF5E /* CoreDataStoreConnector.swift in Sources */,
+				10006EB02703A87E004ECF5E /* CoreDataStore.swift in Sources */,
 				10006EB62703A887004ECF5E /* Event+CoreDataProperties.swift in Sources */,
 				10006EB12703A87E004ECF5E /* CoreDataManager.swift in Sources */,
 				10006EB52703A887004ECF5E /* Event+CoreDataClass.swift in Sources */,

@@ -124,7 +124,7 @@ final class Results<ResultType: DataStoreResult, RequestType: DataStoreRequest> 
     /// Creates and returns a new results objects.
     ///
     /// - Parameters:
-    ///   - storeRequest: The search criteria used to retrieve data from a persistent store.
+    ///   - request: The search criteria used to retrieve data from a persistent store.
     ///   - resultsConfiguration: The results configuration.
     ///   - fetchedResults: The fetched results whose contents should be added to the receiver.
     init(

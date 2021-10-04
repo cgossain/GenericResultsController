@@ -1,5 +1,5 @@
 //
-//  CoreDataStoreConnector.swift
+//  CoreDataStore.swift
 //
 //  Copyright (c) 2021 Christian Gossain
 //
@@ -34,14 +34,16 @@ extension NSManagedObject: InstanceIdentifiable {
     public var id: String { return self.objectID.uriRepresentation().absoluteString }
 }
 
-final class CoreDataStoreConnector<EntityType: NSManagedObject>: DataStore<EntityType, NSFetchRequest<EntityType>> {
+final class CoreDataStore<EntityType: NSManagedObject>: DataStore<EntityType, NSFetchRequest<EntityType>> {
     
+    /// The managed object context.
     let managedObjectContext: NSManagedObjectContext
     
     
     // MARK: - Private Properties
     
-    private var managedObjectContextChangeObserversByQueryID: [AnyHashable: Any] = [:]
+    /// The notification observers keyed by each unique query instance.
+    private var observersByQueryID: [AnyHashable: Any] = [:]
     
     
     // MARK: - StoreConnector
@@ -54,58 +56,63 @@ final class CoreDataStoreConnector<EntityType: NSManagedObject>: DataStore<Entit
     override func execute(_ query: DataStoreQuery<EntityType, NSFetchRequest<EntityType>>) {
         super.execute(query)
         
-        // perform the query and then call the appropriate `enqueue` method
-        // when data becomes available
+        // perform the query and then call the query's `enqueue` method when
+        // data becomes available
         //
-        // note if your database supports observing changes to the executed
-        // query you can setup your observers here and then call the
-        // appropriate `enqueue` method on the superclass; this would trigger
-        // realtime updates to the displayed results
-
-        // in this example we're executing the core data fetch request, and then
-        // observing the for `NSManagedObjectContextObjectsDidChange` notification
+        // note if your database supports observing changes to the
+        // executed query you can setup observers here and then call
+        // the query's `enqueue` method to add incremental changes
+        // to the initial fetch results; these would then be picked
+        // up by the results controller providing realtime updates to
+        // the displayed results
+        //
+        // in this example we're executing a core data fetch request, and
+        // then observing the for `NSManagedObjectContextObjectsDidChange` notification
         // to detect further incrementation changes
 
         // note, realistically you would use NSFetchedResultsController if you're
         // using CoreData.
         
-        managedObjectContextChangeObserversByQueryID[query.id] = NotificationCenter.default.addObserver(
+        // observe incremental changes (since the last save)
+        observersByQueryID[query.id] = NotificationCenter.default.addObserver(
             forName: .NSManagedObjectContextObjectsDidChange,
             object: self.managedObjectContext,
             queue: nil,
             using: { [unowned self] (note) in
+                // enqueue incremental changes
                 self.handleContextObjectsDidChangeNotification(note, query: query)
             })
         
-        let fetch = NSAsynchronousFetchRequest(fetchRequest: query.storeRequest) { (result) in
-            if self.managedObjectContextChangeObserversByQueryID[query.id] == nil {
+        // enqueue initial fetch results
+        let fetch = NSAsynchronousFetchRequest(fetchRequest: query.request) { [unowned self] (result) in
+            if self.observersByQueryID[query.id] == nil {
                 return
             }
             
+            // enqueue each result into the query
             guard let objects = result.finalResult else { return }
             objects.forEach { query.enqueue($0, as: .insert) }
         }
-
         try! managedObjectContext.execute(fetch)
     }
 
     override func stop(_ query: DataStoreQuery<EntityType, NSFetchRequest<EntityType>>) {
         super.stop(query)
-        if let observer = managedObjectContextChangeObserversByQueryID[query.id] {
+        if let observer = observersByQueryID[query.id] {
             NotificationCenter.default.removeObserver(observer)
-            managedObjectContextChangeObserversByQueryID[query.id] = nil
+            observersByQueryID[query.id] = nil
         }
     }
     
 }
 
-extension CoreDataStoreConnector {
+extension CoreDataStore {
     private func handleContextObjectsDidChangeNotification(_ notification: Notification, query: DataStoreQuery<EntityType, NSFetchRequest<EntityType>>) {
-        if managedObjectContextChangeObserversByQueryID[query.id] == nil {
+        if observersByQueryID[query.id] == nil {
             return
         }
         
-        let entityName = query.storeRequest.entityName!
+        let entityName = query.request.entityName!
 
         // enqueue insertions of `EntityType`
         let insertedObjs = notification.userInfo?[NSInsertedObjectsKey] as? Set<EntityType> ?? []
