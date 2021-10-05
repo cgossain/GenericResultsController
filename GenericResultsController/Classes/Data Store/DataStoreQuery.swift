@@ -83,11 +83,11 @@ public final class DataStoreQuery<ResultType: DataStoreResult, RequestType: Data
     ///     - processesChangesImmediately: Indicates if changes should always be processed as soon as they're enqueued.
     ///     - updateHandler: A block that is called when a matching results are inserted, updated, or deleted from the store.
     public init(
-        storeRequest: RequestType,
+        request: RequestType,
         processesChangesImmediately: Bool = false,
         updateHandler: @escaping UpdateHandler
     ) {
-        self.request = storeRequest
+        self.request = request
         self.updateHandler = updateHandler
         self.queue.processesChangesImmediately = processesChangesImmediately
         self.queue.delegate.queueDidFinishBatchingChanges = { [unowned self] (queue, batch) in

@@ -138,7 +138,7 @@ public final class GenericResultsController<ResultType: DataStoreResult, Request
         let resultsConfiguration = delegate.controllerResultsConfiguration?(self, request)
         
         // build and execute a new store query
-        let query = DataStoreQuery<ResultType, RequestType>(storeRequest: request) { [unowned self] (result) in
+        let query = DataStoreQuery<ResultType, RequestType>(request: request) { [unowned self] (result) in
             guard case let .success(success) = result else { return } // return if failed; content did not change
             
             let oldFetchedResults = self.currentFetchedResults ?? Results(storeRequest: request, resultsConfiguration: resultsConfiguration)
