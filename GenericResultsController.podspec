@@ -1,14 +1,16 @@
 Pod::Spec.new do |s|
   s.name             = 'GenericResultsController'
-  s.version          = '2.2.11'
+  s.version          = '2.2.12'
   s.summary          = 'A generic NSFetchedResultsController replacement for iOS, written in Swift.'
   s.description      = <<-DESC
   The GenericResultsController is an NSFetchedResultsController replacement for iOS, that is used to
-  manage the results of any data fetch from any data store and to display that data to the user. The
-  controller provides an abstracted API that is intentionally simple and makes no assumptions
-  about how you manage your connection to the underlying data store. The goal of this project is
-  to provide a data controller with similar functionality to NSFetchedResultsController but with
-  the ability to interface with any data set from any data store using any kind of data model.
+  manage the results of any data fetch from any data source and to display that data to the user. The
+  controller provides an abstracted API that is intentionally simple and makes no assumptions about 
+  how you manage your connection to the underlying data store. It also provides strong support for Swift
+  generics by enabling you to customize the request and result types. The goal of this project is to 
+  provide a data controller with similar functionality to NSFetchedResultsController but with the core 
+  functionality (e.g. sectionning and diffing) abstracted out, giving you the ability to interface with 
+  any data source using any kind of data model.
                        DESC
   s.homepage         = 'https://github.com/cgossain/GenericResultsController'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
