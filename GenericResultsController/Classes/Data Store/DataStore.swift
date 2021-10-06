@@ -51,10 +51,10 @@ import Foundation
 /// See the example project for an example implementation using CoreData.
 open class DataStore<ResultType: DataStoreResult, RequestType: DataStoreRequest>: BaseDataStore<ResultType> {
     
-    // MARK: - Internal
+    // MARK: - Properties
     
     /// The currently executing queries.
-    private(set) var queriesByID: [AnyHashable : DataStoreQuery<ResultType, RequestType>] = [:]
+    public private(set) var queriesByID: [AnyHashable : DataStoreQuery<ResultType, RequestType>] = [:]
     
     
     // MARK: -  Lifecycle
