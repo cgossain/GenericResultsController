@@ -101,7 +101,7 @@ override func execute(_ query: DataStoreQuery<EntityType, NSFetchRequest<EntityT
 
 `DataStoreRequest` is a type that *request* objects must conform to and its purpose is to define criteria used to retrieve data from a persistent store.
 
-A request object can be anything that conforms to the `DataStoreRequest` protocol, which itself has very minimal requirements. The core idea here is that a request object should be something that can you inspect within your data store implementation such that you're able to gather criteria and build a query to your underlying data source.
+A request object can be anything that conforms to the `DataStoreRequest` protocol which itself has very minimal requirements. The core idea here is that a request object should be something that can be inspected within your data store implementation to gather criteria and build a query to your underlying data source.
 
 ### InstanceIdentifiable
 
