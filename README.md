@@ -189,7 +189,7 @@ I'll be linking to projects that use this library in the future.
 
 ## Author
 
-cgossain, cgossain@gmail.com
+Christian Gossain, cgossain@gmail.com
 
 ## License
 
