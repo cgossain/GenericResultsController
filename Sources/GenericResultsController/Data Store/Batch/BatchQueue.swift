@@ -88,30 +88,32 @@ public final class BatchQueue<ResultType: DataStoreResult> {
 }
 
 extension BatchQueue {
-    /// Adds the given object to the batch using the specified batch operation.
+    /// Adds the given objects to the batch using the specified batch operation.
     ///
     /// - Parameters:
-    ///     - obj: The object to enqueue into the batch.
+    ///     - results: The objects to enqueue into the batch.
     ///     - op: The type of enqueue operation.
     ///     - batchID: An identifier that associates enqueued changes with a particular batch.
-    public func enqueue(_ obj: ResultType, as op: BatchQueueOperationType, batchID: String) {
-        // notify the delegate if we're about to start a new batch
+    public func enqueue(_ results: [ResultType], as op: BatchQueueOperationType, batchID: String) {
+        // notify the delegate if we're
+        // about to start a new batch
         if !isBatching {
             delegate.queueWillBeginBatchingChanges?(self)
         }
         
-        // get the batch associated with the requested fetch handle
+        // get the batch associated with the
+        // requested fetch handle
         let batch = batchByID[batchID] ?? Batch(id: batchID)
         batchByID[batchID] = batch
         
         // enqueue writes to the current batch
         switch op {
         case .insert:
-            batch.insert(obj)
+            results.forEach { batch.insert($0) }
         case .update:
-            batch.update(obj)
+            results.forEach { batch.update($0) }
         case .delete:
-            batch.delete(obj)
+            results.forEach { batch.delete($0) }
         }
         
         // throttle the flush
@@ -137,7 +139,8 @@ extension BatchQueue {
     ///
     /// - Note: This method is not useful if you've set `processesChangesImmediately` to `true`.
     public func processPendingChanges(batchID: String) {
-        // create an empty batch so that the flush call triggers the delegate
+        // create an empty batch so that the
+        // flush call triggers the delegate
         if batchByID[batchID] == nil {
             batchByID[batchID] = Batch(id: batchID)
         }

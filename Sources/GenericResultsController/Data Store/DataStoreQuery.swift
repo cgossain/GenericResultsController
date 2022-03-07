@@ -106,6 +106,11 @@ public final class DataStoreQuery<ResultType: DataStoreResult, RequestType: Data
 extension DataStoreQuery {
     // MARK: -  Resolving Observer Query
     
+    /// Adds the given objects to the query using the given operation type.
+    public func enqueue(_ results: [ResultType], as op: BatchQueueOperationType) {
+        queue.enqueue(results, as: op, batchID: self.id)
+    }
+    
     /// Proceses all enqueued changes immediately.
     ///
     /// You should use this method if you've enqueued changes driven by user action (e.g. user deleted an item).
@@ -113,11 +118,6 @@ extension DataStoreQuery {
     /// - Note: In the event there are no results for the query, you can still use this method to trigger the update handler; it'll just report zero changes.
     public func processPendingChanges() {
         queue.processPendingChanges(batchID: self.id)
-    }
-    
-    /// Enqueues the object with the given operation type.
-    public func enqueue(_ obj: ResultType, as op: BatchQueueOperationType) {
-        queue.enqueue(obj, as: op, batchID: self.id)
     }
     
     /// Rejects the query with the given error.
