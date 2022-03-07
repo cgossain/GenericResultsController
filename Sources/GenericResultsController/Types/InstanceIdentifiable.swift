@@ -26,6 +26,10 @@ import Foundation
 
 /// A backwards compatible version of Swift's new `Identifiable` protocol.
 public protocol InstanceIdentifiable {
+    /// A type representing the stable identity of the entity associated with
+    /// an instance.
+    associatedtype ID : Hashable
+
     /// The stable identity of the entity associated with this instance.
-    var id: String { get }
+    var id: Self.ID { get }
 }
