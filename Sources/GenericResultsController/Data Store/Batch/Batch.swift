@@ -91,22 +91,22 @@ public final class Batch<ResultType: DataStoreResult>: InstanceIdentifiable {
         var dedupedUpd = rawUpdated
         var dedupedDel = rawDeleted
         
-        // deduplicate insersions
+        // deduplicate insertions
         for (insertedKey, _) in rawInserted {
-            // if the inserted object is also deleted in the
-            // same batch, these events cancel each other out
-            // and the effective change is that "nothing hapenned" so
-            // we can clear this object out of the batch entirely
+            // if an object is inserted and deleted in the
+            // same batch, the net effect is that nothing
+            // actually happened and can therefore just
+            // remove the object from the batch
             if rawDeleted[insertedKey] != nil {
                 dedupedIns[insertedKey] = nil
                 dedupedUpd[insertedKey] = nil
                 dedupedDel[insertedKey] = nil
             }
             
-            // if the inserted object is also updated in the
-            // same batch, the effective change in the
-            // batch is that "the newer version of the object
-            // was inserted"
+            // if an object is inserted and updated in the
+            // same batch, the net effect is that the newer
+            // version was inserted; let's move the updated
+            // version to our insertions set
             if let updatedObj = dedupedUpd[insertedKey] {
                 dedupedIns[insertedKey] = updatedObj
                 dedupedUpd[insertedKey] = nil
@@ -115,10 +115,11 @@ public final class Batch<ResultType: DataStoreResult>: InstanceIdentifiable {
         
         // deduplicate updates
         for (updatedKey, _) in rawUpdated {
-            // if the updated object is also deleted in the
-            // same batch, the effective change in the
-            // batch is that "the object was deleted",
-            // there's no point in reporting the update
+            // if an object is update and deleted in the
+            // same batch, the net effect is that we've
+            // deleted the object and therfore is no
+            // point is reporting the update; let's
+            // remove it from the updated set
             if rawDeleted[updatedKey] != nil {
                 dedupedUpd[updatedKey] = nil
             }
@@ -128,7 +129,7 @@ public final class Batch<ResultType: DataStoreResult>: InstanceIdentifiable {
         return Digest(inserted: Array(dedupedIns.values), updated: Array(dedupedUpd.values), deleted: Array(dedupedDel.values))
     }
     
-    /// Clears all tracked changes.
+    /// Clears all tracked changes from the batch.
     public func reset() {
         rawInserted.removeAll()
         rawUpdated.removeAll()
