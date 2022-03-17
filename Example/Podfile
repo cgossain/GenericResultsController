@@ -1,6 +1,5 @@
+platform :ios, '12.0'
 use_frameworks!
-
-platform :ios, '12.4'
 
 target 'GenericResultsController_Example' do
   pod 'GenericResultsController', :path => '../'

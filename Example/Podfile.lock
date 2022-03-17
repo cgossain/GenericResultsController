@@ -1,7 +1,7 @@
 PODS:
   - Debounce (1.4.0)
   - Dwifft (0.9)
-  - GenericResultsController (2.2.12):
+  - GenericResultsController (2.3.0):
     - Debounce
     - Dwifft (= 0.9)
 
@@ -20,8 +20,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Debounce: b6ede9b54dc58daa059233012c7f54d9ddefda05
   Dwifft: 42912068ed2a8146077d1a1404df18625bd086e1
-  GenericResultsController: c055cdccd88296501595cfca47e1e27bc2f42008
+  GenericResultsController: 0a2d9d967c5c251abe03f095873ae27ef12841d7
 
-PODFILE CHECKSUM: 0bb4f69a14b19e437cb1d4ff1e985f96e171a4aa
+PODFILE CHECKSUM: 09a9ea13ff1ebb097a290a7c87b8b2956021a419
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
