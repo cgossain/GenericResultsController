@@ -14,7 +14,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/cgossain/Debounce.git", .upToNextMajor(from: "1.5.0")),
-        .package(url: "https://github.com/jflinter/Dwifft", revision: "6fec2bc0246091b3e17a9d42e722fb98e05ac3ff"),
+        .package(url: "https://github.com/cgossain/Dwifft.git", .upToNextMajor(from: "0.10.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
