@@ -91,7 +91,7 @@ final class CoreDataStore<EntityType: NSManagedObject>: DataStore<EntityType, NS
             
             // enqueue each result into the query
             guard let objects = result.finalResult else { return }
-            objects.forEach { query.enqueue($0, as: .insert) }
+            query.enqueue(objects, as: .insert)
         }
         try! managedObjectContext.execute(fetch)
     }
@@ -116,16 +116,16 @@ extension CoreDataStore {
 
         // enqueue insertions of `EntityType`
         let insertedObjs = notification.userInfo?[NSInsertedObjectsKey] as? Set<EntityType> ?? []
-        insertedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue($0, as: .insert) })
+        query.enqueue(insertedObjs.filter({ $0.entity.name == entityName }), as: .insert)
 
         // enqueue updates of `EntityType`
         let updatedObjs = notification.userInfo?[NSUpdatedObjectsKey] as? Set<EntityType> ?? []
-        updatedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue($0, as: .update) })
-
+        query.enqueue(updatedObjs.filter({ $0.entity.name == entityName }), as: .update)
+        
         // enqueue deletions of `EntityType`
         let deletedObjs = notification.userInfo?[NSDeletedObjectsKey] as? Set<EntityType> ?? []
-        deletedObjs.filter({ $0.entity.name == entityName }).forEach({ query.enqueue($0, as: .delete) })
-
+        query.enqueue(deletedObjs.filter({ $0.entity.name == entityName }), as: .delete)
+        
         // process immediately
         query.processPendingChanges()
     }
