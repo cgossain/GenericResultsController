@@ -1,7 +1,7 @@
 //
 //  CoreDataManager.swift
 //
-//  Copyright (c) 2021 Christian Gossain
+//  Copyright (c) 2022 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal

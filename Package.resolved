@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/cgossain/Debounce.git",
       "state" : {
-        "revision" : "69b4a0d7e3f6a19a7bf57bba48bab264dd6ead92",
-        "version" : "1.5.0"
+        "revision" : "7f69673df389054da8bdaf115d8d6add5856ffe8",
+        "version" : "1.5.1"
       }
     },
     {

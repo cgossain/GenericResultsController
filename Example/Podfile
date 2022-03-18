@@ -4,9 +4,5 @@ use_frameworks!
 target 'GenericResultsController_Example' do
   pod 'GenericResultsController', :path => '../'
 
-  target 'GenericResultsController_Tests' do
-    inherit! :search_paths
-
-    
-  end
+  
 end

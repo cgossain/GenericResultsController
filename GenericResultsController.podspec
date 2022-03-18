@@ -19,6 +19,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '12.0'
   s.swift_version = '5.0'
   s.source_files = 'Sources/GenericResultsController/**/*'
-  s.dependency 'Debounce'
+  s.dependency 'Debounce', '~> 1.5.1'
   s.dependency 'Dwifft', '0.9'
 end

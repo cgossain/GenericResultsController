@@ -22,7 +22,7 @@
   "source_files": "Sources/GenericResultsController/**/*",
   "dependencies": {
     "Debounce": [
-
+      "~> 1.5.1"
     ],
     "Dwifft": [
       "0.9"

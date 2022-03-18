@@ -1,7 +1,7 @@
 //
 //  SearchThrottler.swift
 //
-//  Copyright (c) 2021 Christian Gossain
+//  Copyright (c) 2022 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
+import UIKit
 
 /// An object that implements the `UISearchResultsUpdating` protocol and can be used to debounce search updates.
 public final class SearchThrottler: NSObject {

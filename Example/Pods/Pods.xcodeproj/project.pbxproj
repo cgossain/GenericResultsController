@@ -11,15 +11,14 @@
 		0BF579F1EBBAD0A7852F6769141E14BB /* GenericResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2556837BC33299E7F32848DC99D2B505 /* GenericResultsController.swift */; };
 		10CA1F79878A0D626F4630A837929D82 /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7635C4582D137BC42FDD6A222CA61F1 /* Results.swift */; };
 		13029F05E8981CF61CF3A03531B037AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		1C8DF3BFC30C70592DB2639C154E6B2A /* Pods-GenericResultsController_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CD5EA7F0FACD26DC3071852C1CACAFCB /* Pods-GenericResultsController_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		19FB754BE2A20F3E0CB7FF9D64246106 /* SearchThrottler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDF1B493E9436F3C4122462100B1CFA /* SearchThrottler.swift */; };
+		1C8DF3BFC30C70592DB2639C154E6B2A /* Pods-GenericResultsController_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 08C7EE602ECE701A962E423E454F07DA /* Pods-GenericResultsController_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E6B4F30A5A3C1BF73AE5BB4A5C55734 /* GenericResultsControllerChangeTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF361C4AA141ADF8F417A73EFFE5A43 /* GenericResultsControllerChangeTracking.swift */; };
-		22880901CA243EEED89808FC740E682D /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47AB57815681B0E9BF85041F5308ED67 /* Throttler.swift */; };
 		2444B2534755CFC974C2F0E43A4924F5 /* BatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D8FEC4814AD3081D639D28B595DF5 /* BatchQueue.swift */; };
 		38D415405DE7FA3D1EC9155876830505 /* Dwifft-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B70BDA8590D38B0C0D9D7EAC456CED3 /* Dwifft-dummy.m */; };
 		3E1760016438650213C63D2DC97225ED /* DiffStep+Inserted.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25531152DD8560A20C42BFC3A7EB424 /* DiffStep+Inserted.swift */; };
-		419094045D524A00EF90F9A3AF2D5E0C /* Pods-GenericResultsController_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = CBCB115181BB41724FA64522113B80F3 /* Pods-GenericResultsController_Tests-dummy.m */; };
 		4E9D81B867C92975FFFAFB73ADC9578A /* Array+InsertionIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420598FADD707CC5DA62A793FFDED057 /* Array+InsertionIndex.swift */; };
-		512089AAACCE6066EAE683A9242F8889 /* Debounce-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B3B4431355EF749548CE2F3023E5806F /* Debounce-dummy.m */; };
+		512089AAACCE6066EAE683A9242F8889 /* Debounce-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = FBFE36CE1BE0C8AD888B6D8192614BC4 /* Debounce-dummy.m */; };
 		539102EC599D603CBCB010ECFD377896 /* SectionedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578B30DA52F58EE43BF5A6FDD1587837 /* SectionedValues.swift */; };
 		5452B4FABD84F3FF355618E78EB04E33 /* BaseDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C69C1F0DB73B686430EFEAC1914740 /* BaseDataStore.swift */; };
 		5C348FFDC4A65329B36DBF955128C23D /* DataStoreResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2015B31C701E4DE5CC4A560450DE015 /* DataStoreResult.swift */; };
@@ -27,26 +26,24 @@
 		80941C2A1A7630453AD462693F028A2D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		828F7D8EF238A161AB99B297A0698D0C /* Batch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7D28C955D431D38558C61F679AAFC5 /* Batch.swift */; };
 		864ACD0472432133E2456D12751FAEA7 /* Dwifft+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1CE6455EF6E4745149B1FFDEB94FD3 /* Dwifft+UIKit.swift */; };
-		884CFD98C4A2C523DC152E858685B717 /* SearchThrottler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB1EAAB66C14E6D8E875B394C3C5D61 /* SearchThrottler.swift */; };
 		8BF4E795318337579BE52416EAE4387E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		8ED6DC7CB3FBF660CB607A3064B2D319 /* GenericResultsController-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B47389D85E64DA270921F0717F78E00E /* GenericResultsController-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		90A41D42BF230D99169BB0FEFEDF5B64 /* GenericResultsController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EB4F275C0322AD6F6FE78A0C7FCC7E /* GenericResultsController-dummy.m */; };
 		A78EEA80BBF48578EC848957101A3C5C /* Dwifft-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BA52367FEF88A43D492A090DE4B49FD0 /* Dwifft-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AB36D1C053A58714E583D724C7AAC9EE /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DEC84EBB37F2FF1AD48CE2B92CDD78 /* Throttler.swift */; };
 		ADBD0BA8348FFE0EAFC4477CF37C3C4D /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65280290A5F692ABE21ACF3E29FCD665 /* DataStore.swift */; };
 		AE88C8E2820E88891B8811A146E4E4DE /* GenericResultsControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A333EC198DE4858A5E63863BF37D69C /* GenericResultsControllerDelegate.swift */; };
 		B1FFCF4A8DA4861C03C3331492C53311 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		B350534E23CBB6A2CCAE12C69CFF7AC5 /* Dwifft+AppKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E1EE675829BC2ADE6E2F6301E418C7 /* Dwifft+AppKit.swift */; };
 		B9AE8B13FDB50833D46BB57604FAC439 /* GenericResultsControllerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24FBBC688B50145D91B4833A45400F4 /* GenericResultsControllerConfiguration.swift */; };
-		BF2C5222A87C40F05DFC73C382F44F0E /* Pods-GenericResultsController_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = ACC0C3446085019BDEF85DE4B7A84C50 /* Pods-GenericResultsController_Example-dummy.m */; };
+		BF2C5222A87C40F05DFC73C382F44F0E /* Pods-GenericResultsController_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DFB014412FAE0F463B04E2D3F9F16FD6 /* Pods-GenericResultsController_Example-dummy.m */; };
 		C32C36C5FFD886AA14A49B94315FDCD1 /* DataStoreRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98726976585B32DE9F6809456D4538E /* DataStoreRequest.swift */; };
 		C7FB63562780377B5C200939CAC0D183 /* AbstractDiffCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431E4004AC2D0B165F5358EFCE9C8565 /* AbstractDiffCalculator.swift */; };
 		C8F0CA223ECFFAA8FA37692B698997FE /* Dwifft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FB035D27362A8D6B7198FB9D4751CA /* Dwifft.swift */; };
 		CCB981813963748EC6AA6E2EE972AFF6 /* ResultsDifference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177E41B7DD9B3E0655F0AA9D92A30557 /* ResultsDifference.swift */; };
 		D18D80BB14DE3082048813F18BDF30E4 /* InstanceIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E640BB9952ABAEA7E7F416FAC88D8A3 /* InstanceIdentifiable.swift */; };
-		DCF666F936D6C1E21B4324E17062D6E4 /* Debounce-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA714445450D198FCB29706945AE9D2 /* Debounce-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DCF666F936D6C1E21B4324E17062D6E4 /* Debounce-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D2B8B636418CF959EABB5D084271B01 /* Debounce-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E016B74BFEF3E9D4A77338A4EA619E9E /* ResultsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58330F1F4D7021A5ECDE7D629F10D963 /* ResultsSection.swift */; };
-		E082F8AEA305B940248250BA644FF3E7 /* Pods-GenericResultsController_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B6F3262B8B20F19E0650CC9260512A /* Pods-GenericResultsController_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F5035B3F053790779A4BF1BCE0037FC4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,13 +60,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 24620D5DA74B95BA8E31F927F62F4B02;
 			remoteInfo = Debounce;
-		};
-		2A951959294EEF49E212E55E6E262679 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 037CB23A61FD1792723155E8AE6B0C58;
-			remoteInfo = "Pods-GenericResultsController_Example";
 		};
 		3E9BAC87842CB54D55FFDEE9E0D9EAE3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -96,32 +86,31 @@
 
 /* Begin PBXFileReference section */
 		062D8FEC4814AD3081D639D28B595DF5 /* BatchQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BatchQueue.swift; sourceTree = "<group>"; };
+		08C7EE602ECE701A962E423E454F07DA /* Pods-GenericResultsController_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-GenericResultsController_Example-umbrella.h"; sourceTree = "<group>"; };
+		0D2B8B636418CF959EABB5D084271B01 /* Debounce-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Debounce-umbrella.h"; sourceTree = "<group>"; };
 		0E1CE6455EF6E4745149B1FFDEB94FD3 /* Dwifft+UIKit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Dwifft+UIKit.swift"; path = "Dwifft/Dwifft+UIKit.swift"; sourceTree = "<group>"; };
+		0E87E2588586C499F8310329F90C0B43 /* Pods-GenericResultsController_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-GenericResultsController_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		107B76762713A7E5E9669D0548D0F71C /* GenericResultsController */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = GenericResultsController; path = GenericResultsController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		177E41B7DD9B3E0655F0AA9D92A30557 /* ResultsDifference.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ResultsDifference.swift; sourceTree = "<group>"; };
 		1E640BB9952ABAEA7E7F416FAC88D8A3 /* InstanceIdentifiable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InstanceIdentifiable.swift; sourceTree = "<group>"; };
-		24B6F3262B8B20F19E0650CC9260512A /* Pods-GenericResultsController_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-GenericResultsController_Tests-umbrella.h"; sourceTree = "<group>"; };
 		2556837BC33299E7F32848DC99D2B505 /* GenericResultsController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GenericResultsController.swift; path = Sources/GenericResultsController/GenericResultsController.swift; sourceTree = "<group>"; };
+		2CDF1B493E9436F3C4122462100B1CFA /* SearchThrottler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchThrottler.swift; path = Sources/Debounce/SearchThrottler.swift; sourceTree = "<group>"; };
 		2EB33256E3EA8BBE96A2CB7C4F415326 /* GenericResultsController.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = GenericResultsController.modulemap; sourceTree = "<group>"; };
-		338600EEDC729B97F0D0E7131A8E7FC3 /* Pods-GenericResultsController_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-GenericResultsController_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		35E1EE675829BC2ADE6E2F6301E418C7 /* Dwifft+AppKit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Dwifft+AppKit.swift"; path = "Dwifft/Dwifft+AppKit.swift"; sourceTree = "<group>"; };
 		371AF517DEF9381110385088E58E1879 /* GenericResultsController-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "GenericResultsController-Info.plist"; sourceTree = "<group>"; };
-		3735FF0C33F11EAD0F5E590EA3E6015D /* Pods-GenericResultsController_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-GenericResultsController_Example.release.xcconfig"; sourceTree = "<group>"; };
 		3A333EC198DE4858A5E63863BF37D69C /* GenericResultsControllerDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GenericResultsControllerDelegate.swift; path = Sources/GenericResultsController/GenericResultsControllerDelegate.swift; sourceTree = "<group>"; };
-		3D1AD5EF834363321CCE587EDD9DF1CF /* Pods-GenericResultsController_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-GenericResultsController_Tests-Info.plist"; sourceTree = "<group>"; };
 		40ED76DE77B389CC83F5A564DE46A395 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
-		41D70263D874FAEE46203BEFA6F94A3A /* Debounce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Debounce.debug.xcconfig; sourceTree = "<group>"; };
+		41B0F694B28C136AC3EC22ADDE46BD54 /* Pods-GenericResultsController_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-GenericResultsController_Example.modulemap"; sourceTree = "<group>"; };
 		420598FADD707CC5DA62A793FFDED057 /* Array+InsertionIndex.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Array+InsertionIndex.swift"; sourceTree = "<group>"; };
-		430A8F763F50A1B20E95471EBA3CDA60 /* Pods-GenericResultsController_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-GenericResultsController_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		431E4004AC2D0B165F5358EFCE9C8565 /* AbstractDiffCalculator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AbstractDiffCalculator.swift; path = Dwifft/AbstractDiffCalculator.swift; sourceTree = "<group>"; };
-		47AB57815681B0E9BF85041F5308ED67 /* Throttler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Throttler.swift; path = Debounce/Classes/Throttler.swift; sourceTree = "<group>"; };
 		49C69C1F0DB73B686430EFEAC1914740 /* BaseDataStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BaseDataStore.swift; sourceTree = "<group>"; };
+		49DEC84EBB37F2FF1AD48CE2B92CDD78 /* Throttler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Throttler.swift; path = Sources/Debounce/Throttler.swift; sourceTree = "<group>"; };
+		4FFA8BC57396FA3606F3FF75D15A623A /* Pods-GenericResultsController_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-GenericResultsController_Example-Info.plist"; sourceTree = "<group>"; };
 		52061280ABD9EBC0C542C7A8E4304B0E /* Dwifft-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Dwifft-Info.plist"; sourceTree = "<group>"; };
-		560F1D1415D48CB4B8B8DDE5ADD029F8 /* Debounce-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Debounce-prefix.pch"; sourceTree = "<group>"; };
 		578B30DA52F58EE43BF5A6FDD1587837 /* SectionedValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SectionedValues.swift; path = Dwifft/SectionedValues.swift; sourceTree = "<group>"; };
 		58330F1F4D7021A5ECDE7D629F10D963 /* ResultsSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ResultsSection.swift; sourceTree = "<group>"; };
-		5FBA06BA3D9522720CBFD2FF44A552CD /* Pods-GenericResultsController_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-GenericResultsController_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
-		63A5674F43350E6AE6A6694FA6A77DA5 /* Pods-GenericResultsController_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-GenericResultsController_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		5E3E958C579D584FE31DC055BD562B20 /* Debounce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Debounce.release.xcconfig; sourceTree = "<group>"; };
+		63D4E389ABC63D8B5210D42CD223C90F /* Debounce-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Debounce-prefix.pch"; sourceTree = "<group>"; };
 		65280290A5F692ABE21ACF3E29FCD665 /* DataStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		6A939699A0217704DBA868BE0A073039 /* GenericResultsController.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = GenericResultsController.debug.xcconfig; sourceTree = "<group>"; };
 		6AF361C4AA141ADF8F417A73EFFE5A43 /* GenericResultsControllerChangeTracking.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GenericResultsControllerChangeTracking.swift; path = Sources/GenericResultsController/GenericResultsControllerChangeTracking.swift; sourceTree = "<group>"; };
@@ -129,56 +118,40 @@
 		6F7D28C955D431D38558C61F679AAFC5 /* Batch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Batch.swift; sourceTree = "<group>"; };
 		6FA73E874D8299048754B40EB4A982E5 /* Debounce */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Debounce; path = Debounce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		79025FA5A939398BAFE617E62DC497AB /* Pods-GenericResultsController_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-GenericResultsController_Example.modulemap"; sourceTree = "<group>"; };
+		797B5FAD5C465187EF7FB97783C82FBD /* Pods-GenericResultsController_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-GenericResultsController_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		7B70BDA8590D38B0C0D9D7EAC456CED3 /* Dwifft-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Dwifft-dummy.m"; sourceTree = "<group>"; };
-		7D88001976F90BBB3F2058CCDE6E9709 /* Pods-GenericResultsController_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-GenericResultsController_Example-frameworks.sh"; sourceTree = "<group>"; };
-		7E2B24F5289D0664A159A3D2E8483486 /* Pods-GenericResultsController_Tests */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-GenericResultsController_Tests"; path = Pods_GenericResultsController_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FB9A7775963FA038BF4064D86064F9F /* Dwifft.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Dwifft.debug.xcconfig; sourceTree = "<group>"; };
-		845D6A29664BA8CC1BB8BD9CA62141AE /* Debounce.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Debounce.modulemap; sourceTree = "<group>"; };
 		88EB4F275C0322AD6F6FE78A0C7FCC7E /* GenericResultsController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "GenericResultsController-dummy.m"; sourceTree = "<group>"; };
-		8DB1EAAB66C14E6D8E875B394C3C5D61 /* SearchThrottler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchThrottler.swift; path = Debounce/Classes/SearchThrottler.swift; sourceTree = "<group>"; };
-		8F3A47B3F5CE39421A58B9D2AFEEF4AF /* Pods-GenericResultsController_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-GenericResultsController_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		90612E4BBD71C902EAE1F49F9F3BB7C3 /* Dwifft.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Dwifft.release.xcconfig; sourceTree = "<group>"; };
 		91862DBC8BC9E94737A5A63C01B9FF2B /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		96FB035D27362A8D6B7198FB9D4751CA /* Dwifft.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Dwifft.swift; path = Dwifft/Dwifft.swift; sourceTree = "<group>"; };
 		9C0A12BD79DEC00A9E61FB28C1108C55 /* GenericResultsController.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = GenericResultsController.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A3239273E1FC3E45E2A6DC5D8BEEDC2D /* Debounce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Debounce.debug.xcconfig; sourceTree = "<group>"; };
 		A37A0F22C2A9D8EC852FC9368E9AD666 /* Dwifft.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Dwifft.modulemap; sourceTree = "<group>"; };
 		A98726976585B32DE9F6809456D4538E /* DataStoreRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataStoreRequest.swift; sourceTree = "<group>"; };
-		ACC0C3446085019BDEF85DE4B7A84C50 /* Pods-GenericResultsController_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-GenericResultsController_Example-dummy.m"; sourceTree = "<group>"; };
+		AEAF10CA3CDFFF6B580E4DD557155876 /* Pods-GenericResultsController_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-GenericResultsController_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		B25531152DD8560A20C42BFC3A7EB424 /* DiffStep+Inserted.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "DiffStep+Inserted.swift"; sourceTree = "<group>"; };
-		B3B4431355EF749548CE2F3023E5806F /* Debounce-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Debounce-dummy.m"; sourceTree = "<group>"; };
 		B47389D85E64DA270921F0717F78E00E /* GenericResultsController-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "GenericResultsController-umbrella.h"; sourceTree = "<group>"; };
 		B52AE2A5C272F44B4F7BCE796EF3DA11 /* GenericResultsControllerError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GenericResultsControllerError.swift; path = Sources/GenericResultsController/GenericResultsControllerError.swift; sourceTree = "<group>"; };
-		B5B47AED5380F7E043E6172976F8612A /* Pods-GenericResultsController_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-GenericResultsController_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		B9C18B88D102052A104C25A62EE0438B /* Debounce-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Debounce-Info.plist"; sourceTree = "<group>"; };
 		BA52367FEF88A43D492A090DE4B49FD0 /* Dwifft-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Dwifft-umbrella.h"; sourceTree = "<group>"; };
+		BD4CF3E93218A3A53B249F5ACC39B560 /* Debounce.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Debounce.modulemap; sourceTree = "<group>"; };
 		BDAA967F13C865CFE37F67DEB40F52BD /* GenericResultsController.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = GenericResultsController.release.xcconfig; sourceTree = "<group>"; };
-		BECDC94A8EC5327DDB67992ED014ACDA /* Debounce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Debounce.release.xcconfig; sourceTree = "<group>"; };
 		C1704162D166C9D232B9104F6150C739 /* DataStoreQuery.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataStoreQuery.swift; sourceTree = "<group>"; };
-		C4B3229BB225FCC2E1CB8AC4EEDDA5D2 /* Pods-GenericResultsController_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-GenericResultsController_Tests.modulemap"; sourceTree = "<group>"; };
 		C54E311F3D93AF051AF0BD2606EC26C0 /* Dwifft-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Dwifft-prefix.pch"; sourceTree = "<group>"; };
-		CBCB115181BB41724FA64522113B80F3 /* Pods-GenericResultsController_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-GenericResultsController_Tests-dummy.m"; sourceTree = "<group>"; };
-		CD5EA7F0FACD26DC3071852C1CACAFCB /* Pods-GenericResultsController_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-GenericResultsController_Example-umbrella.h"; sourceTree = "<group>"; };
-		CEA714445450D198FCB29706945AE9D2 /* Debounce-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Debounce-umbrella.h"; sourceTree = "<group>"; };
+		C684B02A6702AA41EB3EFC645516ED96 /* Pods-GenericResultsController_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-GenericResultsController_Example-frameworks.sh"; sourceTree = "<group>"; };
 		D7635C4582D137BC42FDD6A222CA61F1 /* Results.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
-		DA24ACFE87D9C5A65F329C3443C7CB3B /* Pods-GenericResultsController_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-GenericResultsController_Example-Info.plist"; sourceTree = "<group>"; };
-		E576B7DB276D052813CAB90947C3EA67 /* Pods-GenericResultsController_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-GenericResultsController_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		DFB014412FAE0F463B04E2D3F9F16FD6 /* Pods-GenericResultsController_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-GenericResultsController_Example-dummy.m"; sourceTree = "<group>"; };
 		F2015B31C701E4DE5CC4A560450DE015 /* DataStoreResult.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DataStoreResult.swift; sourceTree = "<group>"; };
 		F24FBBC688B50145D91B4833A45400F4 /* GenericResultsControllerConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GenericResultsControllerConfiguration.swift; path = Sources/GenericResultsController/GenericResultsControllerConfiguration.swift; sourceTree = "<group>"; };
-		F25E429F3295F583CA12B1BA5A61A490 /* Debounce-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Debounce-Info.plist"; sourceTree = "<group>"; };
 		F97C751FDF2F55E311CA3F6A7D36E8A3 /* GenericResultsController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "GenericResultsController-prefix.pch"; sourceTree = "<group>"; };
+		FBEAD353D757764E13BDA3BA1CFF6AF0 /* Pods-GenericResultsController_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-GenericResultsController_Example.release.xcconfig"; sourceTree = "<group>"; };
+		FBFE36CE1BE0C8AD888B6D8192614BC4 /* Debounce-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Debounce-dummy.m"; sourceTree = "<group>"; };
 		FF024DCEACF139617EC596C45282C2F1 /* Dwifft */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Dwifft; path = Dwifft.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3330372A5BCF4DD8BB7FD14170E78483 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F5035B3F053790779A4BF1BCE0037FC4 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8904682BD8132102D6660830AA3DE2F1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -228,6 +201,42 @@
 			path = "Sources/GenericResultsController/Data Store";
 			sourceTree = "<group>";
 		};
+		1A1FC6A5B8C4B3568B3103A050D9AB31 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				3385AA02E912C142FAAB86E151C1E409 /* Pods-GenericResultsController_Example */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		1D355F7CC47AEC5DF52886CBFE67B2EE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6FA73E874D8299048754B40EB4A982E5 /* Debounce */,
+				FF024DCEACF139617EC596C45282C2F1 /* Dwifft */,
+				107B76762713A7E5E9669D0548D0F71C /* GenericResultsController */,
+				6E752DF5E5B0A24ABF049EA4A7922A64 /* Pods-GenericResultsController_Example */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3385AA02E912C142FAAB86E151C1E409 /* Pods-GenericResultsController_Example */ = {
+			isa = PBXGroup;
+			children = (
+				41B0F694B28C136AC3EC22ADDE46BD54 /* Pods-GenericResultsController_Example.modulemap */,
+				797B5FAD5C465187EF7FB97783C82FBD /* Pods-GenericResultsController_Example-acknowledgements.markdown */,
+				AEAF10CA3CDFFF6B580E4DD557155876 /* Pods-GenericResultsController_Example-acknowledgements.plist */,
+				DFB014412FAE0F463B04E2D3F9F16FD6 /* Pods-GenericResultsController_Example-dummy.m */,
+				C684B02A6702AA41EB3EFC645516ED96 /* Pods-GenericResultsController_Example-frameworks.sh */,
+				4FFA8BC57396FA3606F3FF75D15A623A /* Pods-GenericResultsController_Example-Info.plist */,
+				08C7EE602ECE701A962E423E454F07DA /* Pods-GenericResultsController_Example-umbrella.h */,
+				0E87E2588586C499F8310329F90C0B43 /* Pods-GenericResultsController_Example.debug.xcconfig */,
+				FBEAD353D757764E13BDA3BA1CFF6AF0 /* Pods-GenericResultsController_Example.release.xcconfig */,
+			);
+			name = "Pods-GenericResultsController_Example";
+			path = "Target Support Files/Pods-GenericResultsController_Example";
+			sourceTree = "<group>";
+		};
 		37304A52E5D181A73523D0D66C6E7D65 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -241,7 +250,7 @@
 		5461DFCED4B1671142A83C269ABA92A4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				627FB9CEA83964413F1BC05EDE459E7C /* Debounce */,
+				BD2AE660416661E47423BD5CCE6A640F /* Debounce */,
 				8169216A5F4A941E137161342D59A380 /* Dwifft */,
 			);
 			name = Pods;
@@ -253,32 +262,6 @@
 				73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */,
 			);
 			name = iOS;
-			sourceTree = "<group>";
-		};
-		590D3DC9C2F8EC6538996C40B59E6BD1 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				845D6A29664BA8CC1BB8BD9CA62141AE /* Debounce.modulemap */,
-				B3B4431355EF749548CE2F3023E5806F /* Debounce-dummy.m */,
-				F25E429F3295F583CA12B1BA5A61A490 /* Debounce-Info.plist */,
-				560F1D1415D48CB4B8B8DDE5ADD029F8 /* Debounce-prefix.pch */,
-				CEA714445450D198FCB29706945AE9D2 /* Debounce-umbrella.h */,
-				41D70263D874FAEE46203BEFA6F94A3A /* Debounce.debug.xcconfig */,
-				BECDC94A8EC5327DDB67992ED014ACDA /* Debounce.release.xcconfig */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/Debounce";
-			sourceTree = "<group>";
-		};
-		627FB9CEA83964413F1BC05EDE459E7C /* Debounce */ = {
-			isa = PBXGroup;
-			children = (
-				8DB1EAAB66C14E6D8E875B394C3C5D61 /* SearchThrottler.swift */,
-				47AB57815681B0E9BF85041F5308ED67 /* Throttler.swift */,
-				590D3DC9C2F8EC6538996C40B59E6BD1 /* Support Files */,
-			);
-			name = Debounce;
-			path = Debounce;
 			sourceTree = "<group>";
 		};
 		6763D614A19F097A81DFF576B6D94137 /* GenericResultsController */ = {
@@ -308,32 +291,6 @@
 				91862DBC8BC9E94737A5A63C01B9FF2B /* README.md */,
 			);
 			name = Pod;
-			sourceTree = "<group>";
-		};
-		71D3338721F8EF30E3284CD3F6F04AC4 /* Pods-GenericResultsController_Example */ = {
-			isa = PBXGroup;
-			children = (
-				79025FA5A939398BAFE617E62DC497AB /* Pods-GenericResultsController_Example.modulemap */,
-				338600EEDC729B97F0D0E7131A8E7FC3 /* Pods-GenericResultsController_Example-acknowledgements.markdown */,
-				8F3A47B3F5CE39421A58B9D2AFEEF4AF /* Pods-GenericResultsController_Example-acknowledgements.plist */,
-				ACC0C3446085019BDEF85DE4B7A84C50 /* Pods-GenericResultsController_Example-dummy.m */,
-				7D88001976F90BBB3F2058CCDE6E9709 /* Pods-GenericResultsController_Example-frameworks.sh */,
-				DA24ACFE87D9C5A65F329C3443C7CB3B /* Pods-GenericResultsController_Example-Info.plist */,
-				CD5EA7F0FACD26DC3071852C1CACAFCB /* Pods-GenericResultsController_Example-umbrella.h */,
-				B5B47AED5380F7E043E6172976F8612A /* Pods-GenericResultsController_Example.debug.xcconfig */,
-				3735FF0C33F11EAD0F5E590EA3E6015D /* Pods-GenericResultsController_Example.release.xcconfig */,
-			);
-			name = "Pods-GenericResultsController_Example";
-			path = "Target Support Files/Pods-GenericResultsController_Example";
-			sourceTree = "<group>";
-		};
-		7C4A84DA0E4ADC55302C0FC2B2FDECE5 /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				71D3338721F8EF30E3284CD3F6F04AC4 /* Pods-GenericResultsController_Example */,
-				A0813E12DFEFAA4CCBD484E72356FDB7 /* Pods-GenericResultsController_Tests */,
-			);
-			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
 		8169216A5F4A941E137161342D59A380 /* Dwifft */ = {
@@ -378,22 +335,6 @@
 			path = Sources/GenericResultsController/Types;
 			sourceTree = "<group>";
 		};
-		A0813E12DFEFAA4CCBD484E72356FDB7 /* Pods-GenericResultsController_Tests */ = {
-			isa = PBXGroup;
-			children = (
-				C4B3229BB225FCC2E1CB8AC4EEDDA5D2 /* Pods-GenericResultsController_Tests.modulemap */,
-				E576B7DB276D052813CAB90947C3EA67 /* Pods-GenericResultsController_Tests-acknowledgements.markdown */,
-				5FBA06BA3D9522720CBFD2FF44A552CD /* Pods-GenericResultsController_Tests-acknowledgements.plist */,
-				CBCB115181BB41724FA64522113B80F3 /* Pods-GenericResultsController_Tests-dummy.m */,
-				3D1AD5EF834363321CCE587EDD9DF1CF /* Pods-GenericResultsController_Tests-Info.plist */,
-				24B6F3262B8B20F19E0650CC9260512A /* Pods-GenericResultsController_Tests-umbrella.h */,
-				63A5674F43350E6AE6A6694FA6A77DA5 /* Pods-GenericResultsController_Tests.debug.xcconfig */,
-				430A8F763F50A1B20E95471EBA3CDA60 /* Pods-GenericResultsController_Tests.release.xcconfig */,
-			);
-			name = "Pods-GenericResultsController_Tests";
-			path = "Target Support Files/Pods-GenericResultsController_Tests";
-			sourceTree = "<group>";
-		};
 		AAD7E3571C6941AE001CAC1E0A0E4AC5 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -409,18 +350,6 @@
 			path = "../Target Support Files/Dwifft";
 			sourceTree = "<group>";
 		};
-		AAFB08F80D3F19998AA10338C0B1D53B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				6FA73E874D8299048754B40EB4A982E5 /* Debounce */,
-				FF024DCEACF139617EC596C45282C2F1 /* Dwifft */,
-				107B76762713A7E5E9669D0548D0F71C /* GenericResultsController */,
-				6E752DF5E5B0A24ABF049EA4A7922A64 /* Pods-GenericResultsController_Example */,
-				7E2B24F5289D0664A159A3D2E8483486 /* Pods-GenericResultsController_Tests */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		BB7FEC1211EFF0419C9091229347777F /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -434,6 +363,17 @@
 			);
 			name = "Support Files";
 			path = "Example/Pods/Target Support Files/GenericResultsController";
+			sourceTree = "<group>";
+		};
+		BD2AE660416661E47423BD5CCE6A640F /* Debounce */ = {
+			isa = PBXGroup;
+			children = (
+				2CDF1B493E9436F3C4122462100B1CFA /* SearchThrottler.swift */,
+				49DEC84EBB37F2FF1AD48CE2B92CDD78 /* Throttler.swift */,
+				F48C45C780FB8A4568D4F835DA0F6E77 /* Support Files */,
+			);
+			name = Debounce;
+			path = Debounce;
 			sourceTree = "<group>";
 		};
 		C46D058E697921A6144B7B94D0D1C65E /* Batch */ = {
@@ -453,8 +393,8 @@
 				83047D1BE6ADA3A9CC774706CD0531DC /* Development Pods */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
 				5461DFCED4B1671142A83C269ABA92A4 /* Pods */,
-				AAFB08F80D3F19998AA10338C0B1D53B /* Products */,
-				7C4A84DA0E4ADC55302C0FC2B2FDECE5 /* Targets Support Files */,
+				1D355F7CC47AEC5DF52886CBFE67B2EE /* Products */,
+				1A1FC6A5B8C4B3568B3103A050D9AB31 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -475,17 +415,24 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
+		F48C45C780FB8A4568D4F835DA0F6E77 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				BD4CF3E93218A3A53B249F5ACC39B560 /* Debounce.modulemap */,
+				FBFE36CE1BE0C8AD888B6D8192614BC4 /* Debounce-dummy.m */,
+				B9C18B88D102052A104C25A62EE0438B /* Debounce-Info.plist */,
+				63D4E389ABC63D8B5210D42CD223C90F /* Debounce-prefix.pch */,
+				0D2B8B636418CF959EABB5D084271B01 /* Debounce-umbrella.h */,
+				A3239273E1FC3E45E2A6DC5D8BEEDC2D /* Debounce.debug.xcconfig */,
+				5E3E958C579D584FE31DC055BD562B20 /* Debounce.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/Debounce";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		3FCF7019C5E25BF3C3880CB29E3ADC3A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E082F8AEA305B940248250BA644FF3E7 /* Pods-GenericResultsController_Tests-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		4F4C43276B3FA0E7BD8874BE8E2C71D7 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -598,25 +545,6 @@
 			productReference = FF024DCEACF139617EC596C45282C2F1 /* Dwifft */;
 			productType = "com.apple.product-type.framework";
 		};
-		9419D8100A8B779051DF50429941E0E9 /* Pods-GenericResultsController_Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A003035D8322A2EEBA11D073E64B237A /* Build configuration list for PBXNativeTarget "Pods-GenericResultsController_Tests" */;
-			buildPhases = (
-				3FCF7019C5E25BF3C3880CB29E3ADC3A /* Headers */,
-				7F90570A32D8F88B0A5198D38A26898B /* Sources */,
-				3330372A5BCF4DD8BB7FD14170E78483 /* Frameworks */,
-				1EFB0D19ECB5004208107B2B0A6E3EEC /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6563A31DDA11D3A5AF7610DCF0791C5A /* PBXTargetDependency */,
-			);
-			name = "Pods-GenericResultsController_Tests";
-			productName = Pods_GenericResultsController_Tests;
-			productReference = 7E2B24F5289D0664A159A3D2E8483486 /* Pods-GenericResultsController_Tests */;
-			productType = "com.apple.product-type.framework";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -635,7 +563,7 @@
 				en,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = AAFB08F80D3F19998AA10338C0B1D53B /* Products */;
+			productRefGroup = 1D355F7CC47AEC5DF52886CBFE67B2EE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -643,20 +571,12 @@
 				4255A53C9FC46E2A6605D689307219F6 /* Dwifft */,
 				40F95C47CFC652BA6B2B77C05600DEBE /* GenericResultsController */,
 				037CB23A61FD1792723155E8AE6B0C58 /* Pods-GenericResultsController_Example */,
-				9419D8100A8B779051DF50429941E0E9 /* Pods-GenericResultsController_Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0B0E335047B7E5566FF415635391FD0E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1EFB0D19ECB5004208107B2B0A6E3EEC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -718,16 +638,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				512089AAACCE6066EAE683A9242F8889 /* Debounce-dummy.m in Sources */,
-				884CFD98C4A2C523DC152E858685B717 /* SearchThrottler.swift in Sources */,
-				22880901CA243EEED89808FC740E682D /* Throttler.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7F90570A32D8F88B0A5198D38A26898B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				419094045D524A00EF90F9A3AF2D5E0C /* Pods-GenericResultsController_Tests-dummy.m in Sources */,
+				19FB754BE2A20F3E0CB7FF9D64246106 /* SearchThrottler.swift in Sources */,
+				AB36D1C053A58714E583D724C7AAC9EE /* Throttler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -766,12 +678,6 @@
 			name = Debounce;
 			target = 24620D5DA74B95BA8E31F927F62F4B02 /* Debounce */;
 			targetProxy = 1CBDF792BF3B3BABF76B716A72FC79C2 /* PBXContainerItemProxy */;
-		};
-		6563A31DDA11D3A5AF7610DCF0791C5A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-GenericResultsController_Example";
-			target = 037CB23A61FD1792723155E8AE6B0C58 /* Pods-GenericResultsController_Example */;
-			targetProxy = 2A951959294EEF49E212E55E6E262679 /* PBXContainerItemProxy */;
 		};
 		CCC0765FDCB8026C9842298BB3A1B836 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -862,7 +768,7 @@
 		};
 		2D5C9A5E939E52503FDC73B351430D42 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B5B47AED5380F7E043E6172976F8612A /* Pods-GenericResultsController_Example.debug.xcconfig */;
+			baseConfigurationReference = 0E87E2588586C499F8310329F90C0B43 /* Pods-GenericResultsController_Example.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
@@ -896,7 +802,7 @@
 		};
 		337B0D4AF6FD6D83BC77F5A1FFBD56C3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3735FF0C33F11EAD0F5E590EA3E6015D /* Pods-GenericResultsController_Example.release.xcconfig */;
+			baseConfigurationReference = FBEAD353D757764E13BDA3BA1CFF6AF0 /* Pods-GenericResultsController_Example.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
@@ -922,39 +828,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		43A6118813D02EACB25069DD0CD9ED3E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = BECDC94A8EC5327DDB67992ED014ACDA /* Debounce.release.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/Debounce/Debounce-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Debounce/Debounce-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/Debounce/Debounce.modulemap";
-				PRODUCT_MODULE_NAME = Debounce;
-				PRODUCT_NAME = Debounce;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1089,38 +962,6 @@
 			};
 			name = Release;
 		};
-		6DDE302EBEF8DF8695A82230DDB7871B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 41D70263D874FAEE46203BEFA6F94A3A /* Debounce.debug.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/Debounce/Debounce-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/Debounce/Debounce-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = "Target Support Files/Debounce/Debounce.modulemap";
-				PRODUCT_MODULE_NAME = Debounce;
-				PRODUCT_NAME = Debounce;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 		9298AB0451CCB2589BD54448243219CA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7FB9A7775963FA038BF4064D86064F9F /* Dwifft.debug.xcconfig */;
@@ -1151,41 +992,6 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
-		};
-		98710B2DC2AD9BEA0F491906F10503B4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 430A8F763F50A1B20E95471EBA3CDA60 /* Pods-GenericResultsController_Tests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-GenericResultsController_Tests/Pods-GenericResultsController_Tests-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-GenericResultsController_Tests/Pods-GenericResultsController_Tests.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
 		};
 		C0DE233DC2170243F34D637B32B359C2 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1219,11 +1025,10 @@
 			};
 			name = Release;
 		};
-		EF5F0E940AC7B83BAA61DEA6D1DECD6F /* Debug */ = {
+		D928983BCD77AB8A872E83ADC4AA5B83 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 63A5674F43350E6AE6A6694FA6A77DA5 /* Pods-GenericResultsController_Tests.debug.xcconfig */;
+			baseConfigurationReference = 5E3E958C579D584FE31DC055BD562B20 /* Debounce.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -1234,19 +1039,51 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-GenericResultsController_Tests/Pods-GenericResultsController_Tests-Info.plist";
+				GCC_PREFIX_HEADER = "Target Support Files/Debounce/Debounce-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/Debounce/Debounce-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-GenericResultsController_Tests/Pods-GenericResultsController_Tests.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				MODULEMAP_FILE = "Target Support Files/Debounce/Debounce.modulemap";
+				PRODUCT_MODULE_NAME = Debounce;
+				PRODUCT_NAME = Debounce;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		EF801B693684B9E0E081236CEED6C409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A3239273E1FC3E45E2A6DC5D8BEEDC2D /* Debounce.debug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/Debounce/Debounce-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/Debounce/Debounce-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "Target Support Files/Debounce/Debounce.modulemap";
+				PRODUCT_MODULE_NAME = Debounce;
+				PRODUCT_NAME = Debounce;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1265,15 +1102,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A003035D8322A2EEBA11D073E64B237A /* Build configuration list for PBXNativeTarget "Pods-GenericResultsController_Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EF5F0E940AC7B83BAA61DEA6D1DECD6F /* Debug */,
-				98710B2DC2AD9BEA0F491906F10503B4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		BDC6488BD048EA3D75E8F2DFC73699C0 /* Build configuration list for PBXNativeTarget "Dwifft" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1286,8 +1114,8 @@
 		BF0E02A9AF3661336240F67AEB1564FD /* Build configuration list for PBXNativeTarget "Debounce" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6DDE302EBEF8DF8695A82230DDB7871B /* Debug */,
-				43A6118813D02EACB25069DD0CD9ED3E /* Release */,
+				EF801B693684B9E0E081236CEED6C409 /* Debug */,
+				D928983BCD77AB8A872E83ADC4AA5B83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
