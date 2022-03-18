@@ -26,7 +26,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate GenericResultsController into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'GenericResultsController', '~> 2.3.0'
+pod 'GenericResultsController', '~> 2.3.1'
 ```
 
 ### Swift Package Manager
@@ -37,7 +37,7 @@ Once you have your Swift package set up, adding GenericResultsController as a de
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/cgossain/GenericResultsController.git", .upToNextMajor(from: "2.3.0"))
+    .package(url: "https://github.com/cgossain/GenericResultsController.git", .upToNextMajor(from: "2.3.1"))
 ]
 ```
 
