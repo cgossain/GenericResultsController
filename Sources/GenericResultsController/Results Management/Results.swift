@@ -1,7 +1,7 @@
 //
 //  Results.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -59,67 +59,7 @@ final class Results<ResultType: DataStoreResult, RequestType: DataStoreRequest> 
         return computed
     }
     
-    
-    // MARK: - Private Properties
-    
-    /// A dictionary that maps a section to its `sectionKeyValue`.
-    private var sectionsBySectionKeyValue: [String: ResultsSection<ResultType>] = [:]
-    
-    /// A dictionary that maps a result objects `sectionKeyValue` to its ID.
-    private var sectionKeyValuesByID: [AnyHashable: String] = [:]
-    
-    
-    // MARK: - Private Properties (Computed)
-    
-    /// The computed sections array.
-    private var _sections: [ResultsSection<ResultType>]? // hold the current non-stale sections array
-    
-    /// A dictionary that maps a sections' index to its `sectionKeyValue`.
-    private var sectionIndicesBySectionKeyValue: [String: Int] = [:]
-    
-    /// A dictionary that maps the sections' offset (i.e. first index of the section in the overall `results` array) to its `sectionKeyValue`.
-    private var sectionOffsetsBySectionKeyValue: [String: Int] = [:]
-    
-    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
-    ///
-    /// This is used to sort the sections.
-    private var sectionNamesAreInIncreasingOrder: (String, String) -> Bool {
-        guard let sectionNamesAreInIncreasingOrder = resultsConfiguration?.sectionNamesAreInIncreasingOrder else {
-            return { $0 < $1 } // fallback to alphabetical ordering
-        }
-        return sectionNamesAreInIncreasingOrder
-    }
-    
-    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
-    ///
-    /// This predicate is used to sort the entire set of fetched results. It first sorts by section name, then by the `areInIncreasingOrder` predicate if specified on the results configuration.
-    private var fetchedResultsAreInIncreasingOrder: (ResultType, ResultType) -> Bool {
-        return { (left, right) -> Bool in
-            let leftSectionName = self.sectionName(for: left)
-            let rightSectionName = self.sectionName(for: right)
-            
-            // 1. sort by section name
-            if leftSectionName != rightSectionName {
-                if self.sectionNamesAreInIncreasingOrder(leftSectionName, rightSectionName) {
-                    return true
-                }
-                else {
-                    return false
-                }
-            }
-            
-            // 2. sort within the section
-            if let areInIncreasingOrder = self.resultsConfiguration?.areInIncreasingOrder {
-                return areInIncreasingOrder(left, right)
-            }
-            
-            // 3. fallback to true
-            return true
-        }
-    }
-    
-    
-    // MARK: - Lifecycle
+    // MARK: - Init
     
     /// Creates and returns a new results objects.
     ///
@@ -166,6 +106,8 @@ final class Results<ResultType: DataStoreResult, RequestType: DataStoreRequest> 
                   fetchedResults: fetchedResults)
     }
     
+    // MARK: - API
+    
     /// Returns the indexPath of the given object; otherwise returns `nil` if not found.
     func indexPath(for obj: ResultType) -> IndexPath? {
         for (sectionIdx, section) in sections.enumerated() {
@@ -173,6 +115,63 @@ final class Results<ResultType: DataStoreResult, RequestType: DataStoreRequest> 
             return IndexPath(row: rowIdx, section: sectionIdx)
         }
         return nil
+    }
+    
+    // MARK: - Private
+    
+    /// A dictionary that maps a section to its `sectionKeyValue`.
+    private var sectionsBySectionKeyValue: [String: ResultsSection<ResultType>] = [:]
+    
+    /// A dictionary that maps a result objects `sectionKeyValue` to its ID.
+    private var sectionKeyValuesByID: [AnyHashable: String] = [:]
+    
+    // MARK: - Private (Computed)
+    
+    /// The computed sections array.
+    private var _sections: [ResultsSection<ResultType>]? // hold the current non-stale sections array
+    
+    /// A dictionary that maps a sections' index to its `sectionKeyValue`.
+    private var sectionIndicesBySectionKeyValue: [String: Int] = [:]
+    
+    /// A dictionary that maps the sections' offset (i.e. first index of the section in the overall `results` array) to its `sectionKeyValue`.
+    private var sectionOffsetsBySectionKeyValue: [String: Int] = [:]
+    
+    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    ///
+    /// This is used to sort the sections.
+    private var sectionNamesAreInIncreasingOrder: (String, String) -> Bool {
+        guard let sectionNamesAreInIncreasingOrder = resultsConfiguration?.sectionNamesAreInIncreasingOrder else {
+            return { $0 < $1 } // fallback to alphabetical ordering
+        }
+        return sectionNamesAreInIncreasingOrder
+    }
+    
+    /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
+    ///
+    /// This predicate is used to sort the entire set of fetched results. It first sorts by section name, then by the `areInIncreasingOrder` predicate if specified on the results configuration.
+    private var fetchedResultsAreInIncreasingOrder: (ResultType, ResultType) -> Bool {
+        return { (left, right) -> Bool in
+            let leftSectionName = self.sectionName(for: left)
+            let rightSectionName = self.sectionName(for: right)
+            
+            // 1. sort by section name
+            if leftSectionName != rightSectionName {
+                if self.sectionNamesAreInIncreasingOrder(leftSectionName, rightSectionName) {
+                    return true
+                }
+                else {
+                    return false
+                }
+            }
+            
+            // 2. sort within the section
+            if let areInIncreasingOrder = self.resultsConfiguration?.areInIncreasingOrder {
+                return areInIncreasingOrder(left, right)
+            }
+            
+            // 3. fallback to true
+            return true
+        }
     }
 }
 

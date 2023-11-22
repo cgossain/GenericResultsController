@@ -1,7 +1,7 @@
 //
 //  BatchQueue.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -68,23 +68,20 @@ public final class BatchQueue<ResultType: DataStoreResult> {
     /// Indicates if the receiver has an active batch.
     public var isBatching: Bool { return !batchByID.isEmpty }
     
-    
-    // MARK: - Private Properties
-    
-    /// The currently active batches keyed by the fetch handle they're associated with.
-    private var batchByID: [String : Batch<ResultType>] = [:]
-    
-    /// The throttler.
-    private let throttler = Throttler(throttlingInterval: 0.3)
-    
-    
-    // MARK: - Lifecycle
+    // MARK: - Init
     
     /// Creates and returns a new batch queue.
     public init() {
         
     }
     
+    // MARK: - Private
+    
+    /// The currently active batches keyed by the fetch handle they're associated with.
+    private var batchByID: [String : Batch<ResultType>] = [:]
+    
+    /// The throttler.
+    private let throttler = Throttler(throttlingInterval: 0.3)
 }
 
 extension BatchQueue {

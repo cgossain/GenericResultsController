@@ -1,7 +1,7 @@
 //
 //  BaseDataStore.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import Foundation
 /// database vs. an API).
 ///
 /// Do not subclass this directly. You should subclass `DataStore` instead.
-open class BaseDataStore<ResultType: DataStoreResult>: InstanceIdentifiable {
+open class BaseDataStore<ResultType: DataStoreResult>: Identifiable {
     
     /// The stable identity of the entity associated with this instance.
     public let id: String
@@ -41,14 +41,12 @@ open class BaseDataStore<ResultType: DataStoreResult>: InstanceIdentifiable {
     /// A short descriptive title for the store.
     public let title: String
     
-    
     // MARK: - Internal
     
     /// The draft batch.
     private(set) var draft = Batch<ResultType>(id: UUID().uuidString)
     
-    
-    // MARK: -  Lifecycle
+    // MARK: -  Init
     
     /// Creates and returns a new store instance.
     ///
@@ -63,32 +61,30 @@ open class BaseDataStore<ResultType: DataStoreResult>: InstanceIdentifiable {
         self.title = title
     }
     
-    
-    // MARK: - CRUD Operations (see `DataStore` for Read op)
+    // MARK: - CRUD (see `DataStore` for "read" op)
     
     /// Inserts the object into the underlying store.
     ///
     /// - Important: You must call `super.insert(_:)` at some point in your implementation.
     open func insert(_ obj: ResultType) {
-        
+        // no-op
     }
     
     /// Updates the object in the underlying store.
     ///
     /// - Important: You must call `super.update(_:)` at some point in your implementation.
     open func update(_ obj: ResultType) {
-        
+        // no-op
     }
     
     /// Deletes the object from the underlying store.
     ///
     /// - Important: You must call `super.delete(_:)` at some point in your implementation.
     open func delete(_ obj: ResultType) {
-        
+        // no-op
     }
     
-    
-    // MARK: - CRUD Operations (Draft Mode)
+    // MARK: - CRUD (Draft Mode)
     
     /// Tracks the insertion in the stores' internal draft, and enqueues it into any
     /// running queries (i.e. does not commit to the underlying store).
@@ -142,7 +138,6 @@ open class BaseDataStore<ResultType: DataStoreResult>: InstanceIdentifiable {
         draft = Batch<ResultType>(id: UUID().uuidString)
     }
     
-    
     // MARK: - Managing Parent-Child Relationship
     
     /// The parent store connector of the recipient.
@@ -175,14 +170,13 @@ open class BaseDataStore<ResultType: DataStoreResult>: InstanceIdentifiable {
     
     /// Called just before the store connector is added or removed from another store connector.
     open func willMoveToParent(_ parent: BaseDataStore<ResultType>?) {
-        
+        // no-op
     }
     
     /// Called after the store connector is added or removed from another store connector.
     open func didMoveToParent(_ parent: BaseDataStore<ResultType>?) {
         self.parent = parent
     }
-    
 }
 
 extension BaseDataStore: Equatable {

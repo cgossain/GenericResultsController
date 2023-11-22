@@ -1,7 +1,7 @@
 //
 //  DataStoreResult.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -25,4 +25,4 @@
 import Foundation
 
 /// A type that fetched objects must conform to.
-public typealias DataStoreResult = InstanceIdentifiable & Hashable
+public typealias DataStoreResult = Identifiable & Hashable

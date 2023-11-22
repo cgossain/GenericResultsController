@@ -1,7 +1,7 @@
 //
 //  DataStoreQuery.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,8 @@ import Foundation
 ///
 /// For a short-lived query, you don't setup any observers, just perform the fetch and enqueue
 /// the results once (e.g. an API fetch, or a simple database query).
-public final class DataStoreQuery<ResultType: DataStoreResult, RequestType: DataStoreRequest>: InstanceIdentifiable {
+public final class DataStoreQuery<ResultType: DataStoreResult, RequestType: DataStoreRequest>: Identifiable {
+    
     /// The sucessful result type.
     public typealias Success = (inserted: [ResultType]?, updated: [ResultType]?, deleted: [ResultType]?)
     
@@ -61,20 +62,12 @@ public final class DataStoreQuery<ResultType: DataStoreResult, RequestType: Data
     /// A block that is called when a matching results are inserted, updated, or deleted from the store.
     public let updateHandler: UpdateHandler
     
-    
-    // MARK: - InstanceIdentifiable
+    // MARK: - Identifiable
     
     /// The stable identity of the entity associated with this instance.
     public var id = UUID().uuidString
     
-    
-    // MARK: - Internal Properties
-    
-    /// The batch queue.
-    private let queue = BatchQueue<ResultType>()
-    
-    
-    // MARK: - Lifecycle
+    // MARK: - Init
     
     /// Creates and returns a new store query.
     ///
@@ -101,11 +94,13 @@ public final class DataStoreQuery<ResultType: DataStoreResult, RequestType: Data
         queue.dequeue(batchID: self.id)
     }
     
+    // MARK: - Private
+    
+    /// The batch queue.
+    private let queue = BatchQueue<ResultType>()
 }
 
 extension DataStoreQuery {
-    // MARK: -  Resolving Observer Query
-    
     /// Adds the given objects to the query using the given operation type.
     public func enqueue(_ results: [ResultType], as op: BatchQueueOperationType) {
         queue.enqueue(results, as: op, batchID: self.id)

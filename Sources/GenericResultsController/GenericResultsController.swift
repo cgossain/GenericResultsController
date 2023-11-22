@@ -1,7 +1,7 @@
 //
 //  GenericResultsController.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -84,21 +84,7 @@ public final class GenericResultsController<ResultType: DataStoreResult, Request
     /// The delegate object that will receive all diffing callbacks.
     public var changeTracker = GenericResultsControllerChangeTracking<ResultType, RequestType>()
     
-    
-    // MARK: - Private Properties
-    
-    /// A flag that indicates that a new fetch was started and that the results object should be
-    /// rebuilt from scratch instead of incrementally adding changes to the current results.
-    private var shouldRebuildFetchedResults = false
-    
-    /// A reference to all queries executed by the receiver against the data store.
-    private var currentQueriesByID: [String : DataStoreQuery<ResultType, RequestType>] = [:]
-    
-    /// The current fetched results.
-    private var currentFetchedResults: Results<ResultType, RequestType>?
-    
-    
-    // MARK: - Lifecycle
+    // MARK: - Init
     
     /// Creates and returns a new fetched results controller.
     ///
@@ -113,6 +99,8 @@ public final class GenericResultsController<ResultType: DataStoreResult, Request
         // running queries
         stopCurrentQueries()
     }
+    
+    // MARK: - API
     
     /// Executes a new query against the data store.
     ///
@@ -205,13 +193,25 @@ public final class GenericResultsController<ResultType: DataStoreResult, Request
     public func indexPath(for obj: ResultType) -> IndexPath? {
         return currentFetchedResults?.indexPath(for: obj)
     }
-}
-
-extension GenericResultsController {
+    
+    // MARK: - Helpers
+    
     private func stopCurrentQueries() {
         currentQueriesByID.values.forEach({ store.stop($0) })
         currentQueriesByID.removeAll()
     }
+    
+    // MARK: - Private
+    
+    /// A flag that indicates that a new fetch was started and that the results object should be
+    /// rebuilt from scratch instead of incrementally adding changes to the current results.
+    private var shouldRebuildFetchedResults = false
+    
+    /// A reference to all queries executed by the receiver against the data store.
+    private var currentQueriesByID: [String : DataStoreQuery<ResultType, RequestType>] = [:]
+    
+    /// The current fetched results.
+    private var currentFetchedResults: Results<ResultType, RequestType>?
 }
 
 extension GenericResultsController: CustomStringConvertible {

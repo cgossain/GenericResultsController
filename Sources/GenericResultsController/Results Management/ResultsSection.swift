@@ -1,7 +1,7 @@
 //
 //  ResultsSection.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,6 @@ public final class ResultsSection<ResultType: DataStoreResult> {
     /// Returns the array of objects in the section.
     public private(set) var objects: [ResultType]
     
-    
     // MARK: - Internal
     
     /// The section key value (e.g. the section name).
@@ -44,8 +43,7 @@ public final class ResultsSection<ResultType: DataStoreResult> {
     /// A predicate that returns true if its first argument should be ordered before its second argument; otherwise, false.
     let areInIncreasingOrder: ((ResultType, ResultType) -> Bool)?
     
-    
-    // MARK: - Lifecycle
+    // MARK: - Init
     
     /// Creates and returns a new section object with the given section key value and sort predicate.
     ///
@@ -62,6 +60,8 @@ public final class ResultsSection<ResultType: DataStoreResult> {
         self.areInIncreasingOrder = areInIncreasingOrder
         self.objects = objects
     }
+    
+    // MARK: - API
     
     /// Inserts the given object into the section and returns the index at which it was inserted.
     @discardableResult

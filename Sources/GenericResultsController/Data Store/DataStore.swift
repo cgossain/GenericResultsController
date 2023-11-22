@@ -1,7 +1,7 @@
 //
 //  DataStore.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -51,13 +51,10 @@ import Foundation
 /// See the example project for an example implementation using CoreData.
 open class DataStore<ResultType: DataStoreResult, RequestType: DataStoreRequest>: BaseDataStore<ResultType> {
     
-    // MARK: - Properties
-    
     /// The currently executing queries.
     public private(set) var queriesByID: [AnyHashable : DataStoreQuery<ResultType, RequestType>] = [:]
     
-    
-    // MARK: -  Lifecycle
+    // MARK: -  API
     
     /// Executes the given query.
     ///
@@ -103,8 +100,7 @@ open class DataStore<ResultType: DataStoreResult, RequestType: DataStoreRequest>
         queriesByID[query.id] = nil
     }
     
-    
-    // MARK: - CRUD Operations (Overrides)
+    // MARK: - BaseDataStore
     
     open override func insertDraft(_ obj: ResultType) {
         super.insertDraft(obj)
@@ -138,5 +134,4 @@ open class DataStore<ResultType: DataStoreResult, RequestType: DataStoreRequest>
         // this object (or not) in the UI
         queriesByID.values.forEach { $0.enqueue([obj], as: .delete) }
     }
-    
 }

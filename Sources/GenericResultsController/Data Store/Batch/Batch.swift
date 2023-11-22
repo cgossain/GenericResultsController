@@ -1,7 +1,7 @@
 //
 //  Batch.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,8 @@ import Foundation
 ///
 /// You keep enqueuing changes into the batch and then eventually when done, you call the `flush()` method
 /// to compute and return the deduplicated changes out of the batch.
-public final class Batch<ResultType: DataStoreResult>: InstanceIdentifiable {
+public final class Batch<ResultType: DataStoreResult>: Identifiable {
+    
     /// The dedpuplicated set of changes in the batch.
     public struct Digest {
         /// The deduplicated insertions.
@@ -41,28 +42,19 @@ public final class Batch<ResultType: DataStoreResult>: InstanceIdentifiable {
         let deleted: [ResultType]
     }
     
+    /// MARK: - Identifiable
+    
     /// The batch ID.
     public let id: String
     
-    
-    // MARK: - Private Properties
-    
-    /// The raw insertions.
-    private var rawInserted: [AnyHashable: ResultType] = [:]
-    
-    /// The raw updates.
-    private var rawUpdated: [AnyHashable: ResultType] = [:]
-    
-    /// The raw deletions.
-    private var rawDeleted: [AnyHashable: ResultType] = [:]
-    
-    
-    // MARK: - Lifecycle
+    // MARK: - Init
     
     /// Creates and returns a new batch object.
     public init(id: String) {
         self.id = id
     }
+    
+    // MARK: - API
     
     /// Tracks the object as an insertion to the batch.
     public func insert(_ obj: ResultType) {
@@ -135,4 +127,10 @@ public final class Batch<ResultType: DataStoreResult>: InstanceIdentifiable {
         rawUpdated.removeAll()
         rawDeleted.removeAll()
     }
+    
+    // MARK: - Private
+    
+    private var rawInserted: [AnyHashable: ResultType] = [:]
+    private var rawUpdated: [AnyHashable: ResultType] = [:]
+    private var rawDeleted: [AnyHashable: ResultType] = [:]
 }

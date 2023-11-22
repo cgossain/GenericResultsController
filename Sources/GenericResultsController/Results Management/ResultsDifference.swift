@@ -1,7 +1,7 @@
 //
 //  ResultsDifference.swift
 //
-//  Copyright (c) 2022 Christian Gossain
+//  Copyright (c) 2023 Christian Gossain
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -47,6 +47,7 @@ public enum ResultsChangeType: Int {
 /// rearranged objects. This information is useful for animating UI changes in
 /// response to new data being fetched.
 public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataStoreRequest> {
+    
     public struct Section {
         let idx: Int
         let section: ResultsSection<ResultType>
@@ -81,8 +82,7 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataSt
     /// The index paths of the changed rows, relative to the 'before' state.
     public private(set) var changedRows: [Row]?
     
-    
-    // MARK: - Lifecycle
+    // MARK: - Init
     
     /// Creates and returns an object representing the difference between two given results objects.
     ///
@@ -230,9 +230,9 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataSt
         }
         self.changedRows = changedRows
     }
-}
-
-extension ResultsDifference {
+    
+    // MARK: - API
+    
     /// Convenience method that enumerates all the section changes described by the receiver.
     public func enumerateSectionChanges(_ body: ((_ section: ResultsSection<ResultType>, _ sectionIndex: Int, _ type: ResultsChangeType) -> Void)) {
         // removed sections
