@@ -235,13 +235,11 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GenericResultsController_Example/Pods-GenericResultsController_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Debounce/Debounce.framework",
-				"${BUILT_PRODUCTS_DIR}/Dwifft/Dwifft.framework",
 				"${BUILT_PRODUCTS_DIR}/GenericResultsController/GenericResultsController.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Debounce.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Dwifft.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GenericResultsController.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

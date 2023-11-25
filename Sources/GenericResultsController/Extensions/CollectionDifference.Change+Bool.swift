@@ -1,5 +1,5 @@
 //
-//  DiffStep+Inserted.swift
+//  CollectionDifference.Change+Bool.swift
 //
 //  Copyright (c) 2023 Christian Gossain
 //
@@ -23,16 +23,37 @@
 //
 
 import Foundation
-import Dwifft
 
-extension DiffStep {
-    /// Indicates if the receiver represents an insertion.
+extension CollectionDifference.Change {
+    /// Determines if the change is an insertion.
     var isInserted: Bool {
-        switch self {
-        case .insert(_, _):
-            return true
-        case .delete(_, _):
+        guard case .insert = self else {
             return false
+        }
+        return true
+    }
+    
+    /// Determines if the change is a removal.
+    var isRemoved: Bool {
+        guard case .remove = self else {
+            return false
+        }
+        return true
+    }
+    
+    /// The index to be inserted or deleted.
+    var idx: Int {
+        switch self {
+        case .insert(let idx, _, _), .remove(let idx, _, _):
+            return idx
+        }
+    }
+    
+    /// The value to be inserted or deleted.
+    var value: ChangeElement {
+        switch self {
+        case .insert(_, let element, _), .remove(_, let element, _):
+            return element
         }
     }
 }

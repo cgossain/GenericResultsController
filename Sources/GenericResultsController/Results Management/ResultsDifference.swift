@@ -23,21 +23,20 @@
 //
 
 import Foundation
-import Dwifft
 
 /// The change type.
-public enum ResultsChangeType: Int {
+public enum ResultsChangeType {
     /// The type that indicates an insertion.
-    case insert     = 1
+    case insert
     
     /// The type that indicates a deletion.
-    case delete     = 2
+    case delete
     
     /// The type that indicates a move.
-    case move       = 3
+    case move
     
     /// The type that indicates an update.
-    case update     = 4
+    case update
 }
 
 /// An object that computes the difference between two data sets.
@@ -54,6 +53,11 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataSt
     }
     
     public struct Row {
+        public struct Move {
+            let from: Row
+            let to: Row
+        }
+        
         let indexPath: IndexPath
         let value: ResultType
     }
@@ -77,7 +81,7 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataSt
     public private(set) var insertedRows: [Row]?
     
     /// The index paths of the moved rows.
-    public private(set) var movedRows: [(from: Row, to: Row)]?
+    public private(set) var movedRows: [Row.Move]?
     
     /// The index paths of the changed rows, relative to the 'before' state.
     public private(set) var changedRows: [Row]?
@@ -98,48 +102,63 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataSt
         fetchedResultsBeforeChanges = from
         fetchedResultsAfterChanges = to
         
-        // compute the sections diff
-        let sectionsDiff = Dwifft.diff(fetchedResultsBeforeChanges.sectionKeyValues, fetchedResultsAfterChanges.sectionKeyValues)
+        // compute
+        // sections diff
+        let sectionsDiff = fetchedResultsAfterChanges.sectionKeyValues.difference(from: fetchedResultsBeforeChanges.sectionKeyValues)
         
-        // compute the rows diff
-        let rowsDiff = Dwifft.diff(fetchedResultsBeforeChanges.results, fetchedResultsAfterChanges.results)
+        // compute
+        // rows diff
+        let rowsDiff = fetchedResultsAfterChanges.results.difference(from: fetchedResultsBeforeChanges.results)
         
-        // compute deleted sections
-        self.removedSections = sectionsDiff.filter({ !$0.isInserted }).map({ Section(idx: $0.idx, section: fetchedResultsBeforeChanges.sections[$0.idx]) })
+        // compute 
+        // deleted sections
+        self.removedSections = sectionsDiff.filter(\.isRemoved).map { Section(idx: $0.idx, section: fetchedResultsBeforeChanges.sections[$0.idx]) }
         
-        // compute inserted sections
-        self.insertedSections = sectionsDiff.filter({ $0.isInserted }).map({ Section(idx: $0.idx, section: fetchedResultsAfterChanges.sections[$0.idx]) })
+        // compute 
+        // inserted sections
+        self.insertedSections = sectionsDiff.filter(\.isInserted).map { Section(idx: $0.idx, section: fetchedResultsAfterChanges.sections[$0.idx]) }
         
-        // prep to compute moved rows
-        var deletions = rowsDiff.filter({ !$0.isInserted })
-        var insertions = rowsDiff.filter({ $0.isInserted })
-        var moves: [(from: DiffStep<ResultType>, to: DiffStep<ResultType>)] = []
+        // prep to
+        // compute
+        // moved rows
+        var deletions = rowsDiff.filter(\.isRemoved)
+        var insertions = rowsDiff.filter(\.isInserted)
+        var moves: [(from: CollectionDifference<ResultType>.Change, to: CollectionDifference<ResultType>.Change)] = []
         
-        // A "move" is a special type of change. Specifically, it involves a row being removed from one location, and then being
-        // inserted at a new location. The following 2 steps will extract moved row from the inserted and deleted lists.
+        // A "move" is a special type of change. It involves a row being removed from 
+        // one location, and then being inserted at a new location. The following 2 steps
+        // will extract moved row from the inserted and deleted lists.
         
-        // 1. We first need to identify the moved rows by simply checking that a deleted row also shows up as an inserted row.
+        // 1. 
+        // We first need to identify the moved rows by simply checking that a deleted row also shows up as an inserted row.
         for deletion in deletions {
             if let insertion = insertions.filter({ $0.value.id == deletion.value.id }).first {
                 moves.append((from: deletion, to: insertion))
             }
         }
         
-        // 2. Once we've identified our moved rows, we need to remove those rows from both the deletions and insertions lists so as not
-        // to "double dip". In otherwords we are saying that we will interpret those specific insertions and deletions as moves.
+        // 2. 
+        // Once we've identified our moved rows, we need to remove those rows from both the deletions and 
+        // insertions lists so as not to "double dip". In otherwords, we are saying that we will interpret
+        // those specific insertions and deletions as moves.
         for move in moves {
-            // remove the deletions that will be handled in the move
+            // remove the deletions 
+            // that will be handled 
+            // by the move
             if let idx = deletions.firstIndex(where: { $0.value.id == move.from.value.id }) {
                 deletions.remove(at: idx)
             }
             
-            // remove the insertion that will be handled in the move
+            // remove the insertion 
+            // that will be handled
+            // by the move
             if let idx = insertions.firstIndex(where: { $0.value.id == move.to.value.id }) {
                 insertions.remove(at: idx)
             }
         }
         
-        // compute inserted rows
+        // compute 
+        // inserted rows
         var insertedRows: [Row] = []
         for inserted in insertions {
             // convert the overall index to the appropriate section
@@ -160,7 +179,8 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataSt
         }
         self.insertedRows = insertedRows
         
-        // compute deleted rows
+        // compute 
+        // deleted rows
         var removedRows: [Row] = []
         for removed in deletions {
             // convert the overall index to the appropriate section
@@ -181,9 +201,10 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataSt
         }
         self.removedRows = removedRows
         
-        // compute moved rows
+        // compute 
+        // moved rows
         var mutableChangedObjects = changedObjects ?? []
-        var movedRows: [(from: Row, to: Row)] = []
+        var movedRows: [Row.Move] = []
         for move in moves {
             guard let fromSectionIdx = fetchedResultsBeforeChanges.sectionIndex(for: move.from.value) else {
                 continue
@@ -201,32 +222,37 @@ public struct ResultsDifference<ResultType: DataStoreResult, RequestType: DataSt
                 continue
             }
             
-            // calculate the `from` index path
+            // compute
+            // the `from` index path
             let fromRowIdx = move.from.idx - fromSectionOffset
             let fromPath = IndexPath(row: fromRowIdx, section: fromSectionIdx)
+            let fromRow = Row(indexPath: fromPath, value: move.from.value)
             
-            // calculate the `to` index path
+            // compute
+            // the `to` index path
             let toRowIdx = move.to.idx - toSectionOffset
             let toPath = IndexPath(row: toRowIdx, section: toSectionIdx)
+            let toRow = Row(indexPath: toPath, value: move.to.value)
             
             // track the moved row
-            movedRows.append((from: Row(indexPath: fromPath, value: move.from.value), to: Row(indexPath: toPath, value: move.to.value)))
+            movedRows.append(Row.Move(from: fromRow, to: toRow))
             
-            // remove moved objects from the changed objects list, this ensures it does not get tracked as a change as well
+            // remove moved objects from the changed objects list;
+            // this ensures it does not get tracked as a change as well
             if let idx = mutableChangedObjects.firstIndex(of: move.to.value) {
                 mutableChangedObjects.remove(at: idx)
             }
         }
         self.movedRows = movedRows
         
-        // compute changed/updated rows
+        // compute 
+        // changed/updated rows
         var changedRows: [Row] = []
         for changed in mutableChangedObjects {
-            guard let path = fetchedResultsBeforeChanges.indexPath(for: changed) else {
+            guard let indexPath = fetchedResultsBeforeChanges.indexPath(for: changed) else {
                 continue
             }
-            
-            changedRows.append(Row(indexPath: path, value: changed))
+            changedRows.append(Row(indexPath: indexPath, value: changed))
         }
         self.changedRows = changedRows
     }

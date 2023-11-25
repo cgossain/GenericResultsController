@@ -15,18 +15,15 @@
     "git": "https://github.com/cgossain/GenericResultsController.git",
     "tag": "2.4.0"
   },
+  "swift_versions": "5.1",
   "platforms": {
     "ios": "13.0"
   },
-  "swift_versions": "5.0",
   "source_files": "Sources/GenericResultsController/**/*",
   "dependencies": {
     "Debounce": [
       "~> 1.5.1"
-    ],
-    "Dwifft": [
-      "0.9"
     ]
   },
-  "swift_version": "5.0"
+  "swift_version": "5.1"
 }
