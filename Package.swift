@@ -27,20 +27,18 @@ import PackageDescription
 
 let package = Package(
     name: "GenericResultsController",
-    platforms: [.iOS(.v12)],
+    platforms: [.iOS(.v13)],
     products: [
         .library(name: "GenericResultsController", targets: ["GenericResultsController"]),
     ],
     dependencies: [
         .package(url: "https://github.com/cgossain/Debounce.git", .upToNextMajor(from: "1.5.1")),
-        .package(url: "https://github.com/cgossain/Dwifft.git", .upToNextMajor(from: "0.10.0")),
     ],
     targets: [
         .target(
             name: "GenericResultsController",
             dependencies: [
                 .product(name: "Debounce", package: "Debounce"),
-                .product(name: "Dwifft", package: "Dwifft"),
             ]
         ),
         .testTarget(

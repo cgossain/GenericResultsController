@@ -8,15 +8,6 @@
         "revision" : "7f69673df389054da8bdaf115d8d6add5856ffe8",
         "version" : "1.5.1"
       }
-    },
-    {
-      "identity" : "dwifft",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/cgossain/Dwifft.git",
-      "state" : {
-        "revision" : "6fec2bc0246091b3e17a9d42e722fb98e05ac3ff",
-        "version" : "0.10.0"
-      }
     }
   ],
   "version" : 2
