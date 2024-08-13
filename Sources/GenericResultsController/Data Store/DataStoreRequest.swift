@@ -51,6 +51,7 @@ import Foundation
 /// If your "data store" interacts with an API, you'll most likely create your own custom request
 /// object that conforms to this protocol.
 public protocol DataStoreRequest {
+    
     /// The fetch limit of the fetch request.
     ///
     /// The fetch limit specifies the maximum number of objects that a request should return
@@ -59,5 +60,5 @@ public protocol DataStoreRequest {
     /// results at this limit.
     ///
     /// A value of 0 indicates no maximum limit (provided by the default implementation).
-    var fetchLimit: Int { get set }
+    var fetchLimit: Int { get }
 }
